@@ -2,12 +2,12 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div className="bg-black p-10">
+    <div className="bg-[#F9F9F9] p-10">
       <div className="max-w-7xl mx-auto">
         {/* Top Row: Welcome and Chart */}
         <div className="flex flex-col md:flex-row md:space-x-8 mb-8">
           <div className="flex-1 mb-8 md:mb-0">
-            <h1 className="text-4xl font-bold text-white mb-2">Hello Maietry <span className="inline-block">👋</span></h1>
+            <h1 className="text-4xl font-bold text-black mb-2">Hello Student <span className="inline-block">👋</span></h1>
             <p className="text-lg text-[#A0AEC0]">Let's learn something new today!</p>
             <div className="flex space-x-8 mt-8">
               <div className="flex flex-col items-center">
@@ -17,7 +17,7 @@ export default function Home() {
                 <span className="text-[#A0AEC0] mt-2">Hours Spent</span>
               </div>
               <div className="flex flex-col items-center">
-                <div className="bg-[#232533] rounded-lg p-4">
+                <div className="bg-[#575b76] rounded-lg p-4">
                   <span className="block text-orange-400 text-2xl font-bold">82%</span>
                 </div>
                 <span className="text-[#A0AEC0] mt-2">Test Results</span>
@@ -39,7 +39,7 @@ export default function Home() {
         </div>
 
         {/* Course Cards Row */}
-        <div className="bg-[#232533] rounded-2xl p-8 flex space-x-8 mb-8">
+        <div className="bg-[#535778] rounded-2xl p-8 flex space-x-8 mb-8">
           <div className="flex-1">
             <div className="rounded-2xl border-4 border-[#1DA1F2] bg-[#1DA1F2] p-6 text-white flex flex-col items-center">
               <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-4">
@@ -84,7 +84,7 @@ export default function Home() {
         {/* Widgets Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Statistics Widget */}
-          <div className="bg-[#232533] rounded-2xl p-6">
+          <div className="bg-[#4c506e] rounded-2xl p-6">
             <h2 className="text-white text-xl font-bold mb-4">Statistics</h2>
             <div className="flex flex-col space-y-2">
               <div className="flex items-center space-x-2">
