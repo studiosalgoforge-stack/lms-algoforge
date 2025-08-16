@@ -76,7 +76,7 @@ export default function FAQPage() {
           <input
             type="text"
             placeholder="Ask a question"
-            className="w-full bg-black bg-opacity-20 border border-gray-500 rounded-lg px-4 py-3 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className="w-full bg-black bg-opacity-20 border border-gray-500 rounded-lg px-4 py-3 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white-400"
           />
           <Search
             className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300"
@@ -95,7 +95,7 @@ export default function FAQPage() {
                 onClick={() => setActiveCategory(category.id)}
                 className={`w-full text-left p-4 rounded-lg transition-colors ${
                   activeCategory === category.id
-                    ? "bg-orange-500 text-white font-semibold"
+                    ? "bg-purple-600 text-white font-semibold"
                     : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                 }`}
               >
