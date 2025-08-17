@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { FiMenu, FiX, FiBook, FiMessageSquare, FiMail, FiUser, FiLogOut } from "react-icons/fi";
-
+import LogoutButton from "@/components/LogoutButton";
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+
+  const hiddenLayoutRoutes = ["/login", "/forgot-password"];
 
   useEffect(() => {
     const handleResize = () => {
@@ -25,7 +27,9 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
     { href: "/support", label: "Support", icon: <FiMail /> },
     { href: "/dashboard", label: "Dashboard", icon: <FiUser /> },
   ];
-
+ if (hiddenLayoutRoutes.includes(pathname)) {
+    return <main className="flex-1">{children}</main>;
+  }
   return (
     <div className="flex flex-col min-h-screen">
       {/* Top Navbar */}
@@ -56,13 +60,15 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
                   ))}
                   {/* Logout Button */}
                   <li>
-                    <Link
-                      href="/logout"
-                      className="flex items-center gap-2 hover:opacity-80 transition"
-                    >
-                      <FiLogOut className="text-white text-lg" />
-                      Logout
-                    </Link>
+                  
+                     <Link
+                  href="/logout"
+                  className="flex items-center gap-2 p-2 rounded-md hover:underline underline-offset-2 transition"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <FiLogOut className="text-lg text-white" />
+                  Logout
+                </Link>
                   </li>
                 </ul>
               </nav>

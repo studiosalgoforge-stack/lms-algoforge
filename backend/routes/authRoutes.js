@@ -1,11 +1,12 @@
-const express = require('express');
+import express from "express";
+import { googleOAuth, googleCallback } from "../controllers/authController.js"; // 👈 note the .js extension
+
 const router = express.Router();
-const { googleOAuth, googleCallback } = require('../controllers/authController');
 
 // Start Google OAuth
-router.get('/google', googleOAuth);
+router.get("/google", googleOAuth);
 
-// Callback route (must match REDIRECT_URI in .env)
-router.get('/lms/oauth2callback', googleCallback);
+// Callback route (matches REDIRECT_URI)
+router.get("/lms/oauth2callback", googleCallback);
 
-module.exports = router;
+export default router;

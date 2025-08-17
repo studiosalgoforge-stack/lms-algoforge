@@ -7,6 +7,16 @@
   background: linear-gradient(135deg, #F3E8FF, #FFF0FB);
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.transition-all { transition: all 0.3s ease-in-out; }
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
