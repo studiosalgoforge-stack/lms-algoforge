@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser"; // Import cookie-parser
 import fs from "fs";
 import { Parser } from "json2csv";
 import driveRoutes from "./driveRoutes.js";
@@ -15,7 +16,8 @@ import questionsRoute from "./routes/questions.js";
 dotenv.config();
 const app = express();
 const PORT = 5000;
-//  middleware first
+
+// Middleware
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(
   cors({
@@ -23,6 +25,11 @@ app.use(
     credentials: true
   })
 );
+app.use(morgan('dev'));
+app.use(express.json());
+app.use(cookieParser()); // Use cookie-parser
+
+// ... (rest of the file remains the same)
 
 app.use((req, res, next) => {
   res.on("finish", () => {
