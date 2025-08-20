@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from "react";
 
+const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000/api";
+
 export default function ProfilePage() {
   // Form state
+  const [userId, setUserId] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,86 +18,97 @@ export default function ProfilePage() {
   const [country, setCountry] = useState("");
   const [language, setLanguage] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
-const [avatar, setAvatar] = useState<string | null>(null);
+  const [avatar, setAvatar] = useState<string | null>(null);
 
-  // Load user data from localStorage
-useEffect(() => {
-  const user = localStorage.getItem("user");
-  if (!user) return;
-  const data = JSON.parse(user);
-  const userId = data.id;
+  // Load user data
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(`${BASE}/edituser/${userId}`);
+        const profile = await res.json();
 
-  fetch(`http://localhost:5000/api/edituser/${userId}`)
-    .then(res => res.json())
-    .then(profile => {
-      setFirstName(profile.firstName || "");
-      setLastName(profile.lastName || "");
-      setEmail(profile.email || "");
-      setOfficialEmail(profile.officialEmail || "");
-      setPhone(profile.phone || "");
-      setAddress(profile.address || "");
-      setStateField(profile.state || "");
-      setZip(profile.zip || "");
-      setCountry(profile.country || "Select country");
-      setLanguage(profile.language || "Select language");
-      setAvatar(profile.avatar || null);
-    })
-    .catch(err => console.error(err));
-}, []);
+        setFirstName(profile.firstName || "");
+        setLastName(profile.lastName || "");
+        setEmail(profile.email || "");
+        setOfficialEmail(profile.officialEmail || "");
+        setPhone(profile.phone || "");
+        setAddress(profile.address || "");
+        setStateField(profile.state || "");
+        setZip(profile.zip || "");
+        setCountry(profile.country || "Select country");
+        setLanguage(profile.language || "Select language");
+        setAvatar(profile.avatar || null);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (!e.target.files?.[0]) return;
-  const file = e.target.files[0];
-  
-  const formData = new FormData();
-  formData.append("avatar", file);
+    const fetchUser = async () => {
+        try {
+          const res = await fetch(`${BASE}/users/profile`);
+          if (res.ok) {
+            const user = await res.json();
+            setUserId(user._id);
+            fetchProfile(); // Fetch the editable profile after getting the user ID
+          }
+        } catch (error) {
+          console.error("Failed to fetch user profile", error);
+        }
+      };
 
-  const res = await fetch("http://localhost:5000/api/upload-avatar", {
-    method: "POST",
-    body: formData,
-  });
-  const data = await res.json();
-  setAvatar(data.url); // set uploaded avatar URL
-};
+    fetchUser();
+  }, [userId]);
 
-const handleSave = async () => {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const userId = user.id;
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    const file = e.target.files[0];
 
-  const payload = {
-    userId,
-    firstName,
-    lastName,
-    email,
-    officialEmail,
-    phone,
-    address,
-    state: stateField,
-    zip,
-    country,
-    language,
-    avatar,
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    const res = await fetch(`${BASE}/upload-avatar`, {
+      method: "POST",
+      body: formData,
+    });
+    const data = await res.json();
+    setAvatar(data.url); // set uploaded avatar URL
   };
 
-  try {
-    const res = await fetch("http://localhost:5000/api/edituser", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+  const handleSave = async () => {
+    const payload = {
+      userId,
+      firstName,
+      lastName,
+      email,
+      officialEmail,
+      phone,
+      address,
+      state: stateField,
+      zip,
+      country,
+      language,
+      avatar,
+    };
 
-    const data = await res.json();
-    if (res.ok) {
-      alert("Profile updated successfully!");
-    } else {
-      console.error(data);
-      alert("Failed to update profile");
+    try {
+      const res = await fetch(`${BASE}/edituser`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Profile updated successfully!");
+      } else {
+        console.error(data);
+        alert("Failed to update profile");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong");
     }
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong");
-  }
-};
+  };
 
 
   return (
