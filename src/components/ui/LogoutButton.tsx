@@ -8,8 +8,9 @@ export default function LogoutButton() {
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
-      removeToken();              // clear token
-      router.push("/login");      // redirect
+      removeToken(); // clear from localStorage
+      router.push("/login");
+      // You can also add a call to a backend endpoint to invalidate the token
     }
   };
 
