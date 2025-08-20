@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -21,24 +22,12 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-        credentials: "include",
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            id: data.user._id,
-            username: data.user.username,
-            email: data.user.email,
-            firstName: data.user.firstName,
-            lastName: data.user.lastName,
-            role: data.user.role,
-            token: data.token,
-          })
-        );
+        // No longer need to set anything in localStorage
         router.push("/courses"); // redirect after login
       } else {
         console.error("Login failed:", data);
