@@ -19,30 +19,30 @@ const dashboardLinks = [
   { href: "/logout", label: "Logout", icon: <FiLogOut /> },
 ];
 
+const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000/api";
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-const [userName, setUserName] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
 
-// Inside useEffect
-useEffect(() => {
-  // Try fetching updated user profile from edituser localStorage or backend
-  const storedUser = localStorage.getItem("editUser") || localStorage.getItem("user");
-  if (storedUser) {
-    const parsedUser = JSON.parse(storedUser);
-    // Use firstName if exists, else fallback
-    setUserName(parsedUser.firstName || parsedUser.username || "Student");
-  }
-}, []);
-
-
-  const user =
-  typeof window !== "undefined"
-    ? JSON.parse(localStorage.getItem("user") || "{}")
-    : null;
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch(`${BASE}/users/profile`);
+        if (res.ok) {
+          const user = await res.json();
+          setUserName(user.firstName || user.username || "Student");
+        }
+      } catch (error) {
+        console.error("Failed to fetch user profile", error);
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -53,8 +53,7 @@ useEffect(() => {
             <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
               <FiUser className="text-gray-500 text-4xl" />
             </div>
-   <h2 className="mt-3 font-semibold">{userName}</h2>
-
+            <h2 className="mt-3 font-semibold">{userName}</h2>
           </div>
 
           <nav className="mt-6 space-y-2">
