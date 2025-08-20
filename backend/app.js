@@ -4,13 +4,12 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import bodyParser from "body-parser";
 import fs from "fs";
 import { Parser } from "json2csv";
 import driveRoutes from "./driveRoutes.js";
-import { listFiles } from "./driveManager.js"; // 👈 ESM import
+import { listFiles } from "./driveManager.js";
 import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js"; 
+import userRoutes from "./routes/userRoutes.js";
 import editUserRoutes from "./routes/editUserRoutes.js";
 import questionsRoute from "./routes/questions.js";
 dotenv.config();
@@ -46,9 +45,6 @@ app.use('/api/questions', questionsRoute);
 // example health check
 app.get("/", (req, res) => res.send("API running"));
 app.get('/api/health', (_, res) => res.json({ ok: true }));
-
-
-app.use(bodyParser.json());
 
 const csvFilePath = "./support_queries.csv";
 
