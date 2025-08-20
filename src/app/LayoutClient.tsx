@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { FiMenu, FiX, FiBook, FiMessageSquare, FiMail, FiUser, FiLogOut } from "react-icons/fi";
-import LogoutButton from "@/components/LogoutButton";
+import LogoutButton from "@/components/ui/LogoutButton";
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
