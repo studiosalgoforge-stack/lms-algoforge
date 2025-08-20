@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
-
+const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000/api";
 interface Material {
   name: string;
   url: string;
@@ -37,7 +37,7 @@ export default function CourseDetail() {
     const fetchData = async () => {
       try {
         // Study (PPTs)
-   const pptRes = await fetch(`http://localhost:5000/api/drive/${id}/ppts`);
+   const pptRes = await fetch(`${BASE}/api/drive/${id}/ppts`);
         if (!pptRes.ok) {
   const errText = await pptRes.text();
   throw new Error(`Server error ${pptRes.status}: ${errText}`);
@@ -50,7 +50,7 @@ export default function CourseDetail() {
         setTopics(formattedPPT);
 
         // Interview
-        const intRes = await fetch(`http://localhost:5000/api/drive/${id}/interview`);
+        const intRes = await fetch(`${BASE}/api/drive/${id}/interview`);
         const intData = await intRes.json();
         console.log("Interview API response:", intData);
       const formattedInterview = (intData.files || intData).map((file: any) => ({
@@ -61,7 +61,7 @@ export default function CourseDetail() {
         setInterview(formattedInterview);
 
         // Assignments
-const assRes = await fetch(`http://localhost:5000/api/drive/${id}/assignments`);
+const assRes = await fetch(`${BASE}/api/drive/${id}/assignments`);
         const assData = await assRes.json();
         const formattedAssignments =  (assData.files || assData).map((file: any) => ({
     name: file.name,
