@@ -1,30 +1,79 @@
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
+import helmet from 'helmet';
+import morgan from 'morgan';
+import dotenv from "dotenv";
 import mongoose from "mongoose";
-
-
+import bodyParser from "body-parser";
+import fs from "fs";
+import { Parser } from "json2csv";
 import driveRoutes from "./driveRoutes.js";
 import { listFiles } from "./driveManager.js"; // 👈 ESM import
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js"; 
 import editUserRoutes from "./routes/editUserRoutes.js";
-
+import questionsRoute from "./routes/questions.js";
 dotenv.config();
 const app = express();
 const PORT = 5000;
-
 //  middleware first
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(helmet({ crossOriginResourcePolicy: false }));
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://localhost:5000"],
+    credentials: true
+  })
+);
+
+app.use((req, res, next) => {
+  res.on("finish", () => {
+    console.log("Headers:", res.getHeader("Access-Control-Allow-Origin"));
+  });
+  next();
+});
+
+app.use(morgan('dev'));
 app.use(express.json());
+
+
 //routes
 app.use('/auth', authRoutes);
 app.use("/api/drive", driveRoutes);
 app.use('/api/users' , userRoutes);
 app.use("/api/edituser", editUserRoutes);
+console.log("➡️ Mounting /api/questions...");
+app.use('/api/questions', questionsRoute);
 // example health check
 app.get("/", (req, res) => res.send("API running"));
+app.get('/api/health', (_, res) => res.json({ ok: true }));
 
+
+app.use(bodyParser.json());
+
+const csvFilePath = "./support_queries.csv";
+
+// POST endpoint to save form data
+app.post("/api/support", (req, res) => {
+  const { name, email, phone, query } = req.body;
+
+  if (!name || !email || !phone || !query) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  const newEntry = { name, email, phone, query, date: new Date().toISOString() };
+
+  let csv;
+  if (fs.existsSync(csvFilePath)) {
+    const existingData = fs.readFileSync(csvFilePath, "utf8");
+    csv = existingData + "\n" + new Parser({ header: false }).parse([newEntry]);
+  } else {
+    csv = new Parser().parse([newEntry]);
+  }
+
+  fs.writeFileSync(csvFilePath, csv, "utf8");
+
+  res.json({ success: true });
+});
 //  Route to list Drive files
 app.get('/files', async (req, res) => {
   try {
@@ -37,10 +86,7 @@ app.get('/files', async (req, res) => {
   }
 });
 
-mongoose.connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGO_URL)
 .then(() => console.log("MongoDB Connected"))
 .catch((err) => console.error("MongoDB Error:", err));
 

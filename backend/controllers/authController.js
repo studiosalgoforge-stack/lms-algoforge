@@ -6,12 +6,23 @@ import { fileURLToPath } from "url";
 // Needed because __dirname doesn’t exist in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+console.log("GOOGLE_CLIENT_SECRET:", process.env.GOOGLE_CLIENT_SECRET);
+console.log("GOOGLE_REDIRECT_URI:", process.env.GOOGLE_REDIRECT_URI);
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  process.env.REDIRECT_URI
+  process.env.GOOGLE_REDIRECT_URI
 );
+
+// Load existing tokens if available
+const tokenPath = path.join(__dirname, "../tokens.json");
+if (fs.existsSync(tokenPath)) {
+  const tokens = JSON.parse(fs.readFileSync(tokenPath, "utf-8"));
+  oauth2Client.setCredentials(tokens);
+  console.log("✅ Tokens loaded into oauth2Client");
+}
 
 // Step 1: Redirect to Google OAuth consent
 export const googleOAuth = (req, res) => {

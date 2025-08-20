@@ -39,3 +39,8 @@ export async function saveTokens(code) {
   console.log("✅ Tokens saved to", tokenPath);
   return tokens;
 }
+
+if (process.argv[1].includes("auth.js")) {
+  console.log("👉 Auth URL:", getAuthUrl());
+}
+

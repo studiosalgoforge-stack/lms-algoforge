@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 interface Material {
   name: string;
   url: string;
-  totalPages: number; 
 }
 
 export default function CourseDetail() {
@@ -28,7 +27,7 @@ export default function CourseDetail() {
       const width = scrollRef.current.clientWidth;
       scrollRef.current.scrollBy({ left: width * direction, behavior: "smooth" });
       setCurrentPage((prev) => 
-   Math.min(Math.max(prev + direction, 1), topics.totalPages)
+   Math.min(Math.max(prev + direction, 1), topics.length)
 );
 
     }
@@ -38,7 +37,11 @@ export default function CourseDetail() {
     const fetchData = async () => {
       try {
         // Study (PPTs)
-        const pptRes = await fetch("http://localhost:5000/api/drive/ppt");
+   const pptRes = await fetch(`http://localhost:5000/api/drive/${id}/ppts`);
+        if (!pptRes.ok) {
+  const errText = await pptRes.text();
+  throw new Error(`Server error ${pptRes.status}: ${errText}`);
+}
         const pptData = await pptRes.json();
         const formattedPPT = pptData.map((file: any) => ({
           name: file.name.replace(/\.pptx?$/i, ""),
@@ -47,21 +50,23 @@ export default function CourseDetail() {
         setTopics(formattedPPT);
 
         // Interview
-        const intRes = await fetch("http://localhost:5000/api/drive/interview");
+        const intRes = await fetch(`http://localhost:5000/api/drive/${id}/interview`);
         const intData = await intRes.json();
-        const formattedInterview = intData.map((file: any) => ({
-          name: file.name,
-          url: file.webViewLink,
-        }));
+        console.log("Interview API response:", intData);
+      const formattedInterview = (intData.files || intData).map((file: any) => ({
+  name: file.name,
+  url: file.webViewLink,
+}));
+
         setInterview(formattedInterview);
 
         // Assignments
-        const assRes = await fetch("http://localhost:5000/api/drive/study");
+const assRes = await fetch(`http://localhost:5000/api/drive/${id}/assignments`);
         const assData = await assRes.json();
-        const formattedAssignments = assData.map((file: any) => ({
-          name: file.name,
-          url: file.webViewLink,
-        }));
+        const formattedAssignments =  (assData.files || assData).map((file: any) => ({
+    name: file.name,
+    url: file.webViewLink,
+  }))
         setAssignments(formattedAssignments);
 
         setLoading(false);
@@ -72,7 +77,7 @@ export default function CourseDetail() {
     };
 
     fetchData();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -125,7 +130,7 @@ export default function CourseDetail() {
 
       {/* Main Content */}
       <div className="flex-1 bg-white text-blue-950 rounded-lg shadow-md p-4 lg:ml-6">
-        <h1 className="text-3xl lg:text-4xl font-bold mb-4">Data Science</h1>
+        <h1 className="text-3xl lg:text-4xl font-bold mb-4">{id} Course</h1>
 
         {/* Tabs */}
         <div className="flex space-x-4 mb-6 border-b pb-2">
@@ -179,7 +184,7 @@ export default function CourseDetail() {
                       {topics.map((topic, idx) => (
                         <iframe
                           key={idx}
-                          src={topic.url}
+                          src={topics[selectedTopic].url}
                           className="flex-shrink-0 w-full h-full mx-2 rounded-md border"
                         ></iframe>
                       ))}

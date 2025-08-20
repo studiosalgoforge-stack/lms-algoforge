@@ -105,7 +105,7 @@ const [showPassword, setShowPassword] = useState(false);
       </div>
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-[#9B4DFF] via-[#B55CFF] to-[#E09EFF] text-white p-2 rounded hover:bg-gradient-to-r from-[#9B4DFF] to-[#B55CFF] transition"
+          className="w-full bg-gradient-to-r from-[#9B4DFF] via-[#B55CFF] to-[#E09EFF] text-white p-2 rounded cursor-pointer hover:bg-gradient-to-r from-[#9B4DFF] to-[#B55CFF] transition"
         >
           Sign in
         </button>
