@@ -32,22 +32,25 @@ router.get("/", async (req, res) => {
 });
 
 
+// Post answer (any user)
+router.post("/:id/answers", authMiddleware, async (req, res) => {
+  const { body } = req.body;
+  if (!body?.trim())
+    return res.status(400).json({ error: "Answer body required" });
 
-// Create new question
-router.post("/", async (req, res) => {
-  const { title, body, category = "General Question", tags = [] } = req.body;
-  if (!title?.trim() || !body?.trim())
-    return res.status(400).json({ error: "Title and body required" });
+  const q = await Question.findById(req.params.id);
+  if (!q) return res.status(404).json({ error: "Not found" });
 
-  const doc = await Question.create({
-    title: title.trim(),
+  q.answers.push({
     body: body.trim(),
-    category,
-    tags,
+    authorName: req.user.username, // Get username from authenticated user
+    authorRole: req.user.role,
   });
+  await q.save();
 
-  res.status(201).json(doc);
+  res.status(201).json(q);
 });
+
 
 // Get single question + increment views
 router.get("/:id", async (req, res) => {
