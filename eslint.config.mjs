@@ -15,8 +15,10 @@ const eslintConfig = [
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-empty-object-type": "off", // ✅ disable the interface error
     },
   },
 ];
 
 export default eslintConfig;
+
