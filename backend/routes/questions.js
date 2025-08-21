@@ -1,6 +1,6 @@
 import { Router } from "express";
 import Question from "../models/Question.js";
-import { adminOnly } from "../middleware/auth.js";
+import { authMiddleware } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -31,27 +31,6 @@ router.get("/", async (req, res) => {
   });
 });
 
-
-// Post answer (any user)
-router.post("/:id/answers", authMiddleware, async (req, res) => {
-  const { body } = req.body;
-  if (!body?.trim())
-    return res.status(400).json({ error: "Answer body required" });
-
-  const q = await Question.findById(req.params.id);
-  if (!q) return res.status(404).json({ error: "Not found" });
-
-  q.answers.push({
-    body: body.trim(),
-    authorName: req.user.username, // Get username from authenticated user
-    authorRole: req.user.role,
-  });
-  await q.save();
-
-  res.status(201).json(q);
-});
-
-
 // Get single question + increment views
 router.get("/:id", async (req, res) => {
   const q = await Question.findByIdAndUpdate(
@@ -63,24 +42,24 @@ router.get("/:id", async (req, res) => {
   res.json(q);
 });
 
-// Post answer (any user)
-router.post("/:id/answers", async (req, res) => {
-  const { body, authorName, authorRole } = req.body;
-  if (!body?.trim())
+// Post answer (logged-in user only)
+router.post("/:id/answers", authMiddleware, async (req, res) => {
+  const { body } = req.body;
+  if (!body?.trim()) {
     return res.status(400).json({ error: "Answer body required" });
+  }
 
   const q = await Question.findById(req.params.id);
   if (!q) return res.status(404).json({ error: "Not found" });
 
   q.answers.push({
     body: body.trim(),
-    authorName: authorName || "Anonymous",
-    authorRole: authorRole || "user",
+    authorName: req.user.username, // Comes from JWT user
+    authorRole: req.user.role || "user",
   });
-  await q.save();
 
+  await q.save();
   res.status(201).json(q);
 });
-
 
 export default router;

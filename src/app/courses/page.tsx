@@ -21,8 +21,8 @@ export default function CoursesPage() {
   }));
 
   return (
-    <div className="min-h-screen bg-gray-50 md:p-8">
-      <div className="flex-1 text-black mb-6 text-bold bg-gray-100 h-12">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="flex-1 text-black mb-6 text-bold bg-gray-100 h-12 ">
         <a href="https://app.algoforgestudios.com/">Home -</a>
         <a> Classroom</a>
       </div>

@@ -21,7 +21,12 @@ const PORT = 5000;
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(
   cors({
-    origin: ["https://dev-lms-prototype.vercel.app/", "https://dev-lms-prototype.onrender.com"],
+    origin: [
+      "http://localhost:3000",
+      "https://dev-lms-prototype.vercel.app",
+       "https://dev-lms-prototype.onrender.com"
+      ],
+     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
   })
 );

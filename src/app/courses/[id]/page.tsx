@@ -122,7 +122,7 @@ const assRes = await fetch(`${BASE}/drive/${id}/assignments`);
 
       {/* Hamburger */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 bg-orange-500 text-white p-2 rounded-md"
+        className="lg:hidden fixed top-4 left-4 z-50 mt-14 bg-purple-500 text-white p-2 rounded-md"
         onClick={() => setIsTopicsSidebarOpen(!isTopicsSidebarOpen)}
       >
         ☰

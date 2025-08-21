@@ -33,7 +33,8 @@ export const googleOAuth = (req, res) => {
   const url = oauth2Client.generateAuthUrl({
     access_type: "offline", // ✅ ensures refresh_token
     prompt: "consent", // ✅ force Google to return refresh_token every time
-    scope: ["https://www.googleapis.com/auth/drive.readonly"],
+    scope:  [ "https://www.googleapis.com/auth/drive",        // full Drive access
+  "https://www.googleapis.com/auth/drive.file" ] ,
   });
 
   console.log("OAuth URL:", url);

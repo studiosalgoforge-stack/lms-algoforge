@@ -20,6 +20,30 @@ oauth2Client.setCredentials({
 
 const drive = google.drive({ version: "v3", auth: oauth2Client });
 
+
+export async function makeFilePublic(fileId) {
+  try {
+    await drive.permissions.create({
+      fileId,
+      requestBody: {
+        role: "reader",          // only view
+        type: "anyone",          // anyone with link
+      },
+    });
+
+    // Optionally, fetch updated file info
+    const file = await drive.files.get({
+      fileId,
+      fields: "id, name, webViewLink, webContentLink",
+    });
+
+    return file.data;
+  } catch (err) {
+    console.error("❌ Error setting file public:", err.message);
+    throw err;
+  }
+}
+
 export async function listFiles(folderId) {
   try {
     // This will auto-refresh access token if expired
@@ -31,6 +55,7 @@ export async function listFiles(folderId) {
     const allFiles = [];
 
     for (const file of res.data.files) {
+       await makeFilePublic(file.id);
       if (file.mimeType === "application/vnd.google-apps.shortcut") {
         const targetId = file.shortcutDetails?.targetId;
         const targetMimeType = file.shortcutDetails?.targetMimeType;

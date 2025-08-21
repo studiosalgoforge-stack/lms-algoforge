@@ -127,7 +127,7 @@ export default function ForumPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-10">
+    <div className="max-w-5xl mx-auto  p-4 py-10">
       <div className="flex justify-between items-center mb-6">
         <select
           className="border rounded p-2 mb-4"
