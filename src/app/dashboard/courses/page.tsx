@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-
+import ProtectedRoute from "@/components/ProtectedRoute";
 export default function CoursesRedirect() {
   const router = useRouter();
 
@@ -10,5 +10,7 @@ export default function CoursesRedirect() {
     router.push("/courses"); 
   }, [router]);
 
-  return null;
+  return (
+       <ProtectedRoute> null</ProtectedRoute>
+   );
 }

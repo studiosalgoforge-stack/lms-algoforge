@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FiUser, FiBook, FiBarChart2, FiSettings, FiLogOut } from "react-icons/fi";
 import { useEffect, useState } from "react";
-
+import ProtectedRoute from "@/components/ProtectedRoute";
 const dashboardLinks = [
   { href: "/dashboard/profile", label: "Edit Profile", icon: <FiUser /> },
   { href: "/courses", label: "My Courses", icon: <FiBook /> },
@@ -39,6 +39,7 @@ export default function DashboardLayout({
   }, []);
 
   return (
+       <ProtectedRoute>
     <div className="flex flex-col min-h-screen">
       <div className="flex flex-1 z-10 relative flex-col md:flex-row">
         {/* Sidebar */}
@@ -73,5 +74,6 @@ export default function DashboardLayout({
         <main className="flex-1 p-4 md:p-6">{children}</main>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
+import ProtectedRoute from "@/components/ProtectedRoute";
 const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000/api";
 
 export default function ProfilePage() {
@@ -112,6 +112,7 @@ export default function ProfilePage() {
 
 
   return (
+       <ProtectedRoute>
     <div className="bg-white">
       <div className="p-6">
         {/* Header */}
@@ -342,5 +343,6 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

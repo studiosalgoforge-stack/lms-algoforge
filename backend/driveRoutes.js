@@ -52,7 +52,7 @@ router.get("/:course/:category", async (req, res) => {
 
     const folderId = courseFolders[course][category];
     const files = await listFiles(folderId);
-
+console.log(`📂 Files in ${course}/${category}:`, files);
     let allowedTypes = [];
     if (category === "ppts") {
       allowedTypes = [
@@ -61,17 +61,22 @@ router.get("/:course/:category", async (req, res) => {
         "application/vnd.google-apps.presentation",
       ];
     } else if (category === "interview") {
-      allowedTypes = [
-        "application/pdf",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      ];
-    } else if (category === "assignments") {
-      allowedTypes = [
-        "application/zip",
-        "application/x-zip-compressed",
-        "application/pdf",
-      ];
-    }
+  allowedTypes = [
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-powerpoint", // add if some are PPT
+    "application/vnd.google-apps.document", // Google Docs
+  ];
+} else if (category === "assignments") {
+  allowedTypes = [
+    "application/zip",
+    "application/x-zip-compressed",
+    "application/pdf",
+    "application/vnd.google-apps.folder", // nested folders
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ];
+}
+
 
     const formatted = formatFiles(files, allowedTypes);
     setCache(cacheKey, formatted);

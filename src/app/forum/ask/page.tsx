@@ -5,32 +5,50 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-
+import ProtectedRoute from "@/components/ProtectedRoute";
 export default function AskPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [category, setCategory] = useState("General Question");
   const [loading, setLoading] = useState(false);
+ const [image, setImage] = useState<File | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await fetch("http://localhost:5000/api/questions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, body, category }),
-      });
-      router.push("/forum");
-    } catch (err) {
-      console.error("Error creating question:", err);
-    } finally {
-      setLoading(false);
+
+ async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+  setLoading(true);
+  try {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("body", body);
+    formData.append("category", category);
+    if (image) formData.append("image", image);
+
+    const res = await fetch("http://localhost:5000/api/questions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+      },
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const errMsg = await res.json();
+      throw new Error(errMsg.error || "Failed to post question");
     }
+
+    router.push("/forum");
+  } catch (err) {
+    console.error("Error creating question:", err);
+  } finally {
+    setLoading(false);
   }
+}
+
 
   return ( 
+       <ProtectedRoute>
     <div className="max-w-2xl mx-auto py-10">
       <Card>
         <CardHeader>
@@ -57,10 +75,19 @@ export default function AskPage() {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option>General Question</option>
+            <option>General Question</option>
               <option>Technical</option>
               <option>Non-Technical</option>
+              <option>Data Science</option>
+              <option>Machine Learning</option>
+              <option>Web Development</option>
+              <option>AI</option>
             </select>
+              <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files?.[0] || null)}
+            />
             <Button type="submit" disabled={loading}>
               {loading ? "Posting..." : "Post Question"}
             </Button>
@@ -68,5 +95,6 @@ export default function AskPage() {
         </CardContent>
       </Card>
     </div>
+    </ProtectedRoute>
   );
 }

@@ -1,5 +1,7 @@
+import ProtectedRoute from "@/components/ProtectedRoute";
 export default function DashboardPage() {
   return (
+       <ProtectedRoute>
     <div className="px-4 md:px-8"> {/* add padding for mobile */}
       {/* Banner Image Section */}
       <div className="relative w-full h-40 md:h-48 mb-6">
@@ -16,5 +18,6 @@ export default function DashboardPage() {
         </h1>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

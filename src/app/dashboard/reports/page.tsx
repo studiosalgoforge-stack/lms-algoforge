@@ -5,7 +5,7 @@ import { QuizPerformanceChart } from "@/components/performance/QuizPerformanceCh
 import { LearningProgress } from "@/components/performance/LearningProgress";
 import { ActivityPieChart } from "@/components/performance/ActivityPieChart";
 import { BookOpen, PlayCircle, FileText, HelpCircle, Users } from "lucide-react";
-
+import ProtectedRoute from "@/components/ProtectedRoute";
 // Mock data - in a real app, this would come from your API
 const mockStats = {
   overallScore: 87,
@@ -109,6 +109,7 @@ const mockActivityData = [
 
 const Dashboard = () => {
   return (
+       <ProtectedRoute>
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-8">
         {/* Header */}
@@ -141,6 +142,7 @@ const Dashboard = () => {
         </section>
       </div>
     </div>
+    </ProtectedRoute>
   );
 };
 

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
+import ProtectedRoute from "@/components/ProtectedRoute";
 export default function SettingsPage() {
   const [form, setForm] = useState({ current: "", newPass: "", confirm: "" });
 
@@ -22,6 +22,7 @@ export default function SettingsPage() {
   };
 
   return (
+       <ProtectedRoute>
     <div className="p-6 flex justify-center">
       <form
         onSubmit={handleSubmit}
@@ -57,5 +58,6 @@ export default function SettingsPage() {
         </Button>
       </form>
     </div>
+    </ProtectedRoute>
   );
 }

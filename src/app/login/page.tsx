@@ -14,31 +14,41 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    try {
-      const res = await fetch(`${BASE}/users/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials:"include",
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    const res = await fetch(`${BASE}/users/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (res.ok) {
-        // No longer need to set anything in localStorage
-        router.push("/courses"); // redirect after login
-      } else {
-        console.error("Login failed:", data);
-        setError(data.message || "Login failed");
-      }
-    } catch (err: any) {
-      console.error("Login error:", err);
-      setError("Something went wrong. Check console.");
+    if (!res.ok) {
+      console.error("Login failed:", data);
+      setError(data.message || "Login failed");
+      return;
     }
-  };
+
+    if (!data.token) {
+      setError("No token received from server");
+      return;
+    }
+
+    // Store token in localStorage
+    localStorage.setItem("token", data.token);
+
+    router.push("/courses"); // redirect after login
+  } catch (err: any) {
+    console.error("Login error:", err);
+    setError("Something went wrong. Check console.");
+  }
+};
+
+
+  
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
