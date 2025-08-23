@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
-const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000/api";
+const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
 
 export default function ProfilePage() {
   // Form state

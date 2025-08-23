@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import jwtDecode from "jwt-decode";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
-const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000/api";
+const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
 
 interface Answer {
   _id: string;
@@ -60,6 +60,7 @@ export default function ForumPage() {
   // Decode JWT once on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
+    console.log("Token from localStorage:", token);
     if (token) {
       try {
         const decoded: any = jwtDecode(token); 

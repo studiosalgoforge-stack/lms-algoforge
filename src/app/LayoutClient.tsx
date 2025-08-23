@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { FiMenu, FiX, FiBook, FiMessageSquare, FiMail, FiUser, FiLogOut , FiArrowLeft } from "react-icons/fi";
 import LogoutButton from "@/components/ui/LogoutButton";
+import ProtectedRoute from "@/components/ProtectedRoute";
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +37,7 @@ const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
  // 2️⃣ Minimal header only for course detail page on mobile/tablet
   if (shouldUseMinimalHeader) {
     return (
+     
       <div className="flex flex-col min-h-screen">
         <header className="bg-gradient-to-r from-[#9B4DFF] via-[#B55CFF] to-[#E09EFF] text-white shadow-md">
           <div className="max-w-7xl mx-auto px-4 lg:px-8">
@@ -94,6 +96,7 @@ const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
 
 
   return (
+     <ProtectedRoute>
     <div className="flex flex-col min-h-screen">
       {/* Top Navbar */}
       <header className="bg-gradient-to-r from-[#9B4DFF] via-[#B55CFF] to-[#E09EFF] text-white shadow-md">
@@ -184,5 +187,6 @@ const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
       {/* Page Content */}
       <main className="flex-1">{children}</main>
     </div>
+    </ProtectedRoute>
   );
 }

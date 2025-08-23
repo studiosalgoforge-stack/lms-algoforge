@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
-const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000/api";
+const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+const [identifier, setIdentifier] = useState(""); // can be email or username
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -21,7 +21,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     const res = await fetch(`${BASE}/users/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ identifier, password }),
     });
 
     const data = await res.json();
@@ -40,12 +40,19 @@ const handleSubmit = async (e: React.FormEvent) => {
     // Store token in localStorage
     localStorage.setItem("token", data.token);
 
+    console.log("Login POST data:", { identifier, password });
+console.log("Login response status:", res.status);
+console.log("Login response JSON:", data);
+
+
+
     router.push("/courses"); // redirect after login
   } catch (err: any) {
     console.error("Login error:", err);
     setError("Something went wrong. Check console.");
   }
 };
+
 
 
   
@@ -64,13 +71,13 @@ const handleSubmit = async (e: React.FormEvent) => {
         {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
         <div className="mb-4">
          <label className="flex items-center text-sm font-bold mb-1 text-gray-700">
-          <FiMail className="mr-2 text-gray-500" /> Email Address
+          <FiMail className="mr-2 text-gray-500" /> Email or Username
         </label>
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          placeholder="Email or Username"
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
           required
           className="w-full p-2 mb-4  mt-2.5 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />

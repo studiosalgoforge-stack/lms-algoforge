@@ -7,6 +7,22 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 
 const categories = ["My Courses", "Orientation", "Learning Tools", "Projects"];
 
+// Sample data for other tabs
+const sampleData = {
+  Orientation: [
+    { id: "welcome", title: "Welcome Video", link: "#" },
+    { id: "getting-started", title: "Getting Started Guide", link: "#" },
+  ],
+  "Learning Tools": [
+    { id: "jupyter", title: "Jupyter Notebook Tutorial", link: "#" },
+    { id: "power-bi", title: "Power BI Tutorial", link: "#" },
+  ],
+  Projects: [
+    { id: "capstone", title: "Capstone Project", link: "#" },
+    { id: "mini-project", title: "Mini Project: Analytics Dashboard", link: "#" },
+  ],
+};
+
 export default function CoursesPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("My Courses");
@@ -22,6 +38,9 @@ export default function CoursesPage() {
     progress: Math.floor(Math.random() * 100),
   }));
 
+  // Items for other tabs
+  const items = sampleData[activeTab as keyof typeof sampleData];
+
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50 p-4 md:p-8 flex flex-col lg:flex-row gap-8">
@@ -29,8 +48,8 @@ export default function CoursesPage() {
         {/* Left/Main Content */}
         <div className="flex-1">
           <div className="flex-1 text-black mb-6 text-bold bg-gray-100 h-12 flex items-center px-4 gap-2">
-            <a href="https://app.algoforgestudios.com/" className="hover:underline">Home -</a>
-            <span>Classroom</span>
+            <a href="https://dev-algoforge-prototype.vercel.app/" className="hover:underline">Home</a>
+            <span>- Classroom</span>
           </div>
 
           {/* Tabs */}
@@ -43,14 +62,17 @@ export default function CoursesPage() {
                     ? "bg-gradient-to-r from-[#9B4DFF] to-[#E76CF3] bg-clip-text text-transparent border-b-2 border-[#C87BEF]"
                     : "text-gray-600 hover:bg-gradient-to-r hover:from-[#9B4DFF] hover:to-[#E76CF3] hover:bg-clip-text hover:text-transparent"
                 }`}
-                onClick={() => setActiveTab(cat)}
+                onClick={() => {
+                  setActiveTab(cat);
+                  setOpenIndex(null);
+                }}
               >
                 {cat}
               </button>
             ))}
           </div>
 
-          {/* Course Accordion */}
+          {/* My Courses Accordion */}
           {activeTab === "My Courses" && (
             <div className="space-y-4">
               {courses.map((course, index) => (
@@ -100,10 +122,44 @@ export default function CoursesPage() {
               ))}
             </div>
           )}
+
+          {/* Other Tabs Accordion */}
+          {activeTab !== "My Courses" && (
+            <div className="space-y-4">
+              {items?.map((item, index) => (
+                <div key={index} className="rounded-lg shadow-lg overflow-hidden">
+                  <div
+                    className="flex justify-between items-center px-4 py-3 bg-purple-200 text-gray-800 font-medium cursor-pointer"
+                    onClick={() => toggleCourse(index)}
+                  >
+                    <span>{item.title}</span>
+                    <span className="text-xl">{openIndex === index ? "−" : "+"}</span>
+                  </div>
+
+                  <div
+                    className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                      openIndex === index ? "max-h-72" : "max-h-0"
+                    } bg-white`}
+                  >
+                    <div className="p-4 space-y-4">
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 inline-block"
+                      >
+                        Open
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Right Sidebar (Desktop Only) */}
-        <div className="hidden lg:block w-72 sticky  mt-32 top-8 self-start">
+        <div className="hidden lg:block w-72 sticky mt-32 top-8 self-start">
           <div className="rounded-lg p-6 shadow-lg bg-gradient-to-r from-[#F6A6FF] via-[#D6A4E6] to-[#A1C4FD]">
             <div className="space-y-4">
               {["Success Stories", "Research Articles", "Project Discussions"].map(

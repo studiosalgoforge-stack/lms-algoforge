@@ -5,10 +5,12 @@ import User from "../models/User.js";  // adjust path if needed
 // LOGIN
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
 
     // 1. Check if user exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ 
+       $or: [{ email: identifier }, { username: identifier }],
+     });
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
@@ -21,7 +23,7 @@ export const loginUser = async (req, res) => {
 
     // 3. Create JWT
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email , username: user.username },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
