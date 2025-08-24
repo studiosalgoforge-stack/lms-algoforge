@@ -1,62 +1,67 @@
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const pptRes = await fetch(`${BASE}/drive/${id}`);
-      const pptData = await pptRes.json();
+"use client";
 
-      const finalTopics =
-        Array.isArray(pptData) && pptData.length
-          ? pptData.map((file: any) => ({
-              name: file.name.replace(/\.pptx?$/i, ""),
-              url: file.previewUrl || file.webViewLink,
-              assignments: [],
-            }))
-          : [];
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
-      setTopics(finalTopics);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching materials:", err);
+type Topic = {
+  name: string;
+  url: string;
+};
 
-      const backups: Record<string, string[]> = {
-        "Data-Science": [
-          "https://docs.google.com/presentation/d/1kAban4f0Uuqk_mKTjLmBOW4dOEfmvKt3/preview",
-          "https://docs.google.com/presentation/d/1CIUkcmkhtQQgRJYw76S6DRWdZv-GT-Fl/preview",
-          "https://docs.google.com/presentation/d/1Hg4JYyl_CGBIZqtygFupfF2vdnG4-3BU/preview",
-          "https://docs.google.com/presentation/d/1hElVRlRnPcVWxaPT5QUE2O5DxwDUQJfT/preview",
-          "https://docs.google.com/presentation/d/1C7iZmnKe7cAv5snL3DD3PvdO_N7Yk81p/preview",
-        ],
-        SQL: [
-          "https://docs.google.com/presentation/d/1BECUfhOhXTDWfNPJZDxw4gA1giWYwK1E/preview",
-          "https://docs.google.com/presentation/d/1kRJxhgK8ShxRfFRWKMElktz52u1qgWXo/preview",
-          "https://docs.google.com/presentation/d/1AbhTDz1cjwZxkhJRdZNnPIar1RIRdlnL/preview",
-          "https://docs.google.com/presentation/d/1gjEb5G9LFgT0fZ8XPBqh1lWvtUIO2VP3/preview",
-          "https://docs.google.com/presentation/d/192soPE6O_xZ1z5QyIcBgcJ-f1NbmKvjR/preview",
-        ],
-        "Power-BI": [
-          "https://docs.google.com/presentation/d/1Y6i26XAA8OTZFrUSKQugal_zJUHPF3iu/preview",
-          "https://docs.google.com/presentation/d/19FoSK-2SB7Lf7ZF8zkXyMmyhiV5GWIEe/preview",
-          "https://docs.google.com/presentation/d/1e6XjemjvS-gqSl6OPqv1WW96dqpGoPCa/preview",
-          "https://docs.google.com/presentation/d/1cka_VZaaO4bvj7P8t4kv2-0pkkM6c4PD/preview",
-          "https://docs.google.com/presentation/d/1MJ3TsDgAN31f-UviHIYJZN-52GL8e_Hh/preview",
-        ],
-      };
+const backups: Record<string, string[]> = {
+  course1: [
+    "https://example.com/ppt1.pdf",
+    "https://example.com/ppt2.pdf",
+  ],
+  course2: [
+    "https://example.com/ppt3.pdf",
+  ],
+};
 
-      // ✅ Safe fallback
-      if (id && backups[id]) {
-        setTopics(
-          backups[id].map((link, idx) => ({
-            name: `${id} Backup PPT ${idx + 1}`,
-            url: link,
-          }))
-        );
-      } else {
-        setTopics([]);
-      }
+export default function CoursePage() {
+  const params = useParams();
+  const rawId = params?.id;
+  const id = Array.isArray(rawId) ? rawId[0] : rawId ?? "";
 
-      setLoading(false);
+  const [topics, setTopics] = useState<Topic[]>([]);
+
+  useEffect(() => {
+    if (!id) return; // ✅ guard against undefined
+
+    if (backups[id]) {
+      setTopics(
+        backups[id].map((link, idx) => ({
+          name: `${id} Backup PPT ${idx + 1}`,
+          url: link,
+        }))
+      );
+    } else {
+      setTopics([]);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]); // ✅ safe dependency
 
-  if (id) fetchData(); // ✅ only run if id is defined
-}, [id]);
+  return (
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-4">Course: {id}</h1>
+      {topics.length === 0 ? (
+        <p>No backups available for this course.</p>
+      ) : (
+        <ul className="list-disc pl-5 space-y-2">
+          {topics.map((topic, idx) => (
+            <li key={idx}>
+              <a
+                href={topic.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline"
+              >
+                {topic.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
