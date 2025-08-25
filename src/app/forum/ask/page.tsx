@@ -25,7 +25,7 @@ export default function AskPage() {
     formData.append("category", category);
     if (image) formData.append("image", image);
 
-    const res = await fetch("http://localhost:5000/api/questions", {
+    const res = await fetch("http://localhost:10000/api/questions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token") || ""}`,

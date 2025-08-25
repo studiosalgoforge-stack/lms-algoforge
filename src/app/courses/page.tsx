@@ -129,7 +129,7 @@ export default function CoursesPage() {
               {items?.map((item, index) => (
                 <div key={index} className="rounded-lg shadow-lg overflow-hidden">
                   <div
-                    className="flex justify-between items-center px-4 py-3 bg-purple-200 text-gray-800 font-medium cursor-pointer"
+                    className="flex justify-between items-center px-4 py-3 bg-purple-300 text-gray-800 font-medium cursor-pointer"
                     onClick={() => toggleCourse(index)}
                   >
                     <span>{item.title}</span>

@@ -17,6 +17,46 @@
 .transition-all { transition: all 0.3s ease-in-out; }
 
 
+@layer utilities {
+  .bg-bubbles {
+    background: radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.25), transparent 40%),
+                radial-gradient(circle at 70% 40%, rgba(173, 216, 230, 0.25), transparent 40%),
+                radial-gradient(circle at 40% 70%, rgba(144, 238, 144, 0.25), transparent 40%);
+  }
+}
+
+@keyframes float-slow {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes float-slower {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-30px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes float-slowest {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-40px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-bounce-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.animate-bounce-slower {
+  animation: float-slower 10s ease-in-out infinite;
+}
+
+.animate-bounce-slowest {
+  animation: float-slowest 14s ease-in-out infinite;
+}
+
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

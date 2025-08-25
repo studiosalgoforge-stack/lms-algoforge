@@ -74,22 +74,31 @@ export default function ForumPage() {
   }, []);
 
   // Fetch questions
-  async function fetchQuestions(fetchCategory?: string) {
-    try {
-      const catQuery = fetchCategory ? `&category=${fetchCategory}` : "";
-      const res = await fetch(`${BASE}/questions?page=${page}&pageSize=5${catQuery}`);
-      if (!res.ok) throw new Error("Failed to fetch");
-      const data = await res.json();
-      if (data.items?.length) {
-        setQuestions(data.items);
-      } else {
-        setQuestions(sampleQuestions);
+  
+async function fetchQuestions(fetchCategory?: string) {
+  try {
+    const token = localStorage.getItem("token"); // ✅ get token
+    const catQuery = fetchCategory ? `&category=${fetchCategory}` : "";
+    const res = await fetch(
+      `${BASE}/questions?page=${page}&pageSize=5${catQuery}`,
+      {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "", // ✅ send token
+        },
       }
-    } catch (err) {
-      alert("Could not fetch questions. Showing sample data.");
+    );
+    if (!res.ok) throw new Error("Failed to fetch");
+    const data = await res.json();
+    if (data.items?.length) {
+      setQuestions(data.items);
+    } else {
       setQuestions(sampleQuestions);
     }
+  } catch (err) {
+    alert("Could not fetch questions. Showing sample data.");
+    setQuestions(sampleQuestions);
   }
+}
 
   useEffect(() => {
     fetchQuestions(category);

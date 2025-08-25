@@ -2,66 +2,109 @@
 
 import { useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { ChevronDown, ChevronUp, FileText, Video } from "lucide-react";
 
 interface FAQ {
+  id: string;
   title: string;
   summary: string;
   content: string[];
   section: string;
 }
 
-// Sample FAQs
+// Sample FAQs (6 cards, all different topics)
 const faqs: FAQ[] = [
   {
-    title: "Getting Started",
-    summary: "Learn how to start quickly with your account.",
+    id: "faq1",
+    title: "Course Purchase & Access",
+    summary: "Learn how to buy and access courses instantly.",
     content: [
-      "Step 1: Sign up and verify your email.",
-      "Step 2: Complete your profile with your details.",
-      "Step 3: Explore dashboard features and tutorials.",
-      "Step 4: Access resources and docs to get familiar.",
+      "Browse courses and add them to your cart.",
+      "Complete payment securely through our gateway.",
+      "Access purchased courses from the 'My Courses' dashboard.",
+      "If payment fails, try again or contact support.",
     ],
-    section: "Getting Started",
+    section: "Courses",
   },
   {
-    title: "Account & Billing",
-    summary: "Manage your account and payments effectively.",
+    id: "faq2",
+    title: "Downloading PPTs",
+    summary: "Understand how to download and view PPT materials.",
     content: [
-      "Update your billing information in your profile.",
-      "View and download invoices.",
-      "Manage subscription plans and cancellations.",
-      "Contact support if you encounter billing issues.",
+      "Each course includes downloadable PPT resources.",
+      "Click the 'Download PPT' button inside the course module.",
+      "Files are provided in PDF/PPTX format for offline study.",
     ],
-    section: "Account & Billing",
+    section: "Resources",
   },
   {
-    title: "Privacy & Security",
-    summary: "Understand how we keep your data safe.",
+    id: "faq3",
+    title: "Watching Video Lectures",
+    summary: "Access course videos with ease on all devices.",
     content: [
-      "We use end-to-end encryption for sensitive data.",
-      "Two-factor authentication is available.",
-      "Review and adjust your privacy settings in your profile.",
+      "Video lectures are available inside each course chapter.",
+      "Use the video player with speed control and subtitles.",
+      "Videos can be streamed anytime, anywhere.",
+      "Currently, offline video download is not supported.",
     ],
-    section: "Privacy & Security",
+    section: "Videos",
+  },
+  {
+    id: "faq4",
+    title: "Interview Questions Practice",
+    summary: "Prepare for jobs with curated interview Q&A.",
+    content: [
+      "Access practice interview questions under the 'Interview Prep' tab.",
+      "Questions are categorized by topic and difficulty.",
+      "You can attempt mock tests and review answers instantly.",
+    ],
+    section: "Interview Prep",
+  },
+  {
+    id: "faq5",
+    title: "Discussion Forum",
+    summary: "Engage with peers and instructors in discussions.",
+    content: [
+      "Join the discussion forum from the course dashboard.",
+      "Post your questions, share resources, and answer peers.",
+      "Instructors also participate in active discussions.",
+      "Follow threads to get notified of replies.",
+    ],
+    section: "Community",
+  },
+  {
+    id: "faq6",
+    title: "Reports & Progress Tracking",
+    summary: "Monitor your learning journey with reports.",
+    content: [
+      "Go to 'My Progress' under your profile menu.",
+      "Track completed modules, quizzes, and scores.",
+      "Download progress reports for personal records.",
+      "Reports help identify weak areas for improvement.",
+    ],
+    section: "Progress & Reports",
   },
 ];
 
 // Additional Resources
 const resources = [
-  { title: "Video Tutorial: Getting Started", link: "#" },
-  { title: "PDF Guide: Account Setup", link: "#" },
-  { title: "Video Tutorial: Security Tips", link: "#" },
+  { title: "Video Tutorial: How to Buy a Course", link: "#", type: "video" },
+  { title: "PDF Guide: Using the Dashboard", link: "#", type: "pdf" },
+  { title: "Video Walkthrough: Discussion Forum", link: "#", type: "video" },
 ];
 
 export default function SupportPage() {
-  // const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", query: "" });
   const [success, setSuccess] = useState(false);
-const [openCard, setOpenCard] = useState<string | null>(null);
+const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
 
-const toggleFAQ = (id: string) => {
-  setOpenCard(openCard === id ? null : id);
+ const toggleFAQ = (id: string) => {
+  setOpenCards((prev) => ({
+    ...prev,
+    [id]: !prev[id], // toggle only this card
+  }));
 };
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -82,107 +125,91 @@ const toggleFAQ = (id: string) => {
     }
   };
 
-  // Group FAQs by section
-  const groupedFAQs = faqs.reduce((acc: Record<string, FAQ[]>, faq) => {
-    if (!acc[faq.section]) acc[faq.section] = [];
-    acc[faq.section].push(faq);
-    return acc;
-  }, {});
-
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-purple-50 p-6 md:p-12">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-4xl sm:text-3xl font-bold mb-4 text-purple-700">
+          <h1 className="text-4xl font-bold mb-4 text-purple-700">
             How can we help you?
           </h1>
-          <p className="text-lg md:text-xl text-gray-700">
+          <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
             Browse FAQs, tutorials, and submit a query if you need assistance.
           </p>
         </div>
 
-        {/* Top FAQs */}
-        <div className="mb-12 max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-center text-purple-700">
-            Top FAQs
+        {/* FAQs Section */}
+        <div className="mb-16 max-w-6xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-purple-700 text-center">
+            Frequently Asked Questions
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {faqs.slice(0, 3).map((faq) => (
-              <div
-                key={faq.title}
-                className="bg-white rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 p-6 md:p-8 cursor-pointer flex flex-col justify-between"
-                onClick={() => (faq.title)}
-              >
-                <h3 className="text-purple-700 font-bold text-lg md:text-xl mb-2 flex items-center">
-                  <span className="mr-2 text-purple-500">❓</span>
-                  {faq.title}
-                </h3>
-                <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4">{faq.summary}</p>
-                {openCard=== faq.title && (
-                  <div className="bg-purple-50 p-4 rounded-b-xl border-t border-gray-200 mt-2">
-                    {faq.content.map((line, i) => (
-                      <div key={i} className="flex items-start mb-2">
-                        <span className="text-purple-400 font-bold mr-2">•</span>
-                        <p className="text-gray-700 text-sm md:text-base leading-relaxed">{line}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {faqs.map((faq) => {
+             const isOpen = !!openCards[faq.id];
+              return (
+                <div
+                  key={faq.id}
+                  className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                >
+                  <button
+                    className="w-full text-left p-6 md:p-8 flex justify-between items-center"
+                    onClick={() => toggleFAQ(faq.id)}
+                  >
+                    <div>
+                      <h3 className="text-purple-700 font-bold text-lg md:text-xl mb-1 flex items-center">
+                        <span className="mr-2">❓</span>
+                        {faq.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm md:text-base">
+                        {faq.summary}
+                      </p>
+                    </div>
+                    {isOpen ? (
+                      <ChevronUp className="text-purple-500 w-5 h-5" />
+                    ) : (
+                      <ChevronDown className="text-purple-500 w-5 h-5" />
+                    )}
+                  </button>
+                  {isOpen && (
+                    <div className="bg-purple-50 px-6 md:px-8 pb-6 rounded-b-xl border-t border-gray-200">
+                      {faq.content.map((line, i) => (
+                        <p
+                          key={i}
+                          className="text-gray-700 text-sm md:text-base py-1"
+                        >
+                          • {line}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* All FAQs by Section */}
-        <div className="mb-12 max-w-6xl mx-auto">
-          {Object.keys(groupedFAQs).map((section) => (
-            <div key={section} className="mb-10">
-              <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-purple-700">{section}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {groupedFAQs[section].map((faq) => (
-                  <div
-                    key={faq.title}
-                    className="bg-white rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 p-6 md:p-8 cursor-pointer flex flex-col justify-between"
-                    onClick={() => toggleFAQ(faq.title)}
-                  >
-                    <h3 className="text-purple-700 font-bold text-lg md:text-xl mb-2 flex items-center">
-                      <span className="mr-2 text-purple-500">❓</span>
-                      {faq.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4">{faq.summary}</p>
-                    {openCard === faq.title && (
-                      <div className="bg-purple-50 p-4 rounded-b-xl border-t border-gray-200 mt-2">
-                        {faq.content.map((line, i) => (
-                          <div key={i} className="flex items-start mb-2">
-                            <span className="text-purple-400 font-bold mr-2">•</span>
-                            <p className="text-gray-700 text-sm md:text-base leading-relaxed">{line}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
         {/* Additional Resources */}
-        <div className="mb-12 max-w-6xl mx-auto">
+        <div className="mb-16 max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-center text-purple-700">
             Additional Resources
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {resources.map((res, idx) => (
               <a
                 key={idx}
                 href={res.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 p-6 md:p-8 block"
+                className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 md:p-8 flex items-center space-x-3"
               >
-                <h3 className="font-semibold text-purple-700 mb-2 text-lg md:text-xl">{res.title}</h3>
+                {res.type === "video" ? (
+                  <Video className="text-purple-500 w-6 h-6" />
+                ) : (
+                  <FileText className="text-purple-500 w-6 h-6" />
+                )}
+                <span className="font-semibold text-purple-700 text-lg md:text-xl">
+                  {res.title}
+                </span>
               </a>
             ))}
           </div>
@@ -190,7 +217,9 @@ const toggleFAQ = (id: string) => {
 
         {/* Submit Query Form */}
         <div className="max-w-xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg mb-12">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-purple-700">Submit a Query</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-purple-700">
+            Submit a Query
+          </h2>
           {success && <p className="text-green-600 mb-4">Submitted successfully!</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
@@ -231,11 +260,11 @@ const toggleFAQ = (id: string) => {
             ></textarea>
             <button
               type="submit"
-              className="w-full py-3 bg-purple-400 text-white  rounded hover:bg-purple-500 cursor-pointer"
->
-  Submit
-</button>
- </form>
+              className="w-full py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+            >
+              Submit
+            </button>
+          </form>
         </div>
       </div>
     </ProtectedRoute>
