@@ -8,6 +8,9 @@ import StudyTab, { Material } from "@/components/course/StudyTab";
 import InterviewTab from "@/components/course/InterviewTab";
 import AssignmentsTab from "@/components/course/AssignmentsTab";
 
+// 🔹 Import VideoTab
+import VideoTab, { Video } from "@/components/course/VideoTab";
+
 // 🔹 Centralized data
 import { backupPPTs } from "@/app/data/backupPPTs";
 import { interviewData } from "@/app/data/interviewData";
@@ -21,7 +24,7 @@ export default function CourseDetail() {
   const [loading, setLoading] = useState(true);
 
   // Tabs for desktop
-  const [activeTab, setActiveTab] = useState<"study" | "interview" | "assignments">("study");
+  const [activeTab, setActiveTab] = useState<"study" | "videos" | "interview" | "assignments" | "none">("study");
   const [isTopicsSidebarOpen, setIsTopicsSidebarOpen] = useState(true);
  
     // Mobile slider
@@ -33,6 +36,39 @@ export default function CourseDetail() {
   // Quiz state
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
+   
+    const videoData: Video[] = [
+    {
+      title: "Gym Posture Correction ",
+      url: "https://drive.google.com/file/d/1Gn04BhzHxaImmsngPgi-GEoFZrAOQlVX/preview",
+    },
+    {
+      title: "Skin Cancer Correction",
+      url: "https://drive.google.com/file/d/1mTCfA7gd9mPseiFoT7LITKY6fobuoLyi/preview",
+    },
+  ];
+
+
+  // 🔒 Disable right-click + common download shortcuts
+  useEffect(() => {
+    const preventContext = (e: MouseEvent) => e.preventDefault();
+    const preventKeys = (e: KeyboardEvent) => {
+      if (
+        e.ctrlKey &&
+        ["s", "u", "p", "c", "i"].includes(e.key.toLowerCase())
+      ) {
+        e.preventDefault();
+      }
+      if (e.key === "F12") e.preventDefault();
+    };
+    document.addEventListener("contextmenu", preventContext);
+    document.addEventListener("keydown", preventKeys);
+
+    return () => {
+      document.removeEventListener("contextmenu", preventContext);
+      document.removeEventListener("keydown", preventKeys);
+    };
+  }, []);
 
   // Fetch topics & assignments
   useEffect(() => {
@@ -140,7 +176,7 @@ export default function CourseDetail() {
           <div className="flex-1 bg-white text-purple-950 rounded-lg shadow-md p-6">
             {/* Tabs */}
             <div className="flex space-x-4 mb-6">
-              {["study", "interview", "assignments"].map((tab) => (
+              {["study", "videos", "interview", "assignments"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab as any)}
@@ -156,12 +192,23 @@ export default function CourseDetail() {
             </div>
 
             {activeTab === "study" && (
+                  <div className="relative">
               <StudyTab
                 topics={topics}
                 selectedTopic={selectedTopic}
                 setSelectedTopic={setSelectedTopic}
                 scrollRef={scrollRef}
               />
+                {/* 🔒 Transparent overlay to block right-click */}
+                <div className="absolute inset-0 bg-transparent pointer-events-none"></div>
+              </div>
+            )}
+                {activeTab === "videos" && (
+              <div className="relative">
+                <VideoTab videos={videoData} />
+                {/* 🔒 Transparent overlay */}
+                <div className="absolute inset-0 bg-transparent pointer-events-none"></div>
+              </div>
             )}
 
             {activeTab === "interview" && (
@@ -229,7 +276,7 @@ export default function CourseDetail() {
             </div>
 
           {/* Tabs content same as desktop */}
-          {["study", "interview", "assignments"].map((tab) => (
+          {["study", "videos",  "interview", "assignments"].map((tab) => (
             <div key={tab} className="border rounded-md shadow">
               <button
                 onClick={() =>
@@ -246,6 +293,7 @@ export default function CourseDetail() {
                 }`}
               >
                 {tab === "study" && "📘 Study Materials"}
+                 {tab === "videos" && "🎥 Videos"}
                 {tab === "interview" && "❓ Interview Questions"}
                 {tab === "assignments" && "📝 Assignments"}
               </button>
@@ -253,13 +301,26 @@ export default function CourseDetail() {
               {activeTab === tab && (
                 <div className="p-4">
                   {tab === "study" && (
+                     <div className="relative">
                     <StudyTab
                       topics={topics}
                       selectedTopic={selectedTopic}
                       setSelectedTopic={setSelectedTopic}
                       scrollRef={scrollRef}
                     />
+                     {/* 🔒 Transparent overlay to block right-click */}
+                <div className="absolute inset-0 bg-transparent pointer-events-none"></div>
+              </div>
                   )}
+                   
+             {activeTab === "videos" && (
+              <div className="relative">
+                <VideoTab videos={videoData} />
+                {/* 🔒 Transparent overlay */}
+                <div className="absolute inset-0 bg-transparent pointer-events-none"></div>
+              </div>
+            )}
+
                   {tab === "interview" && (
                     <InterviewTab
                       interviewQuestions={interviewData}

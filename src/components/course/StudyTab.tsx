@@ -71,6 +71,7 @@ export default function StudyTab({
                   }
                   className="flex-shrink-0 w-full h-full mx-2 rounded-md border"
                   allowFullScreen
+                  sandbox="allow-scripts allow-same-origin" // restrict iframe
                   key={selectedTopic}
                 ></iframe>
               </div>

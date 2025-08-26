@@ -13,10 +13,17 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import editUserRoutes from "./routes/editUserRoutes.js";
 import questionsRoute from "./routes/questions.js";
+import path from "path";
+import { fileURLToPath } from "url";
+
+
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 // Middleware
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(
@@ -54,6 +61,10 @@ app.use('/api/users' , userRoutes);
 app.use("/api/edituser", editUserRoutes);
 console.log("➡️ Mounting /api/questions...");
 app.use('/api/questions', questionsRoute);
+
+// serve uploaded images
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 // example health check
 app.get("/", (req, res) => res.send("API running"));
 app.get('/api/health', (_, res) => res.json({ ok: true }));

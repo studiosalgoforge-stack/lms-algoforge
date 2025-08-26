@@ -1,10 +1,5 @@
-export interface Topic {
-  name: string;
-  link: string;
-  assignments?: string[];
-}
-
-export const backupPPTs: Record<string, Topic[]> = {
+// ---------------- BACKUP PPTS ----------------
+export const backupPPTs = {
   "Data-Science": [
       { 
         name: "Crisp ML (Q)",
@@ -205,7 +200,7 @@ export const backupPPTs: Record<string, Topic[]> = {
    assignments: [],
 
     }
-  ],
+  ], 
   SQL: [
     {name: "1 SQL Introduction", link:"https://docs.google.com/presentation/d/1BECUfhOhXTDWfNPJZDxw4gA1giWYwK1E/preview",
          assignments: [],

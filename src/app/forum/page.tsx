@@ -214,7 +214,9 @@ async function fetchQuestions(fetchCategory?: string) {
                 </CardHeader>
                 <CardContent>
                   <p className="mb-2">{q.body}</p>
-                  {q.image && <img src={`${BASE}${q.image}`} alt="question" className="my-2 rounded max-h-64 object-cover" />}
+                  {q.image && <img src={`${BASE}${q.image}`} 
+                  alt="question" 
+                  className="my-2 w-full max-w-full h-auto rounded-lg object-contain sm:max-h-72 md:max-h-96" />}
                   <p className="text-sm text-gray-500">Category: {q.category}</p>
                   <Button
                     variant="outline"

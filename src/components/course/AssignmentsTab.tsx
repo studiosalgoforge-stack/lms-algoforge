@@ -22,10 +22,10 @@ export default function AssignmentsTab({ topics, selectedTopic }: AssignmentsTab
           href={link}
           target="_blank"
           rel="noopener noreferrer"
-          download
+          draggable={false}
           className="block p-4 border rounded-md shadow hover:bg-purple-50 transition"
         >
-          Download Assignment {idx + 1}
+         View Assignment {idx + 1}
         </a>
       ))}
     </div>

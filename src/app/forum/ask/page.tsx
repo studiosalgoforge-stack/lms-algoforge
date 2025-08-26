@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import ProtectedRoute from "@/components/ProtectedRoute";
+const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
 export default function AskPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -25,7 +26,7 @@ export default function AskPage() {
     formData.append("category", category);
     if (image) formData.append("image", image);
 
-    const res = await fetch("http://localhost:10000/api/questions", {
+    const res = await fetch(`${BASE}/questions`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
