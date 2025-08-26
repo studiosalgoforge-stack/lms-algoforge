@@ -61,7 +61,7 @@ const VideoTab: React.FC<VideoTabProps> = ({ videos }) => {
                   frameBorder="0"
                   sandbox="allow-scripts allow-same-origin"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen={false}
+                  allowFullScreen={true}
                 ></iframe>
               </div>
             </div>
