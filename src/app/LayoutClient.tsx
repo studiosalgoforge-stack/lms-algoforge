@@ -104,7 +104,7 @@ const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center gap-2">
-             <img src="/algo1_logo.jpg" alt="Logo" width={40} height={40}  className="rounded-full"/>
+             <Link href= "/courses"><img src="/algo1_logo.jpg" alt="Logo" width={40} height={40}  className="rounded-full"/></Link>
               <h1 className="font-bold text-xl">Algoforge Studios</h1>
             </div>
 
