@@ -202,33 +202,37 @@ export const backupPPTs = {
     }
   ], 
   SQL: [
-    {name: "1 SQL Introduction", link:"https://docs.google.com/presentation/d/1BECUfhOhXTDWfNPJZDxw4gA1giWYwK1E/preview",
+    {name: "1 - SQL Introduction", link:"https://docs.google.com/presentation/d/1BECUfhOhXTDWfNPJZDxw4gA1giWYwK1E/preview",
          assignments: [],
     },
-    {name: "2 Introduction to DBMS and RDBMS", link: "https://docs.google.com/presentation/d/1kRJxhgK8ShxRfFRWKMElktz52u1qgWXo/preview",
+    {name: "2 - Introduction to DBMS and RDBMS", link: "https://docs.google.com/presentation/d/1kRJxhgK8ShxRfFRWKMElktz52u1qgWXo/preview",
          assignments: [],
     },
-   {name: "3 Installation Steps for MySQL for windows", link: "https://docs.google.com/presentation/d/1AbhTDz1cjwZxkhJRdZNnPIar1RIRdlnL/preview" ,
+   {name: "3 - Installation Steps for MySQL for windows", link: "https://docs.google.com/presentation/d/1AbhTDz1cjwZxkhJRdZNnPIar1RIRdlnL/preview" ,
      assignments: [],
    },
-   {name: "4 SQL Operators", link: "https://docs.google.com/presentation/d/1gjEb5G9LFgT0fZ8XPBqh1lWvtUIO2VP3/preview"
+   {name: "4 - SQL Operators", link: "https://docs.google.com/presentation/d/1gjEb5G9LFgT0fZ8XPBqh1lWvtUIO2VP3/preview"
     ,  assignments: [],
    },
-   {name: "5 SQL Constraints", link: "https://docs.google.com/presentation/d/192soPE6O_xZ1z5QyIcBgcJ-f1NbmKvjR/preview",
+   {name: "5 - SQL Constraints", link: "https://docs.google.com/presentation/d/192soPE6O_xZ1z5QyIcBgcJ-f1NbmKvjR/preview",
      assignments: [],
    },
   ],
   "Power-BI": [
-     {name: "1 - Course Outline", link: "https://docs.google.com/presentation/d/1Y6i26XAA8OTZFrUSKQugal_zJUHPF3iu/preview",
+     {name: "1 - Course Outline", 
+          link: "https://docs.google.com/presentation/d/1Y6i26XAA8OTZFrUSKQugal_zJUHPF3iu/preview",
          assignments: [],
      },
-    {name: "2 - Installation", link: "https://docs.google.com/presentation/d/19FoSK-2SB7Lf7ZF8zkXyMmyhiV5GWIEe/preview",
+    {name: "2 - Installation", 
+     link: "https://docs.google.com/presentation/d/19FoSK-2SB7Lf7ZF8zkXyMmyhiV5GWIEe/preview",
          assignments: [],
     },
-   {name: "3 - Study Material",link:  "https://docs.google.com/presentation/d/1e6XjemjvS-gqSl6OPqv1WW96dqpGoPCa/preview",
+   {name: "3 - Study Material",
+     link:  "https://docs.google.com/presentation/d/1e6XjemjvS-gqSl6OPqv1WW96dqpGoPCa/preview",
      assignments: [],
    },
-    {name: "4 - Power BI Desktop", link:"https://docs.google.com/presentation/d/1cka_VZaaO4bvj7P8t4kv2-0pkkM6c4PD/preview",
+    {name: "4 - Power BI Desktop", 
+     link:"https://docs.google.com/presentation/d/1cka_VZaaO4bvj7P8t4kv2-0pkkM6c4PD/preview",
          assignments: [],
     },
 
@@ -238,11 +242,31 @@ export const backupPPTs = {
         assignments:[],
     },
     {
-        name: "6 - Data Visualization", link:"https://docs.google.com/presentation/d/1MJ3TsDgAN31f-UviHIYJZN-52GL8e_Hh/preview",
+        name: "6 - Data Visualization",
+         link:"https://docs.google.com/presentation/d/1MJ3TsDgAN31f-UviHIYJZN-52GL8e_Hh/preview",
          assignments: [],
     },
     {
-          name: "10 - Advance Analytics", link:"https://docs.google.com/presentation/d/1cORB8h2FXFMpdUn6ZHRfQLYTHb1Zs2R9/preview",
+     name: "7 - Power BI Insights & Q&A",
+     link: "https://docs.google.com/presentation/d/1CTQAbaUC6JVQuSwrBusUTzF5WHCSK8pF/preview",
+     assignments: [],
+
+    },
+       {
+     name: "8 - Direct Connectivity",
+     link: "https://docs.google.com/presentation/d/1SDtCVbvO7y4NFfX3tmhKocuVqlK05RkV/preview",
+     assignments: [],
+
+    },
+       {
+     name: "9 - Power BI Report Server",
+     link: "https://docs.google.com/presentation/d/163_PW-vqXkkML4blKXeTgZfRPrJVekhy/preview",
+     assignments: [],
+
+    },
+    {
+          name: "10 - Advance Analytics",
+           link:"https://docs.google.com/presentation/d/1cORB8h2FXFMpdUn6ZHRfQLYTHb1Zs2R9/preview",
          assignments: [],
     }
   ],

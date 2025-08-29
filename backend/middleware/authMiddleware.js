@@ -15,8 +15,20 @@ export const protect = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Attach user to request (excluding password)
-      req.user = await User.findById(decoded.id).select("-password");
+   const user = await User.findById(decoded.id).select("-password");
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
+      }
+       if (user.passwordChangedAt) {
+        const changedTimestamp = Math.floor(user.passwordChangedAt.getTime() / 1000);
+        if (decoded.iat < changedTimestamp) {
+          return res.status(401).json({
+            message: "Password changed recently. Please log in again.",
+          });
+        }
+      }
+
+      req.user = user;
 
       return next();
     } catch (err) {

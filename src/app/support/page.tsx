@@ -55,7 +55,7 @@ const faqs: FAQ[] = [
     summary: "Prepare for jobs with curated interview Q&A.",
     content: [
       "Access practice interview questions under the 'Interview Prep' tab.",
-      "Questions are categorized by topic and difficulty.",
+      "Questions are categorized by topic.",
       "You can attempt mock tests and review answers instantly.",
     ],
     section: "Interview Prep",

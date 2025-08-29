@@ -246,6 +246,24 @@ export const backupPPTs: Record<string, Topic[]> = {
         name: "6 - Data Visualization", link:"https://docs.google.com/presentation/d/1MJ3TsDgAN31f-UviHIYJZN-52GL8e_Hh/preview",
          assignments: [],
     },
+     {
+     name: "7 - Power BI Insights & Q&A",
+     link: "https://docs.google.com/presentation/d/1CTQAbaUC6JVQuSwrBusUTzF5WHCSK8pF/preview",
+     assignments: [],
+
+    },
+       {
+     name: "8 - Direct Connectivity",
+     link: "https://docs.google.com/presentation/d/1SDtCVbvO7y4NFfX3tmhKocuVqlK05RkV/preview",
+     assignments: [],
+
+    },
+       {
+     name: "9 - Power BI Report Server",
+     link: "https://docs.google.com/presentation/d/163_PW-vqXkkML4blKXeTgZfRPrJVekhy/preview",
+     assignments: [],
+
+    },
     {
           name: "10 - Advance Analytics", link:"https://docs.google.com/presentation/d/1cORB8h2FXFMpdUn6ZHRfQLYTHb1Zs2R9/preview",
          assignments: [],
