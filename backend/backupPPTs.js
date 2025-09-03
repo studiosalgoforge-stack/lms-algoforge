@@ -39,7 +39,7 @@ export const backupPPTs = {
         , 
          assignments: [],
     },
-    { name: "K Clustering",
+    { name: "K-means Clustering",
          link:"https://docs.google.com/presentation/d/1_h3CNR_x0iAfrKLgZEBFjLBrC__KkhPM/preview"
         , 
          assignments: [],
@@ -122,7 +122,7 @@ export const backupPPTs = {
         assignments:["https://drive.google.com/uc?export=download&id=d/1vy7zWo5p8oSTZCkDJu-VPZR8b1PQ2bBg"
   ]},
      { name: "Confidence Interval - 2", 
-      link: "https://docs.google.com/presentation/d/1CzEGVMPuW_ibgj2ZTl_mvzvz_WxfNht4/preview" ,
+      link: "https://docs.google.come/presentation/d/1CzEGVMPuW_ibgj2ZTl_mvzvz_WxfNht4/preview" ,
        assignments:["https://drive.google.com/uc?export=download&id=1pRE6fEm4qYeuX3d97TevD7Sy1y434rwQ"] },
 
          { name: "Hypothesis Testing_E Learning",

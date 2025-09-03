@@ -89,7 +89,7 @@ export default function AskPage() {
               accept="image/*"
               onChange={(e) => setImage(e.target.files?.[0] || null)}
             />
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" className="text-white bg-purple-500 hover:bg-purple-600" disabled={loading}>
               {loading ? "Posting..." : "Post Question"}
             </Button>
           </form>

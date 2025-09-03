@@ -44,7 +44,7 @@ export const backupPPTs: Record<string, Topic[]> = {
         , 
          assignments: [],
     },
-    { name: "K Clustering",
+    { name: "K-means Clustering",
          link:"https://docs.google.com/presentation/d/1_h3CNR_x0iAfrKLgZEBFjLBrC__KkhPM/preview"
         , 
          assignments: [],

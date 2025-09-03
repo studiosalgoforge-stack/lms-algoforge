@@ -267,7 +267,7 @@ async function fetchQuestions(fetchCategory?: string) {
                           })
                         }
                       />
-                      <Button className="mt-2" onClick={() => postAnswer(q._id)}>Post Answer</Button>
+                      <Button className="mt-2 bg-purple-600 text-white hover:bg-purple-700" onClick={() => postAnswer(q._id)}>Post Answer</Button>
                     </div>
                   )}
                 </CardContent>

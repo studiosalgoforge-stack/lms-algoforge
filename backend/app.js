@@ -13,6 +13,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import editUserRoutes from "./routes/editUserRoutes.js";
 import questionsRoute from "./routes/questions.js";
+import SupportQuery from "./models/SupportQuery.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -71,27 +72,28 @@ app.get('/api/health', (_, res) => res.json({ ok: true }));
 
 const csvFilePath = "./support_queries.csv";
 
-// POST endpoint to save form data
-app.post("/api/support", (req, res) => {
+
+// POST endpoint to save form data in MongoDB
+app.post("/api/support", async (req, res) => {
   const { name, email, phone, query } = req.body;
 
   if (!name || !email || !phone || !query) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
-  const newEntry = { name, email, phone, query, date: new Date().toISOString() };
+  try {
+    const newQuery = new SupportQuery({ name, email, phone, query });
+    await newQuery.save();
 
-  let csv;
-  if (fs.existsSync(csvFilePath)) {
-    const existingData = fs.readFileSync(csvFilePath, "utf8");
-    csv = existingData + "\n" + new Parser({ header: false }).parse([newEntry]);
-  } else {
-    csv = new Parser().parse([newEntry]);
+    res.status(201).json({
+      success: true,
+      message: "Support query saved successfully!",
+      data: newQuery,
+    });
+  } catch (err) {
+    console.error("Error saving support query:", err);
+    res.status(500).json({ error: "Server error. Please try again later." });
   }
-
-  fs.writeFileSync(csvFilePath, csv, "utf8");
-
-  res.json({ success: true });
 });
 //  Route to list Drive files
 app.get('/files', async (req, res) => {
