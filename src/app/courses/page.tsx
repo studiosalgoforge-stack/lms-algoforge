@@ -18,16 +18,17 @@ const sampleData = {
     { id: "jupyter", title: "Jupyter Notebook Tutorial", link: "#" },
     { id: "power-bi", title: "Power BI Tutorial", link: "#" },
   ],
-  Projects: [
-    {
-      title: "Gym Posture Correction",
-      url: "https://drive.google.com/file/d/1Gn04BhzHxaImmsngPgi-GEoFZrAOQlVX/preview",
-    },
-    {
-      title: "Skin Cancer Correction",
-      url: "https://drive.google.com/file/d/1mTCfA7gd9mPseiFoT7LITKY6fobuoLyi/preview",
-    },
-  ],
+Projects: [
+  {
+    title: "Gym Posture Correction",
+    link: "https://drive.google.com/file/d/1Gn04BhzHxaImmsngPgi-GEoFZrAOQlVX/preview",
+  },
+  {
+    title: "Skin Cancer Correction",
+    link: "https://drive.google.com/file/d/1mTCfA7gd9mPseiFoT7LITKY6fobuoLyi/preview",
+  },
+],
+
 };
 
 export default function CoursesPage() {
@@ -217,7 +218,7 @@ export default function CoursesPage() {
                   >
                     <div className="p-4">
                       <iframe
-                        src={project.url}
+                        src={project.link}
                         width="100%"
                         height="400"
                         allow="autoplay"
