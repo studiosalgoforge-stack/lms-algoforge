@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import jwtDecode from "jwt-decode";
 
 interface Props {
@@ -9,9 +9,18 @@ interface Props {
 
 export default function ProtectedRoute({ children }: Props) {
   const router = useRouter();
-  const [isAllowed, setIsAllowed] = useState<boolean | null>(null); // null = checking
+  const pathname = usePathname();
+  const [isAllowed, setIsAllowed] = useState<boolean | null>(null);
+
+  // Public routes (no auth needed)
+  const publicRoutes = ["/login", "/signup", "/forgot-password" , "/logout"];
 
   useEffect(() => {
+    if (publicRoutes.includes(pathname)) {
+      setIsAllowed(true);
+      return;
+    }
+
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -33,16 +42,15 @@ export default function ProtectedRoute({ children }: Props) {
         return;
       }
 
-      setIsAllowed(true); // token is valid
+      setIsAllowed(true);
     } catch (err) {
       alert("Invalid session. Please log in.");
       localStorage.removeItem("token");
       router.replace("/login");
       setIsAllowed(false);
     }
-  }, [router]);
+  }, [pathname, router]);
 
-  // ✅ while checking, render nothing
   if (isAllowed === null) return null;
   if (!isAllowed) return null;
 

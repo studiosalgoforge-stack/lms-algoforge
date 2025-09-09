@@ -22,6 +22,12 @@ export const courseFolders = {
     interview: "9I0J1K2L3M4N5O6P7Q8R",
     assignments: "8H9I0J1K2L3M4N5O6P7Q",
   },
+  "Data-Engineering":{
+  ppts: "16T93KKe_yyUlLHwCwvaV4yzuz81dwkKP",
+    interview: "9I0J1K2L3M4N5O6P7Q8R",
+    assignments: "8H9I0J1K2L3M4N5O6P7Q",
+
+  }
 };
 
 
@@ -40,6 +46,19 @@ function formatFiles(files, allowedTypes = []) {
     }));
 }
 
+
+function flattenBackupPPTs(items) {
+  let result = [];
+  for (const item of items) {
+    if (item.children && Array.isArray(item.children)) {
+      result = result.concat(flattenBackupPPTs(item.children));
+    } else {
+      result.push(item);
+    }
+  }
+  return result;
+}
+
 // Generic route: /api/drive/:course/:category
 router.get("/:course/:category", async (req, res) => {
   try {
@@ -55,12 +74,16 @@ router.get("/:course/:category", async (req, res) => {
 
     const folderId = courseFolders[course][category];
   let files=[];
-    try{
+try {
+  if (category === "ppts") {
+    files = await listFiles(folderId); // 🔹 Fetch recursively for PPTs
+  } else {
     files = await listFiles(folderId);
-console.log(`📂 Files in ${course}/${category}:`, files);
- } catch (err) {
-      console.error(`❌ Error fetching Drive files for ${course}/${category}:`, err.message);
-    }
+  }
+  console.log(`📂 Files in ${course}/${category}:`, files);
+} catch (err) {
+  console.error(`❌ Error fetching Drive files for ${course}/${category}:`, err.message);
+}
     let allowedTypes = [];
     if (category === "ppts") {
       allowedTypes = [
@@ -89,20 +112,21 @@ console.log(`📂 Files in ${course}/${category}:`, files);
     const formatted = formatFiles(files, allowedTypes);
 
     // Merge backup PPTs only for ppts
-    if (category === "ppts") {
-      const backupFormatted = (backupPPTs[course] || []).map((item, index) => ({
-        id: `backup-${index + 1}`,
-        name: item.name,
-        previewUrl: item.link,
-        webViewLink: item.link.replace("/preview", "/view"),
-        isShortcut: false,
-      }));
+if (category === "ppts") {
+  const backupItems = Array.isArray(backupPPTs[course]) ? flattenBackupPPTs(backupPPTs[course]) : [];
+  const backupFormatted = backupItems.map((item, index) => ({
+    id: `backup-${index + 1}`,
+    name: item.name,
+    previewUrl: item.link || item.url || item.file,
+    webViewLink: (item.link || item.url || item.file || "").replace("/preview", "/view"),
+    isShortcut: false,
+  }));
+  formatted.push(...backupFormatted);
+}
 
-      formatted.push(...backupFormatted);
-    }
-
-    if (category === "assignments" && backupPPTs[course]) {
-  const backupAssignments = backupPPTs[course]
+if (category === "assignments" && backupPPTs[course]) {
+  const backupItems = Array.isArray(backupPPTs[course]) ? flattenBackupPPTs(backupPPTs[course]) : [];
+  const backupAssignments = backupItems
     .filter(item => item.assignments)
     .map((item, idx) => ({
       id: `backup-assignment-${idx}`,

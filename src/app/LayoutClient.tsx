@@ -11,7 +11,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
   const [isOpen, setIsOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
-  const hiddenLayoutRoutes = ["/login", "/forgot-password"];
+  const hiddenLayoutRoutes = ["/login", "/signup" , "/forgot-password"];
 const isCourseDetailPage = pathname.startsWith("/courses/") && pathname.split("/").length > 2;
 const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
 
@@ -154,7 +154,7 @@ const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
 
         {/* Mobile Menu */}
         {!isDesktop && isOpen && (
-          <nav className="bg-gradient-to-r from-purple-600 to-blue-500 px-4 py-4">
+          <nav className="bg-gradient-to-r from-purple-600 to-blue-300 px-4 py-4">
             <ul className="flex flex-col gap-4">
               {links.map((route) => (
                 <li key={route.href}>

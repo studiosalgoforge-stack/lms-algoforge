@@ -44,45 +44,28 @@ export async function makeFilePublic(fileId) {
   }
 }
 
+// Only ONE definition!
 export async function listFiles(folderId) {
   try {
-    // This will auto-refresh access token if expired
     const res = await drive.files.list({
-      q: `'${folderId}' in parents and trashed=false`,
-      fields: "files(id, name, mimeType, webViewLink, shortcutDetails)",
+      q: `'${folderId}' in parents and trashed = false`,
+      fields: "files(id, name, mimeType, webViewLink, webContentLink)",
+      pageSize: 1000,
     });
-
-    const allFiles = [];
-
-    for (const file of res.data.files) {
-       await makeFilePublic(file.id);
-      if (file.mimeType === "application/vnd.google-apps.shortcut") {
-        const targetId = file.shortcutDetails?.targetId;
-        const targetMimeType = file.shortcutDetails?.targetMimeType;
-
-        if (targetMimeType === "application/vnd.google-apps.folder") {
-          const nested = await listFiles(targetId);
-          allFiles.push(...nested);
-        } else {
-          allFiles.push({
-            id: targetId,
-            name: file.name,
-            mimeType: targetMimeType,
-            webViewLink: `https://drive.google.com/file/d/${targetId}/view`,
-            isShortcut: true,
-          });
-        }
-      } else if (file.mimeType === "application/vnd.google-apps.folder") {
-        const nested = await listFiles(file.id);
-        allFiles.push(...nested);
+    const files = res.data.files;
+    let allFiles = [];
+    for (const file of files) {
+      if (file.mimeType === "application/vnd.google-apps.folder") {
+        // Recursively fetch files in subfolders
+        const subFiles = await listFiles(file.id);
+        allFiles = allFiles.concat(subFiles);
       } else {
-        allFiles.push({ ...file, isShortcut: false });
+        allFiles.push(file);
       }
     }
-
     return allFiles;
   } catch (err) {
-    console.error("❌ Error listing Drive files:", err.message);
-    throw new Error("Error fetching files: " + err.message);
+    console.error("❌ Error listing files:", err.message);
+    return [];
   }
 }

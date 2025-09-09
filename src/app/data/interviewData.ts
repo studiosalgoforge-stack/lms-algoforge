@@ -108,37 +108,131 @@ export const interviewData: Record<string, InterviewQuestion[]> = {
   },
   ],
   SQL: [
-    {
-      question: "What is a primary key in SQL?",
-      options: [
-        "A column that uniquely identifies a row",
-        "A column that allows duplicate values",
-        "A backup column",
-        "A random identifier",
-      ],
-      correct: 0,
-    },
-
-      {
-    question: "Which SQL command is used to remove a table?",
-    options: ["DROP TABLE", "DELETE TABLE", "REMOVE TABLE", "TRUNCATE TABLE"],
-    correct: 0,
+ {
+    question: "What does SQL stand for?",
+    options: ["Standard Query Language", "Structured Query Language", "Simple Query Language", "Sequential Query Language"],
+    correct: 1
   },
   {
-    question: "Which SQL clause is used to filter results?",
-    options: ["WHERE", "GROUP BY", "ORDER BY", "HAVING"],
-    correct: 0,
+    question: "Which SQL statement is used to retrieve data from a database?",
+    options: ["UPDATE", "DELETE", "INSERT", "SELECT"],
+    correct: 3
   },
   {
-    question: "Which SQL function returns the number of rows?",
-    options: ["COUNT()", "SUM()", "AVG()", "MAX()"],
-    correct: 0,
+    question: "What is a primary key in SQL?",
+    options: [
+      "A key that can have duplicate values",
+      "A unique identifier for each record in a table",
+      "A key used only for foreign relationships",
+      "A key that can contain NULL values"
+    ],
+    correct: 1
   },
   {
-    question: "Which JOIN returns only matching rows from both tables?",
+    question: "Which SQL clause is used to filter the results of a query?",
+    options: ["ORDER BY", "GROUP BY", "WHERE", "HAVING"],
+    correct: 2
+  },
+  {
+    question: "Which function is used to find the maximum value in SQL?",
+    options: ["UPPER()", "TOP()", "MAX()", "COUNT()"],
+    correct: 2
+  },
+  {
+    question: "What does the DISTINCT keyword do in SQL?",
+    options: ["Sorts the result set", "Removes duplicate rows from the result", "Counts the number of rows", "Groups rows by a column"],
+    correct: 1
+  },
+  {
+    question: "Which SQL command is used to create a new table?",
+    options: ["CREATE", "ALTER", "DROP", "TRUNCATE"],
+    correct: 0
+  },
+  {
+    question: "What is the purpose of the GROUP BY clause in SQL?",
+    options: [
+      "To sort the result set",
+      "To filter individual rows",
+      "To group rows that have the same values in specified columns",
+      "To limit the number of rows returned"
+    ],
+    correct: 2
+  },
+  {
+    question: "Which type of JOIN returns all records from both tables, with NULLs where there is no match?",
     options: ["INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL OUTER JOIN"],
-    correct: 0,
+    correct: 3
   },
+  {
+    question: "Which SQL function counts the number of rows in a result set?",
+    options: ["SUM()", "COUNT()", "AVG()", "MAX()"],
+    correct: 1
+  },
+  {
+    question: "What does the UPDATE command in SQL do?",
+    options: ["Deletes a record", "Modifies an existing record", "Adds a new record", "Retrieves data"],
+    correct: 1
+  },
+  {
+    question: "Which clause is used to filter grouped results in SQL?",
+    options: ["WHERE", "ORDER BY", "HAVING", "GROUP BY"],
+    correct: 2
+  },
+  {
+    question: "What is a foreign key in SQL?",
+    options: [
+      "A key that uniquely identifies each record",
+      "A key that references the primary key of another table",
+      "A key that cannot have NULL values",
+      "A key used for sorting data"
+    ],
+    correct: 1
+  },
+  {
+    question: "Which SQL command is used to add a new record to a table?",
+    options: ["SELECT", "DELETE", "UPDATE", "INSERT"],
+    correct: 3
+  },
+  {
+    question: "What does an INNER JOIN do in SQL?",
+    options: [
+      "Returns all records from the left table",
+      "Returns all records from the right table",
+      "Returns only the records that have matching values in both tables",
+      "Returns all records from both tables"
+    ],
+    correct: 2
+  },
+  {
+    question: "Which SQL function calculates the average value of a column?",
+    options: ["SUM()", "COUNT()", "AVG()", "MAX()"],
+    correct: 2
+  },
+  {
+    question: "What is a subquery in SQL?",
+    options: ["A query that modifies data", "A query within another query", "A query that creates tables", "A query that deletes data"],
+    correct: 1
+  },
+  {
+    question: "Which SQL data type is used to store true or false values?",
+    options: ["INT", "BOOLEAN", "VARCHAR", "FLOAT"],
+    correct: 1
+  },
+  {
+    question: "What does the ORDER BY clause do in SQL?",
+    options: [
+      "Groups rows by column values",
+      "Filters rows based on conditions",
+      "Sorts the result set in ascending or descending order",
+      "Counts the number of rows"
+    ],
+    correct: 2
+  },
+  {
+    question: "Which command is used to remove a specific record from a table in SQL?",
+    options: ["DELETE", "UPDATE", "INSERT", "SELECT"],
+    correct: 0
+  }
 
   ],
   "Power-BI": [
@@ -168,4 +262,174 @@ export const interviewData: Record<string, InterviewQuestion[]> = {
     correct: 0,
   },
   ],
+
+ "Data-Engineering": [
+  {
+    question: "What is Apache Kafka primarily used for?",
+    options: ["Batch processing", "Real-time event streaming", "Data storage", "Data visualization"],
+    correct: 1
+  },
+  {
+    question: "In Kafka, what is a topic?",
+    options: ["A consumer group", "A category or feed name to which records are published", "A broker node", "A partition"],
+    correct: 1
+  },
+  {
+    question: "What is a partition in Kafka?",
+    options: ["A consumer group subset", "A division of a topic for scalability and parallelism", "A zookeeper node", "A broker log directory"],
+    correct: 1
+  },
+  {
+    question: "Which component coordinates and manages Kafka brokers?",
+    options: ["Producer", "Consumer", "ZooKeeper", "Connect"],
+    correct: 2
+  },
+ {
+    question: "Which NiFi component defines reusable flow fragments?",
+    options: ["Controller Service", "Template", "Process Group", "Controller"],
+    correct: 1
+  },
+  {
+    question: "Which Airflow operator would you use to run a Bash command?",
+    options: ["BashOperator", "PythonOperator", "MySqlOperator", "DockerOperator"],
+    correct: 0
+  },
+  {
+    question: "What is a NiFi flowfile?",
+    options: ["Configuration file", "Unit of data with content and attributes", "Log file", "Template file"],
+    correct: 1
+  },
+  {
+    question: "Which Airflow feature allows parameterizing DAG runs?",
+    options: ["Variables", "Connections", "XComs", "Pools"],
+    correct: 0
+  },
+  {
+    question: "How can NiFi be scaled horizontally?",
+    options: ["Adding more disks", "Clustered NiFi nodes behind a load balancer", "Increasing JVM heap size", "Using NiFi on Kubernetes only"],
+    correct: 1
+  },
+  {
+    question: "Which Airflow component stores metadata about DAGs and task instances?",
+    options: ["Metadata Database", "Redis", "ZooKeeper", "Kafka"],
+    correct: 0
+  },
+  {
+    question: "What is the entry point for Spark SQL and DataFrame API?",
+    options: ["SparkContext", "SparkSession", "SQLContext", "HiveContext"],
+    correct: 1
+  },
+  {
+    question: "Which of the following is a common use case for GraphX?",
+    options: ["SQL queries", "Graph-parallel computations", "Real-time analytics", "Machine learning"],
+    correct: 1
+  },
+  {
+    question: "Which action writes a DataFrame to external storage?",
+    options: ["df.show()", "df.write()", "df.save()", "df.write.format()"],
+    correct: 3
+  },
+  {
+    question: "What is the main advantage of using Spark over Hadoop MapReduce?",
+    options: ["Better storage", "Faster in-memory processing", "Simpler code", "Lower cost"],
+    correct: 1
+  },
+  {
+    question: "Which consistency model allows reads to return stale data temporarily?",
+    options: ["Strong consistency", "Sequential consistency", "Eventual consistency", "Linearizable consistency"],
+    correct: 2
+  },
+  {
+    question: "What is denormalization in NoSQL database design?",
+    options: ["Converting normalized data to first normal form", "Storing redundant data to optimize read performance", "Removing all duplicate data", "Creating foreign key relationships"],
+    correct: 1
+  },
+  {
+    question: "Which Apache project provides a distributed streaming platform?",
+    options: ["Hadoop", "Spark", "Kafka", "Hive"],
+    correct: 2
+  },
+  {
+    question: "Which principle is central to a data mesh architecture?",
+    options: ["Centralized governance", "Domain-oriented ownership", "Single data platform", "Batch processing"],
+    correct: 1
+  },
+  {
+    question: "What is a characteristic of a hub-and-spoke data architecture?",
+    options: ["Peer-to-peer data flow", "Central hub and distributed endpoints", "Domain data products", "Unified streaming bus"],
+    correct: 1
+  },
+  {
+    question: "Which architecture style is optimized for low-latency analytical queries on large datasets?",
+    options: ["Data vault", "Star schema", "Snowflake schema", "OLTP"],
+    correct: 2
+  },
+  {
+    question: "In a microservices-based data architecture, data is typically managed by:",
+    options: ["A single database", "Independent service-specific databases", "Data lake only", "Centralized data warehouse"],
+    correct: 1
+  },
+  {
+    question: "Which practice ensures the pipeline can recover from failures?",
+    options: ["Idempotency", "Overprovisioning", "Data masking", "Caching"],
+    correct: 0
+  },
+  {
+    question: "What is the role of a data warehouse in a pipeline?",
+    options: ["Data ingestion", "Data storage optimized for analysis and reporting", "Event streaming", "Schema inference"],
+    correct: 1
+  },
+  {
+    question: "Which metric measures the freshness of data in a pipeline?",
+    options: ["Throughput", "Latency", "Accuracy", "Redundancy"],
+    correct: 1
+  },
+  {
+    question: "Which concept describes storing only new changes to data rather than full reloads?",
+    options: ["Full ingestion", "Incremental loading", "Bulk export", "Cold start"],
+    correct: 1
+  },
+  {
+    question: "Which tool integrates with cloud AutoML for CI/CD of ML models?",
+    options: ["Jenkins", "DVC", "Kubeflow Pipelines", "Apache Airflow"],
+    correct: 2
+  },
+  {
+    question: "Why is monitoring important in ML pipelines?",
+    options: ["To retrain data", "To ensure model performance and detect drift", "To label data", "To schedule pipelines"],
+    correct: 1
+  },
+  {
+    question: "Which function concatenates DataFrames along a particular axis?",
+    options: ["df.append()", "pd.concat()", "df.join()", "pd.stack()"],
+    correct: 1
+  },
+  {
+    question: "Which method is used to pivot a DataFrame?",
+    options: ["df.rotate()", "df.pivot()", "df.transpose()", "df.swapaxes()"],
+    correct: 1
+  },
+  {
+    question: "Which Dataflow runner is native to GCP?",
+    options: ["DirectRunner", "FlinkRunner", "DataflowRunner", "SparkRunner"],
+    correct: 2
+  },
+  {
+    question: "Which mechanism helps in scaling out streaming consumers in Pub/Sub?",
+    options: ["Horizontal Pod Autoscaler", "Subscription sharding with multiple subscribers", "Manual scaling only", "Partition keys"],
+    correct: 1
+  },
+  {
+    question: "Which class is used to read streams in Structured Streaming?",
+    options: ["SparkSession.read", "SparkSession.readStream", "SparkContext.stream", "SQLContext.stream"],
+    correct: 1
+  },
+  {
+    question: "Which trigger controls the execution frequency in Structured Streaming?",
+    options: ["processingTime", "eventTime", "once", "continuous"],
+    correct: 0
+  }
+]
+
+
 };

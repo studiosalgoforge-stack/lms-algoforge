@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -7,8 +7,6 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import StudyTab, { Material } from "@/components/course/StudyTab";
 import InterviewTab from "@/components/course/InterviewTab";
 import AssignmentsTab from "@/components/course/AssignmentsTab";
-
-// 🔹 Import VideoTab
 import VideoTab, { Video } from "@/components/course/VideoTab";
 
 // 🔹 Centralized data
@@ -20,26 +18,26 @@ const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
 export default function CourseDetail() {
   const { id } = useParams();
   const [topics, setTopics] = useState<Material[]>([]);
-  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Tabs for desktop
-  const [activeTab, setActiveTab] = useState<"study" | "videos" | "interview" | "assignments" | "none">("study");
+  const [activeTab, setActiveTab] = useState<
+    "study" | "videos" | "interview" | "assignments" | "none"
+  >("study");
+
+  const [openTopics, setOpenTopics] = useState<string[]>([]);
   const [isTopicsSidebarOpen, setIsTopicsSidebarOpen] = useState(true);
- 
-    // Mobile slider
   const [isMobileSliderOpen, setIsMobileSliderOpen] = useState(false);
 
-  // Scrollable PPT view
   const scrollRef = useRef<HTMLDivElement>(null!);
 
-  // Quiz state
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
-   
-    const videoData: Video[] = [
+const [completedTopics, setCompletedTopics] = useState(0);
+
+  const videoData: Video[] = [
     {
-      title: "Gym Posture Correction ",
+      title: "Gym Posture Correction",
       url: "https://drive.google.com/file/d/1Gn04BhzHxaImmsngPgi-GEoFZrAOQlVX/preview",
     },
     {
@@ -48,66 +46,59 @@ export default function CourseDetail() {
     },
   ];
 
-
   // 🔒 Disable right-click + common download shortcuts
   useEffect(() => {
     const preventContext = (e: MouseEvent) => e.preventDefault();
     const preventKeys = (e: KeyboardEvent) => {
-      if (
-        e.ctrlKey &&
-        ["s", "u", "p", "c", "i"].includes(e.key.toLowerCase())
-      ) {
+      if (e.ctrlKey && ["s", "u", "p", "c", "i"].includes(e.key.toLowerCase()))
         e.preventDefault();
-      }
       if (e.key === "F12") e.preventDefault();
     };
     document.addEventListener("contextmenu", preventContext);
     document.addEventListener("keydown", preventKeys);
-
     return () => {
       document.removeEventListener("contextmenu", preventContext);
       document.removeEventListener("keydown", preventKeys);
     };
   }, []);
 
-  // Fetch topics & assignments
+  // 🔹 Fetch topics & assignments
   useEffect(() => {
     const fetchData = async () => {
       try {
         const pptRes = await fetch(`${BASE}/drive/${id}/ppts`);
         const pptData = await pptRes.json();
 
-        const finalTopics =
-          Array.isArray(pptData) && pptData.length
-            ? pptData.map((file: any) => ({
-                name: file.name.replace(/\.pptx?$/i, ""),
-                url: file.previewUrl || file.webViewLink,
-                assignments: [],
-              }))
-            : [];
+        let finalTopics: Material[] = [];
+
+     if (Array.isArray(pptData) && pptData.length) {
+  finalTopics = [{
+    name: id as string, // or a prettier course name if you want
+    children: pptData.map((file: any) => ({
+      name: file.name.replace(/\.pptx?$/i, ""),
+      url: file.previewUrl || file.webViewLink || file.file,
+      assignments: [],
+      children: file.children || [],
+    }))
+  }];
+} else {
+  finalTopics = backupPPTs[id as string] || [];
+}
 
         const assRes = await fetch(`${BASE}/drive/${id}/assignments`);
         const assData = await assRes.json();
 
-        const finalTopicsWithAssignments = finalTopics.map((topic, idx) => ({
+        finalTopics = finalTopics.map((topic, idx) => ({
           ...topic,
           assignments: assData[idx]?.assignments || [],
         }));
 
-        setTopics(finalTopicsWithAssignments);
+        setTopics(finalTopics);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching materials:", err);
-
-        // 🔹 fallback to backupPPTs.ts
         const backups = backupPPTs[id as string] || [];
-        setTopics(
-          backups.map((t) => ({
-            name: t.name,
-            url: t.link,
-            assignments: t.assignments || [],
-          }))
-        );
+        setTopics(backups);
         setLoading(false);
       }
     };
@@ -115,24 +106,100 @@ export default function CourseDetail() {
     fetchData();
   }, [id]);
 
-  // Auto select first topic on load
+  // Auto select first topic
   useEffect(() => {
     if (topics.length > 0 && selectedTopic === null) {
-      setSelectedTopic(0);
+      setSelectedTopic("0");
     }
   }, [topics]);
 
-  // Handle sidebar toggle on resize
+  // Sidebar toggle on resize
   useEffect(() => {
-    const handleResize = () => {
+    const handleResize = () =>
       setIsTopicsSidebarOpen(window.innerWidth >= 1024);
-    };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   if (loading) return <p className="text-center mt-16">Loading materials...</p>;
+
+  // ✅ Toggle multiple dropdowns
+  const toggleTopic = (index: string) => {
+    setOpenTopics((prev) =>
+      prev.includes(index)
+        ? prev.filter((i) => i !== index)
+        : [...prev, index]
+    );
+  };
+
+
+  
+
+  // 🔹 Recursive Sidebar Renderer
+// Recursive Sidebar Renderer
+const renderSidebarTopics = (items: Material[], parentIndex = "", level = 0) =>
+  items.map((item, idx) => {
+    const index = parentIndex ? `${parentIndex}.${idx}` : `${idx}`;
+    const hasChildren = item.children && item.children.length > 0;
+    const isOpen = openTopics.includes(index);
+
+    // different background per level
+    const bgColors = ["bg-gray-200", "bg-gray-100", "bg-gray-50"];
+    const bg = bgColors[level % bgColors.length];
+
+    if (hasChildren) {
+      return (
+        <li key={index} className="mb-1">
+          
+          <div
+            className={`${bg} font-semibold cursor-pointer flex justify-between items-center p-2 rounded-md hover:bg-purple-100`}
+            onClick={() => toggleTopic(index)}
+          >
+            <span>{item.name}</span>
+            <span
+              className={`transform transition-transform ${
+                isOpen ? "rotate-180" : "rotate-0"
+              }`}
+            >
+              ▼
+            </span>
+          </div>
+          {isOpen && (
+            <ul className="ml-4 mt-1 pl-2 border-l-2 border-purple-300 space-y-1">
+              {renderSidebarTopics(item.children!, index, level + 1)}
+            </ul>
+          )}
+       
+        </li>
+      );
+    }
+
+    // leaf → study material
+    return (
+      <li
+        key={index}
+        className={`p-2 rounded-md cursor-pointer ${
+          selectedTopic === index
+            ? "bg-purple-300 text-black"
+            : "bg-gray-100 hover:bg-purple-200 text-black"
+        }`}
+        onClick={() => {
+          setSelectedTopic(index);
+          setActiveTab("study");
+        }}
+      >
+        {item.name}
+      </li>
+    );
+  });
+
+
+const handleNext = () => {
+  const total = topics[0]?.children?.length || topics.length;
+  setCompletedTopics((prev) => (prev >= total ? prev : prev + 1));
+};
+
 
   return (
     <ProtectedRoute>
@@ -153,22 +220,7 @@ export default function CourseDetail() {
               <h2 className="font-semibold text-purple-950 text-lg mb-3">
                 Topics
               </h2>
-              <ul className="space-y-2">
-                {topics.map((topic, idx) => (
-                  <li
-                    key={idx}
-                    className={`p-2 rounded-md bg-gray-100 hover:bg-purple-200 text-black cursor-pointer ${
-                      selectedTopic === idx ? "bg-purple-100" : ""
-                    }`}
-                    onClick={() => {
-                      setSelectedTopic(idx);
-                      setActiveTab("study");
-                    }}
-                  >
-                    {topic.name}
-                  </li>
-                ))}
-              </ul>
+              <ul className="space-y-2">{renderSidebarTopics(topics)}</ul>
             </div>
           </div>
 
@@ -192,24 +244,16 @@ export default function CourseDetail() {
             </div>
 
             {activeTab === "study" && (
-                  <div className="relative">
               <StudyTab
                 topics={topics}
                 selectedTopic={selectedTopic}
                 setSelectedTopic={setSelectedTopic}
                 scrollRef={scrollRef}
+                 onNext={handleNext}  
               />
-                {/* 🔒 Transparent overlay to block right-click */}
-                <div className="absolute inset-0 bg-transparent pointer-events-none"></div>
-              </div>
             )}
-                {activeTab === "videos" && (
-              <div className="relative">
-                <VideoTab videos={videoData} />
-                {/* 🔒 Transparent overlay */}
-                <div className="absolute inset-0 bg-transparent pointer-events-none"></div>
-              </div>
-            )}
+
+            {activeTab === "videos" && <VideoTab videos={videoData} />}
 
             {activeTab === "interview" && (
               <InterviewTab
@@ -228,9 +272,8 @@ export default function CourseDetail() {
           </div>
         </div>
 
-           {/* ---------------- MOBILE/TABLET VIEW ---------------- */}
+        {/* ---------------- MOBILE VIEW ---------------- */}
         <div className="block lg:hidden space-y-4">
-          {/* Toggle button */}
           <div className="flex justify-between items-center mb-4">
             <button
               onClick={() => setIsMobileSliderOpen(!isMobileSliderOpen)}
@@ -241,48 +284,27 @@ export default function CourseDetail() {
             <span className="text-lg font-semibold">{id} Topics</span>
           </div>
 
-          {/* Slider */}
           <div
             className={`fixed top-0 left-0 h-full w-64 bg-purple-50 shadow-lg transform transition-transform duration-300 z-40 p-4
             ${isMobileSliderOpen ? "translate-x-0" : "-translate-x-full"}`}
           >
             <div className="p-4 flex justify-between items-center border-b">
               <h2 className="font-semibold text-lg">📘 Topics</h2>
-                {/* Cross button */}
-      <button
-        onClick={() => setIsMobileSliderOpen(false)}
-        className="text-gray-500 hover:text-gray-800 text-xl font-bold"
-      >
-        ×
-      </button>
-    </div>
-              <ul>
-                {topics.map((topic, idx) => (
-                  <li
-                    key={idx}
-                    className={`p-2 cursor-pointer rounded ${
-                      selectedTopic === idx ? "bg-purple-200" : "hover:bg-purple-100"
-                    }`}
-                    onClick={() => {
-                      setSelectedTopic(idx);
-                      setActiveTab("study");
-                      setIsMobileSliderOpen(false); // auto close on select
-                    }}
-                  >
-                    {topic.name}
-                  </li>
-                ))}
-              </ul>
+              <button
+                onClick={() => setIsMobileSliderOpen(false)}
+                className="text-gray-500 hover:text-gray-800 text-xl font-bold"
+              >
+                ×
+              </button>
             </div>
+            <ul>{renderSidebarTopics(topics)}</ul>
+          </div>
 
-          {/* Tabs content same as desktop */}
-          {["study", "videos",  "interview", "assignments"].map((tab) => (
+          {["study", "videos", "interview", "assignments"].map((tab) => (
             <div key={tab} className="border rounded-md shadow">
               <button
                 onClick={() =>
-                  setActiveTab(
-                    activeTab === tab ? ("none" as any) : (tab as any)
-                  )
+                  setActiveTab(activeTab === tab ? ("none" as any) : (tab as any))
                 }
                 className={`w-full text-left p-4 font-semibold ${
                   tab === "study"
@@ -293,7 +315,7 @@ export default function CourseDetail() {
                 }`}
               >
                 {tab === "study" && "📘 Study Materials"}
-                 {tab === "videos" && "🎥 Videos"}
+                {tab === "videos" && "🎥 Videos"}
                 {tab === "interview" && "❓ Interview Questions"}
                 {tab === "assignments" && "📝 Assignments"}
               </button>
@@ -301,25 +323,16 @@ export default function CourseDetail() {
               {activeTab === tab && (
                 <div className="p-4">
                   {tab === "study" && (
-                     <div className="relative">
                     <StudyTab
                       topics={topics}
                       selectedTopic={selectedTopic}
                       setSelectedTopic={setSelectedTopic}
                       scrollRef={scrollRef}
+                       onNext={handleNext}  
                     />
-                     {/* 🔒 Transparent overlay to block right-click */}
-                <div className="absolute inset-0 bg-transparent pointer-events-none"></div>
-              </div>
                   )}
-                   
-             {activeTab === "videos" && (
-              <div className="relative">
-                <VideoTab videos={videoData} />
-                {/* 🔒 Transparent overlay */}
-                <div className="absolute inset-0 bg-transparent pointer-events-none"></div>
-              </div>
-            )}
+
+                  {tab === "videos" && <VideoTab videos={videoData} />}
 
                   {tab === "interview" && (
                     <InterviewTab
@@ -331,8 +344,12 @@ export default function CourseDetail() {
                       setSelectedOption={setSelectedOption}
                     />
                   )}
+
                   {tab === "assignments" && (
-                    <AssignmentsTab topics={topics} selectedTopic={selectedTopic} />
+                    <AssignmentsTab
+                      topics={topics}
+                      selectedTopic={selectedTopic}
+                    />
                   )}
                 </div>
               )}

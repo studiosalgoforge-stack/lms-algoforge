@@ -13,10 +13,12 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+     setLoading(true);
     try {
       const res = await fetch(`${BASE}/users/login`, {
         method: "POST",
@@ -39,7 +41,9 @@ export default function LoginPage() {
       router.push("/courses");
     } catch (err: any) {
       setError("Something went wrong. Check console.");
-    }
+    }finally {
+    setLoading(false); // <-- stop loading after request ends
+  }
   };
 
   return (
@@ -112,14 +116,36 @@ export default function LoginPage() {
           <label className="ml-2 text-sm text-gray-700 font-medium">
             Remember me
           </label>
+
+          <p className="text-sm mt-2 text-center">
+  <span
+    onClick={() => router.push("/forgot-password")}
+    className="text-purple-800 ml-22 cursor-pointer font-medium hover:underline"
+  >
+    Forgot password?
+  </span>
+</p>
         </div>
 
         <button
           type="submit"
+          disabled={loading}
           className="w-full bg-gradient-to-r from-[#9B4DFF] via-[#B55CFF] to-[#E09EFF] text-white p-2 rounded cursor-pointer hover:opacity-90 transition"
         >
-          Sign in
+        {loading ? "Signing in..." : "Sign in"}
         </button>
+
+
+        <p className="text-sm mt-4 text-center">
+  Don’t have an account?{" "}
+  <span
+    onClick={() => router.push("/signup")}
+    className="text-purple-800 cursor-pointer font-medium hover:underline"
+  >
+    Sign up
+  </span>
+</p>
+
       </form>
     </div>
   );
