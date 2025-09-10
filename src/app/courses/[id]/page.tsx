@@ -1,22 +1,19 @@
- "use client";
+"use client";
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
-
-// 🔹 Tab components
 import StudyTab, { Material } from "@/components/course/StudyTab";
 import InterviewTab from "@/components/course/InterviewTab";
 import AssignmentsTab from "@/components/course/AssignmentsTab";
 import VideoTab, { Video } from "@/components/course/VideoTab";
-
-// 🔹 Centralized data
 import { backupPPTs } from "@/app/data/backupPPTs";
 import { interviewData } from "@/app/data/interviewData";
+import confetti from "canvas-confetti";
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
 
 export default function CourseDetail() {
-  const { id } = useParams();
+  const { id: rawId } = useParams();
   const [topics, setTopics] = useState<Material[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -30,10 +27,232 @@ export default function CourseDetail() {
   const [isMobileSliderOpen, setIsMobileSliderOpen] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null!);
-
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
-const [completedTopics, setCompletedTopics] = useState(0);
+
+  // 🔹 Track completed topics per course
+  const [completedTopics, setCompletedTopics] = useState<string[]>([]);
+  const [progress, setProgress] = useState(0);
+
+  const id = Array.isArray(rawId) ? rawId[0] : rawId;
+  if (!id) return <p>Invalid course ID</p>;
+
+  // 🔹 Count total topics recursively
+  const countTotalTopics = (items: Material[]): number =>
+    items.reduce(
+      (acc, item) => acc + (item.children ? countTotalTopics(item.children) : 1),
+      0
+    );
+
+  // 🔹 Merge stored progress
+  const mergeCompletedTopics = (newCompleted: string[]) => {
+    const stored = JSON.parse(localStorage.getItem("courseProgress") || "{}");
+    const prevCompleted = stored[id] || [];
+    const merged = Array.from(new Set([...prevCompleted, ...newCompleted])); // never decreases
+    stored[id] = merged;
+    localStorage.setItem("courseProgress", JSON.stringify(stored));
+    setCompletedTopics(merged);
+
+    const total = countTotalTopics(topics);
+    if (total > 0) setProgress(Math.floor((merged.length / total) * 100));
+  };
+
+  // 🔹 Load stored progress
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("courseProgress") || "{}");
+    if (stored[id]) {
+      mergeCompletedTopics(stored[id]);
+    }
+  }, [id, topics]);
+
+  // 🔹 Fetch topics & assignments
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const pptRes = await fetch(`${BASE}/drive/${id}/ppts`);
+      const pptData = await pptRes.json();
+
+      let finalTopics: Material[] = [];
+
+      if (Array.isArray(pptData) && pptData.length) {
+        finalTopics = [
+          {
+            name: id as string,
+            children: pptData.map((file: any) => ({
+              name: file.name.replace(/\.pptx?$/i, ""),
+              url: file.previewUrl || file.webViewLink || file.file,
+              assignments: [],
+              children: file.children || [],
+            })),
+          },
+        ];
+      } else {
+        finalTopics = backupPPTs[id as string] || [];
+      }
+
+      const assRes = await fetch(`${BASE}/drive/${id}/assignments`);
+      const assData = await assRes.json();
+
+      finalTopics = finalTopics.map((topic, idx) => ({
+        ...topic,
+        assignments: assData[idx]?.assignments || [],
+      }));
+
+      setTopics(finalTopics);
+
+      // ✅ Open all parent dropdowns by default
+      const parentIndexes = getAllParentIndexes(finalTopics);
+
+      // ✅ Also ensure first leaf topic's parents are open
+      const firstLeafIndex = getFirstLeafIndex(finalTopics);
+      const firstLeafParents = firstLeafIndex
+        .split(".")
+        .slice(0, -1) // remove leaf itself
+        .map((_, idx, arr) => arr.slice(0, idx + 1).join("."));
+      setOpenTopics(Array.from(new Set([...parentIndexes, ...firstLeafParents])));
+
+      // ✅ Select first leaf by default
+      setSelectedTopic(firstLeafIndex);
+
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching materials:", err);
+      setTopics(backupPPTs[id as string] || []);
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [id]);
+
+// Recursively find first leaf index
+const getFirstLeafIndex = (items: Material[], parentIndex = "0"): string => {
+  let item = items[0];
+  let index = parentIndex;
+
+  while (item.children && item.children.length > 0) {
+    item = item.children[0];
+    index += ".0"; // go deeper in index path
+  }
+
+  return index;
+};
+
+const getAllParentIndexes = (items: Material[], parentIndex = ""): string[] => {
+  let indexes: string[] = [];
+  items.forEach((item, idx) => {
+    const index = parentIndex ? `${parentIndex}.${idx}` : `${idx}`;
+    if (item.children && item.children.length > 0) {
+      indexes.push(index); // add this parent
+      indexes = indexes.concat(getAllParentIndexes(item.children, index));
+    }
+  });
+  return indexes;
+};
+
+
+useEffect(() => {
+  if (topics.length > 0 && selectedTopic === null) {
+    const firstLeafIndex = getFirstLeafIndex(topics);
+    setSelectedTopic(firstLeafIndex); // dynamically match sidebar index
+  }
+}, [topics, selectedTopic]);
+
+
+
+
+
+  // Sidebar toggle on resize
+  useEffect(() => {
+    const handleResize = () =>
+      setIsTopicsSidebarOpen(window.innerWidth >= 1024);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // 🎉 Confetti when 100%
+  useEffect(() => {
+    if (progress === 100) {
+      confetti({ particleCount: 100, spread: 70 });
+    }
+  }, [progress]);
+
+  // ✅ Toggle multiple dropdowns
+  const toggleTopic = (index: string) => {
+    setOpenTopics((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
+  const handleSidebarClick = (index: string) => {
+  // check if current topic is completed
+  if (selectedTopic && !completedTopics.includes(selectedTopic)) {
+    alert("⚠️ Please mark the current topic as complete before moving to the next.");
+    return;
+  }
+  setSelectedTopic(index);
+};
+
+  // 🔹 Recursive Sidebar Renderer
+  const renderSidebarTopics = (items: Material[], parentIndex = "", level = 0) =>
+    items.map((item, idx) => {
+      const index = parentIndex ? `${parentIndex}.${idx}` : `${idx}`;
+      const hasChildren = item.children && item.children.length > 0;
+      const isOpen = openTopics.includes(index);
+
+      const bgColors = ["bg-gray-200", "bg-gray-100", "bg-gray-50"];
+      const bg = bgColors[level % bgColors.length];
+
+      if (hasChildren) {
+        return (
+          <li key={index} className="mb-1">
+            <div
+              className={`${bg} font-semibold cursor-pointer flex justify-between items-center p-2 rounded-md hover:bg-purple-100`}
+              onClick={() => toggleTopic(index)}
+            >
+              <span>{item.name}</span>
+              <span
+                className={`transform transition-transform ${
+                  isOpen ? "rotate-180" : "rotate-0"
+                }`}
+              >
+                ▼
+              </span>
+            </div>
+            {isOpen && (
+              <ul className="ml-4 mt-1 pl-2 border-l-2 border-purple-300 space-y-1">
+                {renderSidebarTopics(item.children!, index, level + 1)}
+              </ul>
+            )}
+          </li>
+        );
+      }
+
+      return (
+        <li
+          key={index}
+          className={`p-2 rounded-md cursor-pointer ${
+            completedTopics.includes(index)
+              ? "bg-green-200 text-black"
+              : selectedTopic === index
+              ? "bg-purple-300 text-black"
+              : "bg-gray-100 hover:bg-purple-200 text-black"
+          }`}
+          onClick={() =>  handleSidebarClick(index)}
+        >
+          {item.name}
+        </li>
+      );
+    });
+
+  // 🔹 Handle topic completion
+  const handleTopicCompletion = (topicId: string) => {
+    if (!completedTopics.includes(topicId)) {
+      mergeCompletedTopics([topicId]);
+    }
+  };
+
+  if (loading) return <p className="text-center mt-16">Loading materials...</p>;
 
   const videoData: Video[] = [
     {
@@ -46,167 +265,26 @@ const [completedTopics, setCompletedTopics] = useState(0);
     },
   ];
 
-  // 🔒 Disable right-click + common download shortcuts
-  useEffect(() => {
-    const preventContext = (e: MouseEvent) => e.preventDefault();
-    const preventKeys = (e: KeyboardEvent) => {
-      if (e.ctrlKey && ["s", "u", "p", "c", "i"].includes(e.key.toLowerCase()))
-        e.preventDefault();
-      if (e.key === "F12") e.preventDefault();
-    };
-    document.addEventListener("contextmenu", preventContext);
-    document.addEventListener("keydown", preventKeys);
-    return () => {
-      document.removeEventListener("contextmenu", preventContext);
-      document.removeEventListener("keydown", preventKeys);
-    };
-  }, []);
-
-  // 🔹 Fetch topics & assignments
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const pptRes = await fetch(`${BASE}/drive/${id}/ppts`);
-        const pptData = await pptRes.json();
-
-        let finalTopics: Material[] = [];
-
-     if (Array.isArray(pptData) && pptData.length) {
-  finalTopics = [{
-    name: id as string, // or a prettier course name if you want
-    children: pptData.map((file: any) => ({
-      name: file.name.replace(/\.pptx?$/i, ""),
-      url: file.previewUrl || file.webViewLink || file.file,
-      assignments: [],
-      children: file.children || [],
-    }))
-  }];
-} else {
-  finalTopics = backupPPTs[id as string] || [];
-}
-
-        const assRes = await fetch(`${BASE}/drive/${id}/assignments`);
-        const assData = await assRes.json();
-
-        finalTopics = finalTopics.map((topic, idx) => ({
-          ...topic,
-          assignments: assData[idx]?.assignments || [],
-        }));
-
-        setTopics(finalTopics);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching materials:", err);
-        const backups = backupPPTs[id as string] || [];
-        setTopics(backups);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [id]);
-
-  // Auto select first topic
-  useEffect(() => {
-    if (topics.length > 0 && selectedTopic === null) {
-      setSelectedTopic("0");
-    }
-  }, [topics]);
-
-  // Sidebar toggle on resize
-  useEffect(() => {
-    const handleResize = () =>
-      setIsTopicsSidebarOpen(window.innerWidth >= 1024);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  if (loading) return <p className="text-center mt-16">Loading materials...</p>;
-
-  // ✅ Toggle multiple dropdowns
-  const toggleTopic = (index: string) => {
-    setOpenTopics((prev) =>
-      prev.includes(index)
-        ? prev.filter((i) => i !== index)
-        : [...prev, index]
-    );
-  };
-
-
-  
-
-  // 🔹 Recursive Sidebar Renderer
-// Recursive Sidebar Renderer
-const renderSidebarTopics = (items: Material[], parentIndex = "", level = 0) =>
-  items.map((item, idx) => {
-    const index = parentIndex ? `${parentIndex}.${idx}` : `${idx}`;
-    const hasChildren = item.children && item.children.length > 0;
-    const isOpen = openTopics.includes(index);
-
-    // different background per level
-    const bgColors = ["bg-gray-200", "bg-gray-100", "bg-gray-50"];
-    const bg = bgColors[level % bgColors.length];
-
-    if (hasChildren) {
-      return (
-        <li key={index} className="mb-1">
-          
-          <div
-            className={`${bg} font-semibold cursor-pointer flex justify-between items-center p-2 rounded-md hover:bg-purple-100`}
-            onClick={() => toggleTopic(index)}
-          >
-            <span>{item.name}</span>
-            <span
-              className={`transform transition-transform ${
-                isOpen ? "rotate-180" : "rotate-0"
-              }`}
-            >
-              ▼
-            </span>
-          </div>
-          {isOpen && (
-            <ul className="ml-4 mt-1 pl-2 border-l-2 border-purple-300 space-y-1">
-              {renderSidebarTopics(item.children!, index, level + 1)}
-            </ul>
-          )}
-       
-        </li>
-      );
-    }
-
-    // leaf → study material
-    return (
-      <li
-        key={index}
-        className={`p-2 rounded-md cursor-pointer ${
-          selectedTopic === index
-            ? "bg-purple-300 text-black"
-            : "bg-gray-100 hover:bg-purple-200 text-black"
-        }`}
-        onClick={() => {
-          setSelectedTopic(index);
-          setActiveTab("study");
-        }}
-      >
-        {item.name}
-      </li>
-    );
-  });
-
-
-const handleNext = () => {
-  const total = topics[0]?.children?.length || topics.length;
-  setCompletedTopics((prev) => (prev >= total ? prev : prev + 1));
-};
-
-
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50 p-6">
         <h1 className="text-3xl lg:text-4xl font-bold mb-6 text-purple-950">
           {id} Course
         </h1>
+
+        {/* 🔹 Progress Bar
+        <div className="mb-6">
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div
+              className="bg-gradient-to-r from-[#F58BFF] to-[#90E0FF] h-2 rounded-full transition-all"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+          <p className="text-gray-600 text-sm mt-2">
+            {completedTopics.length} / {countTotalTopics(topics)} Completed (
+            {progress}%)
+          </p>
+        </div> */}
 
         {/* ---------------- DESKTOP VIEW ---------------- */}
         <div className="hidden lg:flex">
@@ -249,12 +327,11 @@ const handleNext = () => {
                 selectedTopic={selectedTopic}
                 setSelectedTopic={setSelectedTopic}
                 scrollRef={scrollRef}
-                 onNext={handleNext}  
+                courseId={id as string}
+                onNext={(topicId) => handleTopicCompletion(topicId)}
               />
             )}
-
             {activeTab === "videos" && <VideoTab videos={videoData} />}
-
             {activeTab === "interview" && (
               <InterviewTab
                 interviewQuestions={interviewData}
@@ -265,7 +342,6 @@ const handleNext = () => {
                 setSelectedOption={setSelectedOption}
               />
             )}
-
             {activeTab === "assignments" && (
               <AssignmentsTab topics={topics} selectedTopic={selectedTopic} />
             )}
@@ -285,7 +361,7 @@ const handleNext = () => {
           </div>
 
           <div
-            className={`fixed top-0 left-0 h-full w-64 bg-purple-50 shadow-lg transform transition-transform duration-300 z-40 p-4
+            className={`fixed top-0  left-0 h-full w-64 bg-purple-50 shadow-lg transform transition-transform duration-300 z-40 p-4
             ${isMobileSliderOpen ? "translate-x-0" : "-translate-x-full"}`}
           >
             <div className="p-4 flex justify-between items-center border-b">
@@ -298,6 +374,7 @@ const handleNext = () => {
               </button>
             </div>
             <ul>{renderSidebarTopics(topics)}</ul>
+
           </div>
 
           {["study", "videos", "interview", "assignments"].map((tab) => (
@@ -328,12 +405,11 @@ const handleNext = () => {
                       selectedTopic={selectedTopic}
                       setSelectedTopic={setSelectedTopic}
                       scrollRef={scrollRef}
-                       onNext={handleNext}  
+                      courseId={id as string}
+                      onNext={(topicId) => handleTopicCompletion(topicId)}
                     />
                   )}
-
                   {tab === "videos" && <VideoTab videos={videoData} />}
-
                   {tab === "interview" && (
                     <InterviewTab
                       interviewQuestions={interviewData}
@@ -344,12 +420,8 @@ const handleNext = () => {
                       setSelectedOption={setSelectedOption}
                     />
                   )}
-
                   {tab === "assignments" && (
-                    <AssignmentsTab
-                      topics={topics}
-                      selectedTopic={selectedTopic}
-                    />
+                    <AssignmentsTab topics={topics} selectedTopic={selectedTopic} />
                   )}
                 </div>
               )}

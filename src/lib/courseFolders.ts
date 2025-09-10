@@ -28,8 +28,8 @@ export const courseFolders: CourseFolders = {
     assignments: "8H9I0J1K2L3M4N5O6P7Q",
   },
 
-    "Data-Engineering":{
-  ppts: "16T93KKe_yyUlLHwCwvaV4yzuz81dwkKP",
+    "Data Engineering":{
+    ppts: "16T93KKe_yyUlLHwCwvaV4yzuz81dwkKP",
     interview: "9I0J1K2L3M4N5O6P7Q8R",
     assignments: "8H9I0J1K2L3M4N5O6P7Q",
 

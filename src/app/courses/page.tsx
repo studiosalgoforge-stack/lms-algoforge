@@ -1,14 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { courseFolders } from "@/lib/courseFolders";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { backupPPTs } from "@/app/data/backupPPTs";
 
 const categories = ["My Courses", "Orientation", "Learning Tools", "Projects"];
 
-// Sample data for other tabs
 const sampleData = {
   Orientation: [
     { id: "welcome", title: "Welcome Video", link: "#" },
@@ -18,39 +16,59 @@ const sampleData = {
     { id: "jupyter", title: "Jupyter Notebook Tutorial", link: "#" },
     { id: "power-bi", title: "Power BI Tutorial", link: "#" },
   ],
-Projects: [
-  {
-    title: "Gym Posture Correction",
-    link: "https://drive.google.com/file/d/1Gn04BhzHxaImmsngPgi-GEoFZrAOQlVX/preview",
-  },
-  {
-    title: "Skin Cancer Correction",
-    link: "https://drive.google.com/file/d/1mTCfA7gd9mPseiFoT7LITKY6fobuoLyi/preview",
-  },
-],
-
+  Projects: [
+    {
+      title: "Gym Posture Correction",
+      link: "https://drive.google.com/file/d/1Gn04BhzHxaImmsngPgi-GEoFZrAOQlVX/preview",
+    },
+    {
+      title: "Skin Cancer Correction",
+      link: "https://drive.google.com/file/d/1mTCfA7gd9mPseiFoT7LITKY6fobuoLyi/preview",
+    },
+  ],
 };
 
 export default function CoursesPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("My Courses");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  
-  // Track completed topics per course
-  const [courseProgress, setCourseProgress] = useState<Record<string, number>>({});
+  const [courseProgress, setCourseProgress] = useState<Record<string, string[]>>({});
+
+  // Load stored progress
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("courseProgress") || "{}");
+    setCourseProgress(stored);
+  }, []);
+
+  // Merge progress safely
+  const mergeProgress = (courseId: string, newCompleted: string[]) => {
+    const prevCompleted = courseProgress[courseId] || [];
+    const merged = Array.from(new Set([...prevCompleted, ...newCompleted])); // never decreases
+    const updated = { ...courseProgress, [courseId]: merged };
+    setCourseProgress(updated);
+    localStorage.setItem("courseProgress", JSON.stringify(updated));
+    return merged;
+  };
 
   const toggleCourse = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  // Normalize courses data from courseFolders
-  const courses = Object.keys(courseFolders).map((key) => {
-    const topics = Array.isArray(courseFolders[key])
-      ? courseFolders[key]
-      : [courseFolders[key]]; // wrap single object in array
+  const countPPTLeafTopics = (items: any[]): number =>
+    items.reduce((acc, item) => {
+      if (item.children) return acc + countPPTLeafTopics(item.children);
+      if (item.link) return acc + 1;
+      return acc;
+    }, 0);
 
-    const completed = courseProgress[key] || 0;
-    const total = topics.length;
+  const courses = Object.keys(backupPPTs).map((key) => {
+    const topics = backupPPTs[key] || [];
+    const total = countPPTLeafTopics(topics);
+
+    const completedArray = Array.isArray(courseProgress[key]) ? courseProgress[key] : [];
+    const completed = completedArray.length;
+
+    const progress = total > 0 ? Math.min(100, Math.round((completed / total) * 100)) : 0;
 
     return {
       id: key,
@@ -58,22 +76,10 @@ export default function CoursesPage() {
       topics,
       completed,
       total,
-      progress: total > 0 ? Math.floor((completed / total) * 100) : 0,
+      progress,
     };
   });
 
-  // Recursive rendering function for topics
-  const renderTopics = (topics: any[]) => {
-    if (!Array.isArray(topics)) return null;
-    return topics.map((topic, idx) => (
-      <div key={idx} className="pl-4 space-y-2">
-        <div>{topic.name}</div>
-        {topic.children && renderTopics(topic.children)}
-      </div>
-    ));
-  };
-
-  // Items for other tabs
   const items = sampleData[activeTab as keyof typeof sampleData];
 
   return (
@@ -82,12 +88,7 @@ export default function CoursesPage() {
         {/* Left/Main Content */}
         <div className="flex-1">
           <div className="flex-1 text-black mb-6 text-bold bg-gray-100 h-12 flex items-center px-4 gap-2">
-            <a
-              href="https://dev-algoforge-prototype.vercel.app/"
-              className="hover:underline"
-            >
-              Home
-            </a>
+            <a href="https://dev-algoforge-prototype.vercel.app/" className="hover:underline">Home</a>
             <span>- Classroom</span>
           </div>
 
@@ -103,7 +104,7 @@ export default function CoursesPage() {
                 }`}
                 onClick={() => {
                   setActiveTab(cat);
-                  setOpenIndex(null); // reset expand state when switching tabs
+                  setOpenIndex(null);
                 }}
               >
                 {cat}
@@ -111,7 +112,7 @@ export default function CoursesPage() {
             ))}
           </div>
 
-          {/* My Courses Accordion */}
+          {/* My Courses */}
           {activeTab === "My Courses" && (
             <div className="space-y-4">
               {courses.map((course, index) => (
@@ -124,15 +125,9 @@ export default function CoursesPage() {
                     <span className="text-xl">{openIndex === index ? "−" : "+"}</span>
                   </div>
 
-                  <div
-                    className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                      openIndex === index ? "max-h-72" : "max-h-0"
-                    } bg-white`}
-                  >
+                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openIndex === index ? "max-h-72" : "max-h-0"} bg-white`}>
                     <div className="p-4 space-y-4">
-                      {renderTopics(course.topics)}
-
-                      {/* ✅ Actual Progress Bar */}
+                      {/* Progress Bar */}
                       <div>
                         <div className="w-full bg-gray-200 rounded-full h-2">
                           <div
@@ -149,7 +144,9 @@ export default function CoursesPage() {
                       <div className="flex flex-wrap gap-3">
                         <button
                           className="px-4 py-2 bg-pink-500 text-white rounded-md shadow hover:opacity-90"
-                          onClick={() => router.push(`/courses/${course.id}`)}
+                          onClick={() =>
+                            router.push(`/courses/${course.id}?completed=${course.completed}&total=${course.total}`)
+                          }
                         >
                           Go to Course
                         </button>
@@ -177,11 +174,7 @@ export default function CoursesPage() {
                     <span className="text-xl">{openIndex === index ? "−" : "+"}</span>
                   </div>
 
-                  <div
-                    className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                      openIndex === index ? "max-h-72" : "max-h-0"
-                    } bg-white`}
-                  >
+                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openIndex === index ? "max-h-72" : "max-h-0"} bg-white`}>
                     <div className="p-4 space-y-4">
                       <a
                         href={item.link}
@@ -211,11 +204,7 @@ export default function CoursesPage() {
                     <span className="text-xl">{openIndex === index ? "−" : "+"}</span>
                   </div>
 
-                  <div
-                    className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                      openIndex === index ? "max-h-[600px]" : "max-h-0"
-                    } bg-white`}
-                  >
+                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openIndex === index ? "max-h-[600px]" : "max-h-0"} bg-white`}>
                     <div className="p-4">
                       <iframe
                         src={project.link}

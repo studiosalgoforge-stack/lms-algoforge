@@ -235,33 +235,129 @@ export const interviewData: Record<string, InterviewQuestion[]> = {
   }
 
   ],
-  "Power-BI": [
-    {
-      question: "Power BI is mainly used for?",
-      options: ["Data Entry", "Data Visualization", "Database Design", "Machine Learning"],
-      correct: 1,
-    },
+ "Power-BI": [
   {
-    question: "Which feature in Power BI allows combining multiple data sources?",
-    options: ["Power Query", "DAX", "Power Automate", "Dataflow"],
-    correct: 0,
+    "question": "What is the primary purpose of Power BI?",
+    "options": [
+      "To manage relational databases",
+      "To create and visualize interactive business intelligence reports and dashboards",
+      "To develop cloud-based applications",
+      "To perform machine learning model training"
+    ],
+    "correct": 1
   },
   {
-    question: "What is DAX used for in Power BI?",
-    options: ["Data modeling and calculations", "Web development", "Machine learning", "Report design"],
-    correct: 0,
+    "question": "Which company developed Power BI?",
+    "options": ["Google", "IBM", "Microsoft", "Oracle"],
+    "correct": 2
   },
   {
-    question: "Which visualization in Power BI is used for trends over time?",
-    options: ["Line chart", "Pie chart", "Bar chart", "Map visualization"],
-    correct: 0,
+    "question": "What is the primary file format used to save Power BI reports?",
+    "options": [".xls", ".pbix", ".csv", ".docx"],
+    "correct": 1
   },
   {
-    question: "Power BI dashboards can be shared via?",
-    options: ["Power BI Service", "Excel only", "Word documents", "PowerPoint only"],
-    correct: 0,
+    "question": "Which Power BI component is used to build reports?",
+    "options": ["Power BI Desktop", "Power BI Service", "Power BI Mobile", "Power Query"],
+    "correct": 0
   },
-  ],
+  {
+    "question": "What is Power Query used for in Power BI?",
+    "options": ["Data visualization", "Data transformation", "Data analysis", "Data modeling"],
+    "correct": 1
+  },
+  {
+    "question": "Which language is used for creating calculations in Power BI?",
+    "options": ["SQL", "JavaScript", "DAX (Data Analysis Expressions)", "Python"],
+    "correct": 2
+  },
+  {
+    "question": "What is the purpose of Power BI's Q&A feature?",
+    "options": [
+      "Querying and visualizing data",
+      "Automating data refresh",
+      "Creating reports",
+      "Asking questions in natural language and getting answers"
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Which of the following is NOT a data visualization tool in Power BI?",
+    "options": ["Bar Chart", "Line Chart", "Pie Chart", "Data Table"],
+    "correct": 3
+  },
+  {
+    "question": "What symbol would you use for multiplication in Power BI in a DAX formula?",
+    "options": ["+", "-", "/", "*"],
+    "correct": 3
+  },
+  {
+    "question": "Which feature in Power BI allows you to schedule automatic refreshes of your dataset?",
+    "options": ["Power Query", "Power Pivot", "Power Automate", "Dataset Refresh"],
+    "correct": 3
+  },
+  {
+    "question": "What is the main advantage of using Power BI over Excel for reporting?",
+    "options": [
+      "Limited visualization options",
+      "Real-time data connectivity",
+      "Less user control over data",
+      "Smaller file sizes"
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Which of the following is NOT a valid data source in Power BI?",
+    "options": ["Excel", "Salesforce", "Twitter", "Paper Documents"],
+    "correct": 3
+  },
+  {
+    "question": "What is the purpose of Power BI's Drillthrough feature?",
+    "options": [
+      "Creating custom visualizations",
+      "Filtering data in reports",
+      "Navigating to more detailed data from summarized data",
+      "Exporting reports to different formats"
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Which type of visual in Power BI is used to display hierarchical data in a tree-like structure?",
+    "options": ["Bar Chart", "Line Chart", "Treemap", "Scatter Chart"],
+    "correct": 2
+  },
+  {
+    "question": "What is the purpose of Power BI's Row-level security feature?",
+    "options": ["Encrypting data", "Filtering data based on user roles", "Analyzing data trends", "Creating calculated columns"],
+    "correct": 1
+  },
+  {
+    "question": "Which M Language function is used to remove duplicates from a table in Power Query?",
+    "options": ["Table.Distinct", "Table.Remove", "Table.Clean", "Table.Filter"],
+    "correct": 0
+  },
+  {
+    "question": "What creates the connection between Power BI cloud-based data and the data source located on-premises?",
+    "options": ["Report view", "Query editor", "Power BI service", "Gateway"],
+    "correct": 3
+  },
+  {
+    "question": "Which type of visualization is best for showing trends over time?",
+    "options": ["Pie chart", "Line chart", "Bar chart", "Scatter plot"],
+    "correct": 1
+  },
+  {
+    "question": "What is the maximum data limit per client for the free version of Power BI?",
+    "options": ["500 MB", "1 GB", "2 GB", "10 GB"],
+    "correct": 1
+  },
+  {
+    "question": "Which DAX function can be used to return a value in a column if a condition is met?",
+    "options": ["IF", "VLOOKUP", "SUM", "COUNT"],
+    "correct": 0
+  }
+],
+
 
  "Data-Engineering": [
   {

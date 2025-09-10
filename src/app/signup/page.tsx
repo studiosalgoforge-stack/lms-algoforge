@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { FiMail, FiLock, FiUser , FiEye, FiEyeOff } from "react-icons/fi";
 import BackgroundBubbles from "@/components/BackgroundBubbles";
 
-const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
+const BASE = process.env.NEXT_PUBLIC_API_BASE|| "http://localhost:10000/api";
 
 export default function SignupPage() {
   const router = useRouter();
