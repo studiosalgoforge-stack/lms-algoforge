@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -16,8 +17,7 @@ export default function CourseDetail() {
   const { id: rawId } = useParams();
   const id = Array.isArray(rawId) ? rawId[0] : rawId;
 
-  if (!id) return <p>Invalid course ID</p>; // ✅ ensures id is string below
-
+  // ✅ Declare all hooks first
   const [topics, setTopics] = useState<Material[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,9 +34,11 @@ export default function CourseDetail() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
 
-  // 🔹 Track completed topics per course
   const [completedTopics, setCompletedTopics] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
+
+  // ✅ Conditional return after all hooks
+  if (!id) return <p>Invalid course ID</p>;
 
   // 🔹 Count total topics recursively
   const countTotalTopics = (items: Material[]): number =>
@@ -51,7 +53,7 @@ export default function CourseDetail() {
       localStorage.getItem("courseProgress") || "{}"
     );
     const prevCompleted = stored[id] || [];
-    const merged = Array.from(new Set([...prevCompleted, ...newCompleted])); // never decreases
+    const merged = Array.from(new Set([...prevCompleted, ...newCompleted]));
     stored[id] = merged;
     localStorage.setItem("courseProgress", JSON.stringify(stored));
     setCompletedTopics(merged);
@@ -69,6 +71,8 @@ export default function CourseDetail() {
       mergeCompletedTopics(stored[id]);
     }
   }, [id, topics]);
+
+
 
   // 🔹 Fetch topics & assignments
   useEffect(() => {
