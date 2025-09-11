@@ -14,6 +14,10 @@ const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
 
 export default function CourseDetail() {
   const { id: rawId } = useParams();
+  const id = Array.isArray(rawId) ? rawId[0] : rawId;
+
+  if (!id) return <p>Invalid course ID</p>; // ✅ ensures id is string below
+
   const [topics, setTopics] = useState<Material[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,9 +38,6 @@ export default function CourseDetail() {
   const [completedTopics, setCompletedTopics] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
 
-  const id = Array.isArray(rawId) ? rawId[0] : rawId;
-  if (!id) return <p>Invalid course ID</p>;
-
   // 🔹 Count total topics recursively
   const countTotalTopics = (items: Material[]): number =>
     items.reduce(
@@ -46,7 +47,9 @@ export default function CourseDetail() {
 
   // 🔹 Merge stored progress
   const mergeCompletedTopics = (newCompleted: string[]) => {
-    const stored = JSON.parse(localStorage.getItem("courseProgress") || "{}");
+    const stored: Record<string, string[]> = JSON.parse(
+      localStorage.getItem("courseProgress") || "{}"
+    );
     const prevCompleted = stored[id] || [];
     const merged = Array.from(new Set([...prevCompleted, ...newCompleted])); // never decreases
     stored[id] = merged;
@@ -59,108 +62,105 @@ export default function CourseDetail() {
 
   // 🔹 Load stored progress
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("courseProgress") || "{}");
+    const stored: Record<string, string[]> = JSON.parse(
+      localStorage.getItem("courseProgress") || "{}"
+    );
     if (stored[id]) {
       mergeCompletedTopics(stored[id]);
     }
   }, [id, topics]);
 
   // 🔹 Fetch topics & assignments
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const pptRes = await fetch(`${BASE}/drive/${id}/ppts`);
-      const pptData = await pptRes.json();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const pptRes = await fetch(`${BASE}/drive/${id}/ppts`);
+        const pptData = await pptRes.json();
 
-      let finalTopics: Material[] = [];
+        let finalTopics: Material[] = [];
 
-      if (Array.isArray(pptData) && pptData.length) {
-        finalTopics = [
-          {
-            name: id as string,
-            children: pptData.map((file: any) => ({
-              name: file.name.replace(/\.pptx?$/i, ""),
-              url: file.previewUrl || file.webViewLink || file.file,
-              assignments: [],
-              children: file.children || [],
-            })),
-          },
-        ];
-      } else {
-        finalTopics = backupPPTs[id as string] || [];
+        if (Array.isArray(pptData) && pptData.length) {
+          finalTopics = [
+            {
+              name: id,
+              children: pptData.map((file: any) => ({
+                name: file.name.replace(/\.pptx?$/i, ""),
+                url: file.previewUrl || file.webViewLink || file.file,
+                assignments: [],
+                children: file.children || [],
+              })),
+            },
+          ];
+        } else {
+          finalTopics = backupPPTs[id] || [];
+        }
+
+        const assRes = await fetch(`${BASE}/drive/${id}/assignments`);
+        const assData = await assRes.json();
+
+        finalTopics = finalTopics.map((topic, idx) => ({
+          ...topic,
+          assignments: assData[idx]?.assignments || [],
+        }));
+
+        setTopics(finalTopics);
+
+        // ✅ Open all parent dropdowns by default
+        const parentIndexes = getAllParentIndexes(finalTopics);
+
+        // ✅ Also ensure first leaf topic's parents are open
+        const firstLeafIndex = getFirstLeafIndex(finalTopics);
+        const firstLeafParents = firstLeafIndex
+          .split(".")
+          .slice(0, -1)
+          .map((_, idx, arr) => arr.slice(0, idx + 1).join("."));
+        setOpenTopics(Array.from(new Set([...parentIndexes, ...firstLeafParents])));
+
+        // ✅ Select first leaf by default
+        setSelectedTopic(firstLeafIndex);
+
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching materials:", err);
+        setTopics(backupPPTs[id] || []);
+        setLoading(false);
       }
+    };
 
-      const assRes = await fetch(`${BASE}/drive/${id}/assignments`);
-      const assData = await assRes.json();
+    fetchData();
+  }, [id]);
 
-      finalTopics = finalTopics.map((topic, idx) => ({
-        ...topic,
-        assignments: assData[idx]?.assignments || [],
-      }));
+  // Recursively find first leaf index
+  const getFirstLeafIndex = (items: Material[], parentIndex = "0"): string => {
+    let item = items[0];
+    let index = parentIndex;
 
-      setTopics(finalTopics);
-
-      // ✅ Open all parent dropdowns by default
-      const parentIndexes = getAllParentIndexes(finalTopics);
-
-      // ✅ Also ensure first leaf topic's parents are open
-      const firstLeafIndex = getFirstLeafIndex(finalTopics);
-      const firstLeafParents = firstLeafIndex
-        .split(".")
-        .slice(0, -1) // remove leaf itself
-        .map((_, idx, arr) => arr.slice(0, idx + 1).join("."));
-      setOpenTopics(Array.from(new Set([...parentIndexes, ...firstLeafParents])));
-
-      // ✅ Select first leaf by default
-      setSelectedTopic(firstLeafIndex);
-
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching materials:", err);
-      setTopics(backupPPTs[id as string] || []);
-      setLoading(false);
+    while (item.children && item.children.length > 0) {
+      item = item.children[0];
+      index += ".0";
     }
+
+    return index;
   };
 
-  fetchData();
-}, [id]);
+  const getAllParentIndexes = (items: Material[], parentIndex = ""): string[] => {
+    let indexes: string[] = [];
+    items.forEach((item, idx) => {
+      const index = parentIndex ? `${parentIndex}.${idx}` : `${idx}`;
+      if (item.children && item.children.length > 0) {
+        indexes.push(index);
+        indexes = indexes.concat(getAllParentIndexes(item.children, index));
+      }
+    });
+    return indexes;
+  };
 
-// Recursively find first leaf index
-const getFirstLeafIndex = (items: Material[], parentIndex = "0"): string => {
-  let item = items[0];
-  let index = parentIndex;
-
-  while (item.children && item.children.length > 0) {
-    item = item.children[0];
-    index += ".0"; // go deeper in index path
-  }
-
-  return index;
-};
-
-const getAllParentIndexes = (items: Material[], parentIndex = ""): string[] => {
-  let indexes: string[] = [];
-  items.forEach((item, idx) => {
-    const index = parentIndex ? `${parentIndex}.${idx}` : `${idx}`;
-    if (item.children && item.children.length > 0) {
-      indexes.push(index); // add this parent
-      indexes = indexes.concat(getAllParentIndexes(item.children, index));
+  useEffect(() => {
+    if (topics.length > 0 && selectedTopic === null) {
+      const firstLeafIndex = getFirstLeafIndex(topics);
+      setSelectedTopic(firstLeafIndex);
     }
-  });
-  return indexes;
-};
-
-
-useEffect(() => {
-  if (topics.length > 0 && selectedTopic === null) {
-    const firstLeafIndex = getFirstLeafIndex(topics);
-    setSelectedTopic(firstLeafIndex); // dynamically match sidebar index
-  }
-}, [topics, selectedTopic]);
-
-
-
-
+  }, [topics, selectedTopic]);
 
   // Sidebar toggle on resize
   useEffect(() => {
@@ -184,14 +184,14 @@ useEffect(() => {
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
     );
   };
+
   const handleSidebarClick = (index: string) => {
-  // check if current topic is completed
-  if (selectedTopic && !completedTopics.includes(selectedTopic)) {
-    alert("⚠️ Please mark the current topic as complete before moving to the next.");
-    return;
-  }
-  setSelectedTopic(index);
-};
+    if (selectedTopic && !completedTopics.includes(selectedTopic)) {
+      alert("⚠️ Please mark the current topic as complete before moving to the next.");
+      return;
+    }
+    setSelectedTopic(index);
+  };
 
   // 🔹 Recursive Sidebar Renderer
   const renderSidebarTopics = (items: Material[], parentIndex = "", level = 0) =>
@@ -238,7 +238,7 @@ useEffect(() => {
               ? "bg-purple-300 text-black"
               : "bg-gray-100 hover:bg-purple-200 text-black"
           }`}
-          onClick={() =>  handleSidebarClick(index)}
+          onClick={() => handleSidebarClick(index)}
         >
           {item.name}
         </li>
@@ -327,7 +327,7 @@ useEffect(() => {
                 selectedTopic={selectedTopic}
                 setSelectedTopic={setSelectedTopic}
                 scrollRef={scrollRef}
-                courseId={id as string}
+                courseId={id}
                 onNext={(topicId) => handleTopicCompletion(topicId)}
               />
             )}
@@ -335,7 +335,7 @@ useEffect(() => {
             {activeTab === "interview" && (
               <InterviewTab
                 interviewQuestions={interviewData}
-                courseId={id as string}
+                courseId={id}
                 currentQuestionIndex={currentQuestionIndex}
                 setCurrentQuestionIndex={setCurrentQuestionIndex}
                 selectedOption={selectedOption}
@@ -374,7 +374,6 @@ useEffect(() => {
               </button>
             </div>
             <ul>{renderSidebarTopics(topics)}</ul>
-
           </div>
 
           {["study", "videos", "interview", "assignments"].map((tab) => (
@@ -405,7 +404,7 @@ useEffect(() => {
                       selectedTopic={selectedTopic}
                       setSelectedTopic={setSelectedTopic}
                       scrollRef={scrollRef}
-                      courseId={id as string}
+                      courseId={id}
                       onNext={(topicId) => handleTopicCompletion(topicId)}
                     />
                   )}
@@ -413,7 +412,7 @@ useEffect(() => {
                   {tab === "interview" && (
                     <InterviewTab
                       interviewQuestions={interviewData}
-                      courseId={id as string}
+                      courseId={id}
                       currentQuestionIndex={currentQuestionIndex}
                       setCurrentQuestionIndex={setCurrentQuestionIndex}
                       selectedOption={selectedOption}
