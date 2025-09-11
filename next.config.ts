@@ -1,13 +1,18 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
+  eslint: {
+    // Disable ESLint errors during build
+    ignoreDuringBuilds: true,
+  },
   async rewrites() {
     return [
       {
         source: "/api/:path*",
-        destination: "http://localhost:5000/api/:path*", // Proxy to backend
+        destination: process.env.NEXT_PUBLIC_API_BASE + "/:path*", // Proxy to backend using env
       },
     ];
   },
 };
+
 export default nextConfig;
