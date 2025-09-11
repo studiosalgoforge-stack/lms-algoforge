@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import StudyTab, { Material } from "@/components/course/StudyTab";
@@ -17,23 +17,19 @@ export default function CourseDetail() {
   const { id: rawId } = useParams();
   const id = Array.isArray(rawId) ? rawId[0] : rawId;
 
-  // ✅ Declare all hooks first
+  // ✅ All hooks at top
   const [topics, setTopics] = useState<Material[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-
   const [activeTab, setActiveTab] = useState<
     "study" | "videos" | "interview" | "assignments" | "none"
   >("study");
-
   const [openTopics, setOpenTopics] = useState<string[]>([]);
   const [isTopicsSidebarOpen, setIsTopicsSidebarOpen] = useState(true);
   const [isMobileSliderOpen, setIsMobileSliderOpen] = useState(false);
-
   const scrollRef = useRef<HTMLDivElement>(null!);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
-
   const [completedTopics, setCompletedTopics] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
 
@@ -41,26 +37,30 @@ export default function CourseDetail() {
   if (!id) return <p>Invalid course ID</p>;
 
   // 🔹 Count total topics recursively
-  const countTotalTopics = (items: Material[]): number =>
+  const countTotalTopics = useCallback((items: Material[]): number =>
     items.reduce(
       (acc, item) => acc + (item.children ? countTotalTopics(item.children) : 1),
       0
-    );
+    ), []
+  );
 
   // 🔹 Merge stored progress
-  const mergeCompletedTopics = (newCompleted: string[]) => {
-    const stored: Record<string, string[]> = JSON.parse(
-      localStorage.getItem("courseProgress") || "{}"
-    );
-    const prevCompleted = stored[id] || [];
-    const merged = Array.from(new Set([...prevCompleted, ...newCompleted]));
-    stored[id] = merged;
-    localStorage.setItem("courseProgress", JSON.stringify(stored));
-    setCompletedTopics(merged);
+  const mergeCompletedTopics = useCallback(
+    (newCompleted: string[]) => {
+      const stored: Record<string, string[]> = JSON.parse(
+        localStorage.getItem("courseProgress") || "{}"
+      );
+      const prevCompleted = stored[id] || [];
+      const merged = Array.from(new Set([...prevCompleted, ...newCompleted]));
+      stored[id] = merged;
+      localStorage.setItem("courseProgress", JSON.stringify(stored));
+      setCompletedTopics(merged);
 
-    const total = countTotalTopics(topics);
-    if (total > 0) setProgress(Math.floor((merged.length / total) * 100));
-  };
+      const total = countTotalTopics(topics);
+      if (total > 0) setProgress(Math.floor((merged.length / total) * 100));
+    },
+    [id, topics, countTotalTopics]
+  );
 
   // 🔹 Load stored progress
   useEffect(() => {
@@ -70,9 +70,7 @@ export default function CourseDetail() {
     if (stored[id]) {
       mergeCompletedTopics(stored[id]);
     }
-  }, [id, topics]);
-
-
+  }, [id, mergeCompletedTopics]);
 
   // 🔹 Fetch topics & assignments
   useEffect(() => {
@@ -135,7 +133,7 @@ export default function CourseDetail() {
   }, [id]);
 
   // Recursively find first leaf index
-  const getFirstLeafIndex = (items: Material[], parentIndex = "0"): string => {
+  const getFirstLeafIndex = useCallback((items: Material[], parentIndex = "0"): string => {
     let item = items[0];
     let index = parentIndex;
 
@@ -145,31 +143,34 @@ export default function CourseDetail() {
     }
 
     return index;
-  };
+  }, []);
 
-  const getAllParentIndexes = (items: Material[], parentIndex = ""): string[] => {
-    let indexes: string[] = [];
-    items.forEach((item, idx) => {
-      const index = parentIndex ? `${parentIndex}.${idx}` : `${idx}`;
-      if (item.children && item.children.length > 0) {
-        indexes.push(index);
-        indexes = indexes.concat(getAllParentIndexes(item.children, index));
-      }
-    });
-    return indexes;
-  };
+  const getAllParentIndexes = useCallback(
+    (items: Material[], parentIndex = ""): string[] => {
+      let indexes: string[] = [];
+      items.forEach((item, idx) => {
+        const index = parentIndex ? `${parentIndex}.${idx}` : `${idx}`;
+        if (item.children && item.children.length > 0) {
+          indexes.push(index);
+          indexes = indexes.concat(getAllParentIndexes(item.children, index));
+        }
+      });
+      return indexes;
+    },
+    []
+  );
 
+  // ✅ Ensure first leaf is selected
   useEffect(() => {
     if (topics.length > 0 && selectedTopic === null) {
       const firstLeafIndex = getFirstLeafIndex(topics);
       setSelectedTopic(firstLeafIndex);
     }
-  }, [topics, selectedTopic]);
+  }, [topics, selectedTopic, getFirstLeafIndex]);
 
   // Sidebar toggle on resize
   useEffect(() => {
-    const handleResize = () =>
-      setIsTopicsSidebarOpen(window.innerWidth >= 1024);
+    const handleResize = () => setIsTopicsSidebarOpen(window.innerWidth >= 1024);
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -177,9 +178,7 @@ export default function CourseDetail() {
 
   // 🎉 Confetti when 100%
   useEffect(() => {
-    if (progress === 100) {
-      confetti({ particleCount: 100, spread: 70 });
-    }
+    if (progress === 100) confetti({ particleCount: 100, spread: 70 });
   }, [progress]);
 
   // ✅ Toggle multiple dropdowns
@@ -198,62 +197,62 @@ export default function CourseDetail() {
   };
 
   // 🔹 Recursive Sidebar Renderer
-  const renderSidebarTopics = (items: Material[], parentIndex = "", level = 0) =>
-    items.map((item, idx) => {
-      const index = parentIndex ? `${parentIndex}.${idx}` : `${idx}`;
-      const hasChildren = item.children && item.children.length > 0;
-      const isOpen = openTopics.includes(index);
+  const renderSidebarTopics = useCallback(
+    (items: Material[], parentIndex = "", level = 0) =>
+      items.map((item, idx) => {
+        const index = parentIndex ? `${parentIndex}.${idx}` : `${idx}`;
+        const hasChildren = item.children && item.children.length > 0;
+        const isOpen = openTopics.includes(index);
 
-      const bgColors = ["bg-gray-200", "bg-gray-100", "bg-gray-50"];
-      const bg = bgColors[level % bgColors.length];
+        const bgColors = ["bg-gray-200", "bg-gray-100", "bg-gray-50"];
+        const bg = bgColors[level % bgColors.length];
 
-      if (hasChildren) {
-        return (
-          <li key={index} className="mb-1">
-            <div
-              className={`${bg} font-semibold cursor-pointer flex justify-between items-center p-2 rounded-md hover:bg-purple-100`}
-              onClick={() => toggleTopic(index)}
-            >
-              <span>{item.name}</span>
-              <span
-                className={`transform transition-transform ${
-                  isOpen ? "rotate-180" : "rotate-0"
-                }`}
+        if (hasChildren) {
+          return (
+            <li key={index} className="mb-1">
+              <div
+                className={`${bg} font-semibold cursor-pointer flex justify-between items-center p-2 rounded-md hover:bg-purple-100`}
+                onClick={() => toggleTopic(index)}
               >
-                ▼
-              </span>
-            </div>
-            {isOpen && (
-              <ul className="ml-4 mt-1 pl-2 border-l-2 border-purple-300 space-y-1">
-                {renderSidebarTopics(item.children!, index, level + 1)}
-              </ul>
-            )}
+                <span>{item.name}</span>
+                <span
+                  className={`transform transition-transform ${
+                    isOpen ? "rotate-180" : "rotate-0"
+                  }`}
+                >
+                  ▼
+                </span>
+              </div>
+              {isOpen && (
+                <ul className="ml-4 mt-1 pl-2 border-l-2 border-purple-300 space-y-1">
+                  {renderSidebarTopics(item.children!, index, level + 1)}
+                </ul>
+              )}
+            </li>
+          );
+        }
+
+        return (
+          <li
+            key={index}
+            className={`p-2 rounded-md cursor-pointer ${
+              completedTopics.includes(index)
+                ? "bg-green-200 text-black"
+                : selectedTopic === index
+                ? "bg-purple-300 text-black"
+                : "bg-gray-100 hover:bg-purple-200 text-black"
+            }`}
+            onClick={() => handleSidebarClick(index)}
+          >
+            {item.name}
           </li>
         );
-      }
+      }),
+    [openTopics, completedTopics, selectedTopic]
+  );
 
-      return (
-        <li
-          key={index}
-          className={`p-2 rounded-md cursor-pointer ${
-            completedTopics.includes(index)
-              ? "bg-green-200 text-black"
-              : selectedTopic === index
-              ? "bg-purple-300 text-black"
-              : "bg-gray-100 hover:bg-purple-200 text-black"
-          }`}
-          onClick={() => handleSidebarClick(index)}
-        >
-          {item.name}
-        </li>
-      );
-    });
-
-  // 🔹 Handle topic completion
   const handleTopicCompletion = (topicId: string) => {
-    if (!completedTopics.includes(topicId)) {
-      mergeCompletedTopics([topicId]);
-    }
+    if (!completedTopics.includes(topicId)) mergeCompletedTopics([topicId]);
   };
 
   if (loading) return <p className="text-center mt-16">Loading materials...</p>;
@@ -268,6 +267,9 @@ export default function CourseDetail() {
       url: "https://drive.google.com/file/d/1mTCfA7gd9mPseiFoT7LITKY6fobuoLyi/preview",
     },
   ];
+
+  
+
 
   return (
     <ProtectedRoute>
