@@ -31,8 +31,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "algoforge-lms-prototype-j5ak-df0i9kzu7.vercel.app/",
-       "https://lms-algoforge.onrender.com/"
+      "https://algoforge-lms-prototype-j5ak-9i2aylzki.vercel.app",
+       "https://lms-algoforge.onrender.com"
       ],
      methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
