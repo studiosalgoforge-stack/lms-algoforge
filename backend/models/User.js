@@ -17,11 +17,19 @@ const userSchema = new mongoose.Schema(
     emailVerified: { type: Boolean, default: false },
     emailVerificationToken: { type: String, default: null },
     passwordChangedAt: { type: Date },
-    
-  },
 
-  { timestamps: true }
+    // ✅ Moved courseProgress here
+    courseProgress: [
+      {
+        courseKey: { type: String, required: true },        // e.g. "Data-Science"
+        completedTopics: { type: [String], default: [] },   // e.g. ["0","0.1","0.2"]
+        updatedAt: { type: Date, default: Date.now },
+      },
+    ],
+  },
+  { timestamps: true } // options object
 );
+
 
 // Encrypt password before saving
 userSchema.pre("save", async function (next) {

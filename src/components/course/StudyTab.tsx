@@ -13,10 +13,10 @@ interface StudyTabProps {
   topics: Material[];
   selectedTopic: string | null;
   setSelectedTopic: (topic: string | null) => void;
-  scrollRef: React.RefObject<HTMLDivElement>;
+  scrollRef: React.RefObject<HTMLDivElement | null>;
   courseId: string;
-  onNext?: (topicIndex: string, completed: number, total: number) => void;
-  updateProgress?: (courseId: string, completed: number) => void;
+  onNext?: (topicId: string) => void; // backend update
+  completedTopics?: string[]; // from CourseDetail
 }
 
 export default function StudyTab({
@@ -26,23 +26,11 @@ export default function StudyTab({
   scrollRef,
   courseId,
   onNext,
-  updateProgress,
+  completedTopics = [],
 }: StudyTabProps) {
-  const [completedTopics, setCompletedTopics] = useState<string[]>([]);
   const [cooldown, setCooldown] = useState<number>(10);
   const [lastCompleted, setLastCompleted] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
-
-  // Load stored progress
-  useEffect(() => {
-    const stored = localStorage.getItem("courseProgress");
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (parsed[courseId]) {
-        setCompletedTopics(parsed[courseId]);
-      }
-    }
-  }, [courseId]);
 
   // ✅ Automatically select first topic if none selected
   useEffect(() => {
@@ -50,22 +38,6 @@ export default function StudyTab({
       setSelectedTopic("0"); // first topic
     }
   }, [selectedTopic, topics, setSelectedTopic]);
-
-  // Save progress & trigger confetti if complete
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("courseProgress") || "{}");
-    stored[courseId] = completedTopics;
-    localStorage.setItem("courseProgress", JSON.stringify(stored));
-
-    if (updateProgress) {
-      updateProgress(courseId, completedTopics.length);
-    }
-
-    const total = countTotalTopics(topics);
-    if (completedTopics.length === total && total > 0) {
-      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
-    }
-  }, [completedTopics, courseId, updateProgress, topics]);
 
   // Timer countdown
   useEffect(() => {
@@ -121,8 +93,7 @@ export default function StudyTab({
     }
 
     if (!completedTopics.includes(selectedTopic)) {
-      const updated = [...completedTopics, selectedTopic];
-      setCompletedTopics(updated);
+      onNext?.(selectedTopic); // Backend update
       setLastCompleted(selectedTopic);
       setMessage("");
 
@@ -136,11 +107,14 @@ export default function StudyTab({
         }, 1200);
       }
 
-      onNext?.(selectedTopic, updated.length, total);
+      // Confetti if completed all
+      if (completedTopics.length + 1 === total && total > 0) {
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      }
     }
   };
 
-  // Sidebar topic click (prevent skipping)
+  // Prevent skipping uncompleted topic
   const handleTopicClick = (path: string) => {
     if (!selectedTopic) {
       setSelectedTopic(path);
@@ -160,7 +134,6 @@ export default function StudyTab({
     items.map((item, idx) => {
       const index = parentIndex ? `${parentIndex}.${idx}` : `${idx}`;
       const hasChildren = item.children && item.children.length > 0;
-      const isOpen = false;
 
       const bgColors = ["bg-gray-200", "bg-gray-100", "bg-gray-50"];
       const bg = bgColors[level % bgColors.length];
@@ -173,13 +146,11 @@ export default function StudyTab({
               onClick={() => handleTopicClick(index)}
             >
               <span>{item.name}</span>
-              <span className={`transform transition-transform ${isOpen ? "rotate-180" : "rotate-0"}`}>▼</span>
+              <span className="transform transition-transform">▼</span>
             </div>
-            {isOpen && (
-              <ul className="ml-4 mt-1 pl-2 border-l-2 border-purple-300 space-y-1">
-                {renderSidebarTopics(item.children!, index, level + 1)}
-              </ul>
-            )}
+            <ul className="ml-4 mt-1 pl-2 border-l-2 border-purple-300 space-y-1">
+              {renderSidebarTopics(item.children!, index, level + 1)}
+            </ul>
           </li>
         );
       }
@@ -201,9 +172,7 @@ export default function StudyTab({
       );
     });
 
-  if (!selectedTopic) {
-    return <p className="text-gray-600">Select a topic to start studying.</p>;
-  }
+  if (!selectedTopic) return <p className="text-gray-600">Select a topic to start studying.</p>;
 
   const topic = getTopicByPath(topics, selectedTopic);
   if (!topic) return <p className="text-red-500">Topic not found.</p>;
@@ -215,8 +184,14 @@ export default function StudyTab({
       <h2 className="text-xl font-semibold mb-4">{topic.name}</h2>
 
       {topic.url && !isFile ? (
-        <iframe src={topic.url} className="w-full h-[500px] border rounded-md" allowFullScreen></iframe>
+        // Non-downloadable content (iframe view)
+        <iframe
+          src={topic.url}
+          className="w-full h-[500px] border rounded-md"
+          allowFullScreen
+        ></iframe>
       ) : isFile ? (
+        // Downloadable file UI
         <div className="flex flex-col items-center justify-center h-40 border rounded-md bg-gray-50">
           <p className="mb-2 text-gray-700">{topic.name}</p>
           <a
@@ -238,7 +213,9 @@ export default function StudyTab({
       <button
         onClick={markComplete}
         className={`mt-4 px-4 py-2 rounded-md text-white ${
-          lastCompleted === selectedTopic ? "bg-green-600 hover:bg-green-700" : "bg-purple-600 hover:bg-purple-700"
+          lastCompleted === selectedTopic
+            ? "bg-green-600 hover:bg-green-700"
+            : "bg-purple-600 hover:bg-purple-700"
         }`}
       >
         {lastCompleted === selectedTopic ? "Completed!" : "Mark as Complete"}

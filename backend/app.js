@@ -14,6 +14,7 @@ import userRoutes from "./routes/userRoutes.js";
 import editUserRoutes from "./routes/editUserRoutes.js";
 import questionsRoute from "./routes/questions.js";
 import SupportQuery from "./models/SupportQuery.js";
+import progressRoutes from "./routes/progressRoutes.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -62,6 +63,7 @@ app.use('/api/users' , userRoutes);
 app.use("/api/edituser", editUserRoutes);
 console.log("➡️ Mounting /api/questions...");
 app.use('/api/questions', questionsRoute);
+app.use("/api/progress", progressRoutes);
 
 // serve uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

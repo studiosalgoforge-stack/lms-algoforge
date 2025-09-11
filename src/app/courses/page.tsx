@@ -34,51 +34,103 @@ export default function CoursesPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [courseProgress, setCourseProgress] = useState<Record<string, string[]>>({});
 
-  // Load stored progress
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("courseProgress") || "{}");
-    setCourseProgress(stored);
-  }, []);
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : "";
 
-  // Merge progress safely
-  const mergeProgress = (courseId: string, newCompleted: string[]) => {
-    const prevCompleted = courseProgress[courseId] || [];
-    const merged = Array.from(new Set([...prevCompleted, ...newCompleted])); // never decreases
-    const updated = { ...courseProgress, [courseId]: merged };
-    setCourseProgress(updated);
-    localStorage.setItem("courseProgress", JSON.stringify(updated));
-    return merged;
+  // Fetch progress from backend on mount
+  useEffect(() => {
+    const fetchProgress = async () => {
+      try {
+        if (!token) return;
+     const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000";
+const res = await fetch(`${BASE_URL}/api/progress`, { 
+  headers: { Authorization: `Bearer ${token}` } 
+});
+        if (!res.ok) throw new Error("Failed to fetch progress");
+        const data = await res.json();
+        setCourseProgress(data.courseProgress || {});
+      } catch (err) {
+        console.error("Error fetching progress:", err);
+      }
+    };
+    fetchProgress();
+  }, [token]);
+
+  // Merge progress and update backend
+  const mergeProgress = async (courseId: string, newCompleted: string[]) => {
+    try {
+      if (!token) return;
+     const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000";
+const res = await fetch(`${BASE_URL}/api/progress`,
+   { 
+ // Send first new topic to backend
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ courseKey: courseId, topicPath: newCompleted[0] }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to update progress");
+
+      // Update local state
+      setCourseProgress((prev) => {
+        const prevCompleted = prev[courseId] || [];
+        const merged = Array.from(new Set([...prevCompleted, ...data.completedTopics]));
+        return { ...prev, [courseId]: merged };
+      });
+    } catch (err) {
+      console.error("Error updating progress:", err);
+    }
   };
 
   const toggleCourse = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+const countPPTLeafTopics = (items: any[]): number => {
+  return items.reduce((acc, item) => {
+    let count = 0;
 
-  const countPPTLeafTopics = (items: any[]): number =>
-    items.reduce((acc, item) => {
-      if (item.children) return acc + countPPTLeafTopics(item.children);
-      if (item.link) return acc + 1;
-      return acc;
-    }, 0);
+    if (item.file || item.link || item.url) {
+      count += 1;
+    }
 
-  const courses = Object.keys(backupPPTs).map((key) => {
-    const topics = backupPPTs[key] || [];
-    const total = countPPTLeafTopics(topics);
+    if (item.children && item.children.length > 0) {
+      count += countPPTLeafTopics(item.children);
+    }
 
-    const completedArray = Array.isArray(courseProgress[key]) ? courseProgress[key] : [];
-    const completed = completedArray.length;
+    return acc + count;
+  }, 0);
+};
 
-    const progress = total > 0 ? Math.min(100, Math.round((completed / total) * 100)) : 0;
 
-    return {
-      id: key,
-      title: key,
-      topics,
-      completed,
-      total,
-      progress,
-    };
-  });
+  // Prepare courses with progress
+ const courses = Object.keys(backupPPTs).map((key) => {
+  const topics = backupPPTs[key] || [];
+  
+  // ✅ If the first node is just a container, use its children
+ const normalizedTopics = topics;
+console.log("Topics for", key, topics);
+
+  const total = countPPTLeafTopics(normalizedTopics);
+
+  console.log("Course:", key, "Total leaf PPTs:", total);
+
+  const completedArray = Array.isArray(courseProgress[key]) ? courseProgress[key] : [];
+  const completed = completedArray.length;
+  const progress = total > 0 ? Math.min(100, Math.round((completed / total) * 100)) : 0;
+
+  return {
+    id: key,
+    title: key,
+    topics: normalizedTopics, // ✅ pass the children for rendering
+    completed,
+    total,
+    progress,
+  };
+});
+
 
   const items = sampleData[activeTab as keyof typeof sampleData];
 
@@ -88,7 +140,7 @@ export default function CoursesPage() {
         {/* Left/Main Content */}
         <div className="flex-1">
           <div className="flex-1 text-black mb-6 text-bold bg-gray-100 h-12 flex items-center px-4 gap-2">
-            <a href="https://dev-algoforge-prototype.vercel.app/" className="hover:underline">Home</a>
+            <a href="/" className="hover:underline">Home</a>
             <span>- Classroom</span>
           </div>
 
@@ -125,7 +177,11 @@ export default function CoursesPage() {
                     <span className="text-xl">{openIndex === index ? "−" : "+"}</span>
                   </div>
 
-                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openIndex === index ? "max-h-72" : "max-h-0"} bg-white`}>
+                  <div
+                    className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                      openIndex === index ? "max-h-72" : "max-h-0"
+                    } bg-white`}
+                  >
                     <div className="p-4 space-y-4">
                       {/* Progress Bar */}
                       <div>
@@ -174,7 +230,11 @@ export default function CoursesPage() {
                     <span className="text-xl">{openIndex === index ? "−" : "+"}</span>
                   </div>
 
-                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openIndex === index ? "max-h-72" : "max-h-0"} bg-white`}>
+                  <div
+                    className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                      openIndex === index ? "max-h-72" : "max-h-0"
+                    } bg-white`}
+                  >
                     <div className="p-4 space-y-4">
                       <a
                         href={item.link}
@@ -204,7 +264,11 @@ export default function CoursesPage() {
                     <span className="text-xl">{openIndex === index ? "−" : "+"}</span>
                   </div>
 
-                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openIndex === index ? "max-h-[600px]" : "max-h-0"} bg-white`}>
+                  <div
+                    className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                      openIndex === index ? "max-h-[600px]" : "max-h-0"
+                    } bg-white`}
+                  >
                     <div className="p-4">
                       <iframe
                         src={project.link}
