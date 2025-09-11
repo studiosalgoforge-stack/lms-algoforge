@@ -34,6 +34,7 @@ export default function CoursesPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [courseProgress, setCourseProgress] = useState<Record<string, string[]>>({});
 
+<<<<<<< HEAD
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : "";
 
   // Fetch progress from backend on mount
@@ -83,11 +84,28 @@ const res = await fetch(`${BASE_URL}/api/progress`,
     } catch (err) {
       console.error("Error updating progress:", err);
     }
+=======
+  // Load stored progress
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("courseProgress") || "{}");
+    setCourseProgress(stored);
+  }, []);
+
+  // Merge progress safely
+  const mergeProgress = (courseId: string, newCompleted: string[]) => {
+    const prevCompleted = courseProgress[courseId] || [];
+    const merged = Array.from(new Set([...prevCompleted, ...newCompleted])); // never decreases
+    const updated = { ...courseProgress, [courseId]: merged };
+    setCourseProgress(updated);
+    localStorage.setItem("courseProgress", JSON.stringify(updated));
+    return merged;
+>>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
   };
 
   const toggleCourse = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+<<<<<<< HEAD
 const countPPTLeafTopics = (items: any[]): number => {
   return items.reduce((acc, item) => {
     let count = 0;
@@ -131,6 +149,34 @@ console.log("Topics for", key, topics);
   };
 });
 
+=======
+
+  const countPPTLeafTopics = (items: any[]): number =>
+    items.reduce((acc, item) => {
+      if (item.children) return acc + countPPTLeafTopics(item.children);
+      if (item.link) return acc + 1;
+      return acc;
+    }, 0);
+
+  const courses = Object.keys(backupPPTs).map((key) => {
+    const topics = backupPPTs[key] || [];
+    const total = countPPTLeafTopics(topics);
+
+    const completedArray = Array.isArray(courseProgress[key]) ? courseProgress[key] : [];
+    const completed = completedArray.length;
+
+    const progress = total > 0 ? Math.min(100, Math.round((completed / total) * 100)) : 0;
+
+    return {
+      id: key,
+      title: key,
+      topics,
+      completed,
+      total,
+      progress,
+    };
+  });
+>>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
 
   const items = sampleData[activeTab as keyof typeof sampleData];
 
@@ -140,7 +186,11 @@ console.log("Topics for", key, topics);
         {/* Left/Main Content */}
         <div className="flex-1">
           <div className="flex-1 text-black mb-6 text-bold bg-gray-100 h-12 flex items-center px-4 gap-2">
+<<<<<<< HEAD
             <a href="/" className="hover:underline">Home</a>
+=======
+            <a href="https://dev-algoforge-prototype.vercel.app/" className="hover:underline">Home</a>
+>>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
             <span>- Classroom</span>
           </div>
 
@@ -177,11 +227,15 @@ console.log("Topics for", key, topics);
                     <span className="text-xl">{openIndex === index ? "−" : "+"}</span>
                   </div>
 
+<<<<<<< HEAD
                   <div
                     className={`transition-all duration-300 ease-in-out overflow-hidden ${
                       openIndex === index ? "max-h-72" : "max-h-0"
                     } bg-white`}
                   >
+=======
+                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openIndex === index ? "max-h-72" : "max-h-0"} bg-white`}>
+>>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
                     <div className="p-4 space-y-4">
                       {/* Progress Bar */}
                       <div>
@@ -230,11 +284,15 @@ console.log("Topics for", key, topics);
                     <span className="text-xl">{openIndex === index ? "−" : "+"}</span>
                   </div>
 
+<<<<<<< HEAD
                   <div
                     className={`transition-all duration-300 ease-in-out overflow-hidden ${
                       openIndex === index ? "max-h-72" : "max-h-0"
                     } bg-white`}
                   >
+=======
+                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openIndex === index ? "max-h-72" : "max-h-0"} bg-white`}>
+>>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
                     <div className="p-4 space-y-4">
                       <a
                         href={item.link}
@@ -264,11 +322,15 @@ console.log("Topics for", key, topics);
                     <span className="text-xl">{openIndex === index ? "−" : "+"}</span>
                   </div>
 
+<<<<<<< HEAD
                   <div
                     className={`transition-all duration-300 ease-in-out overflow-hidden ${
                       openIndex === index ? "max-h-[600px]" : "max-h-0"
                     } bg-white`}
                   >
+=======
+                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openIndex === index ? "max-h-[600px]" : "max-h-0"} bg-white`}>
+>>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
                     <div className="p-4">
                       <iframe
                         src={project.link}

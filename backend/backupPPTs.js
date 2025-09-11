@@ -284,7 +284,11 @@ export const backupPPTs = {
       },
       {
         name: "6 - Data Visualization",
+<<<<<<< HEAD
         link: "https://docs.google.com/presentation/d/1HoNySzogrZ7lpHj0xQm35h5HnF3Pi_fG/preview",
+=======
+        link: "https://docs.google.com/presentation/d/1MJ3TsDgAN31f-UviHIYJZN-52GL8e_Hh/preview",
+>>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
          assignments: [],
       },
       {
@@ -314,6 +318,7 @@ export const backupPPTs = {
 
           // Data Engineering
 
+<<<<<<< HEAD
  "Data-Engineering": [
     {
       name: "Data Primer & ML Pipeline",
@@ -529,4 +534,220 @@ export const backupPPTs = {
 // ...existing code...
 };
 
+=======
+"Data-Engineering": [
+  {
+    name: "Data-Engineering",
+    children: [
+      {
+        name: "Data Primer & ML Pipeline",
+        children: [
+          {
+            name: "1 - Data Science primer & ML Pipeline",
+            link: "https://docs.google.com/presentation/d/1Vg4rRBJC0TFpeRMUZmYGPjxbOEPEorGw/preview",
+            assignments: [],
+           
+          },
+          {
+            name: "2 - Python Codes",
+            file: "https://drive.google.com/uc?export=download&id=1c1EeKXOyj02-e_LJhxF1AOPLy8qED2Up",
+            assignments: [],
+            
+          },
+          {
+            name: "3 - Datasets",
+            file: "https://drive.google.com/uc?export=download&id=1v3Pu737qeeev9-16trZDhsfoAZPB2Z4f",
+            assignments: [],
+        
+          },
+          {
+            name: "4 - Basic Py Code",
+            file: "https://drive.google.com/uc?export=download&id=1cbCQnmXxfxNxjLu3j-aK0ypqOKfLlS5g",
+            assignments: [],
+            
+          }
+        ]
+        
+      },
+      {
+        name: "Data Architecture",
+        children: [
+          {
+            name: "1 - Data Architecture",
+            link: "https://docs.google.com/presentation/d/1oWCXxt9VpMfLYxCguva2Rnmd7AIs5Ot6/preview",
+            assignments: [],
+        
+          },
+          {
+            name: "2a - MySQL",
+            link: "https://docs.google.com/presentation/d/146RWcvauYbxeV8ASCj1MKe4oJ2ycxOoF/preview",
+            assignments: [],
+           
+          },
+          {
+            name: "2b - Postgre_SQL",
+            link: "https://docs.google.com/presentation/d/1he-jCNSLPmnk9r-fpaX3HGm0v0Tl3uTb/preview",
+            assignments: [],
+            
+          },
+          {
+            name: "3 - Postgre SQL Command",
+            file: "https://drive.google.com/uc?export=download&id=1R124A7aSlkTjSxRmMmq0gAgLQD4KQdCO",
+            assignments: [],
+         
+          },
+          {
+            name: "4 - Python Codes",
+            file: "https://drive.google.com/uc?export=download&id=11b-jN68jbPhKXFf8hCdsazVcxVIpMUA8",
+            assignments: [],
+          
+          },
+          {
+            name: "5 - Pet_Details_Datasets",
+            file: "https://drive.google.com/uc?export=download&id=1-s5x02bInizkQaKvAjJqsmnwn4hX2Nq",
+            assignments: [],
+        
+          },
+          {
+            name: "6 - Postgre_SQL",
+            file: "https://drive.google.com/uc?export=download&id=1R9ELcCTptslvrvKByQm8SCRCoXiWb_mt",
+            assignments: [],
+           
+          },
+          {
+            name: "7 - Postgre SQL Installation in windows",
+            link: "https://drive.google.com/file/d/17ANh5o76Zb-KdqSmBUlUTOaw_yHvF1X8/view?usp=drive_link",
+            assignments: [],
+          
+          },
+          {
+            name: "8 - Postgre SQL Installation in MAC",
+            link: "https://drive.google.com/file/d/1os4Gu1WwqZHUmj0XAlGt5OgKs_t5iirl/view?usp=drive_link",
+            assignments: [],
+           
+          },
+          {
+            name: "9 - MySQL Workbench Installation in MAC",
+            file: "https://drive.google.com/file/d/1B_EAbay3ytZGeLTatMGTO8N5D150orv4/view?usp=drive_link",
+            assignments: [],
+         
+          }
+        ]
+      },
+      {
+        name: "3 - Python Data Processing",
+        children: [
+          {
+            name: "1 - Datasets",
+            file: "https://drive.google.com/uc?export=download&id=1dtUSc3bICuOyTHELT7IbYKE1JaSX-zqW",
+            assignments: [],
+         
+          },
+          {
+            name: "2 - Python Codes",
+            file: "https://drive.google.com/uc?export=download&id=1GngupfNXASdBM_NBqbUHK91vX3NfkiHJ",
+            assignments: [],
+          
+          }
+        ]
+      },
+      {
+        name: "Big Data  & MySQL",
+        children: [
+          {
+            name: "1 - MongoDB",
+            link: "https://docs.google.com/presentation/d/1O8Qq39UNDJ38_ZikWXRQTVKCW1srlrdq/preview",
+            assignments: [],
+         
+          },
+          {
+            name: "2 - Apache HBASE",
+            link: "https://docs.google.com/presentation/d/1mZWJmREwfHlg-dtsz913rfOdbYnRYjOB/preview",
+            assignments: [],
+         
+          },
+          {
+            name: "3 - Distributed Framework & Hadoop",
+            link: "https://docs.google.com/presentation/d/18-ARxRra8rdr5AaheibE8Qlxo3jA-xSG/preview",
+            assignments: [],
+       
+          },
+          {
+            name: "4 - MongoDB Commands",
+            file: "https://drive.google.com/uc?export=download&id=1eKZbnNL1k5O5T13D8sPdbqEKsL9SKh0O",
+            assignments: [],
+       
+          },
+          {
+            name: "5 - MongoDB Python_Code",
+            file: "https://drive.google.com/uc?export=download&id=1J1AM1EIaJReO5lTV3BEusZYiDnF7NPk4",
+            assignments: [],
+          
+          }
+        ]
+      },
+      {
+        name: "6 - Apache Spark",
+        children: [
+          {
+            name: "1 - Module4_Datasets",
+            file: "https://drive.google.com/uc?export=download&id=1G8qyxdcWCi_wQMG4gsfGAss4sTJpVSDi",
+            assignments: [],
+      
+          }
+        ]
+      },
+      {
+        name: "7 - Apache Kalfka",
+        children: [
+          {
+            name: "1 - Module4_Datasets",
+            file: "https://drive.google.com/uc?export=download&id=1G8qyxdcWCi_wQMG4gsfGAss4sTJpVSDi",
+            assignments: [],
+          
+          }
+        ]
+      },
+      {
+        name: "8 - Real Time Streaming on Cloud(Azure & GCP)",
+        children: [
+          {
+            name: "1 - Module4_Datasets",
+            file: "https://drive.google.com/uc?export=download&id=1G8qyxdcWCi_wQMG4gsfGAss4sTJpVSDi",
+            assignments: [],
+         
+          }
+        ]
+      },
+      {
+        name: "9 - Spark Streaming",
+        children: [
+          {
+            name: "1 - Module4_Datasets",
+            file: "https://drive.google.com/uc?export=download&id=1G8qyxdcWCi_wQMG4gsfGAss4sTJpVSDi",
+            assignments: [],
+         
+          }
+        ]
+      },
+      {
+        name: "10 - Apache Nichi & Apache Airflow",
+        children: [
+          {
+            name: "1 - Module4_Datasets",
+            file: "https://drive.google.com/uc?export=download&id=1G8qyxdcWCi_wQMG4gsfGAss4sTJpVSDi",
+            assignments: [],
+           
+          }
+        ]
+      },
+    ]
+  },
+]
+
+// ...existing code...
+
+};
+console.log(backupPPTs);
+>>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
 

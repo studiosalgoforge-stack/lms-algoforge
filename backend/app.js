@@ -14,7 +14,10 @@ import userRoutes from "./routes/userRoutes.js";
 import editUserRoutes from "./routes/editUserRoutes.js";
 import questionsRoute from "./routes/questions.js";
 import SupportQuery from "./models/SupportQuery.js";
+<<<<<<< HEAD
 import progressRoutes from "./routes/progressRoutes.js";
+=======
+>>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -32,8 +35,13 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
+<<<<<<< HEAD
       "https://dev-lms-prototype.vercel.app",
        "https://dev-lms-prototype.onrender.com"
+=======
+      "https://algoforge-lms-prototype-j5ak-9i2aylzki.vercel.app",
+       "https://lms-algoforge.onrender.com"
+>>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
       ],
      methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
@@ -63,7 +71,10 @@ app.use('/api/users' , userRoutes);
 app.use("/api/edituser", editUserRoutes);
 console.log("➡️ Mounting /api/questions...");
 app.use('/api/questions', questionsRoute);
+<<<<<<< HEAD
 app.use("/api/progress", progressRoutes);
+=======
+>>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
 
 // serve uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
