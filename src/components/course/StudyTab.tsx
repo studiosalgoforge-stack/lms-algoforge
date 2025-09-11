@@ -13,17 +13,10 @@ interface StudyTabProps {
   topics: Material[];
   selectedTopic: string | null;
   setSelectedTopic: (topic: string | null) => void;
-<<<<<<< HEAD
   scrollRef: React.RefObject<HTMLDivElement | null>;
   courseId: string;
   onNext?: (topicId: string) => void; // backend update
   completedTopics?: string[]; // from CourseDetail
-=======
-  scrollRef: React.RefObject<HTMLDivElement>;
-  courseId: string;
-  onNext?: (topicIndex: string, completed: number, total: number) => void;
-  updateProgress?: (courseId: string, completed: number) => void;
->>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
 }
 
 export default function StudyTab({
@@ -33,32 +26,12 @@ export default function StudyTab({
   scrollRef,
   courseId,
   onNext,
-<<<<<<< HEAD
   completedTopics = [],
 }: StudyTabProps) {
-=======
-  updateProgress,
-}: StudyTabProps) {
-  const [completedTopics, setCompletedTopics] = useState<string[]>([]);
->>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
   const [cooldown, setCooldown] = useState<number>(10);
   const [lastCompleted, setLastCompleted] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
 
-<<<<<<< HEAD
-=======
-  // Load stored progress
-  useEffect(() => {
-    const stored = localStorage.getItem("courseProgress");
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (parsed[courseId]) {
-        setCompletedTopics(parsed[courseId]);
-      }
-    }
-  }, [courseId]);
-
->>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
   // ✅ Automatically select first topic if none selected
   useEffect(() => {
     if (!selectedTopic && topics.length > 0) {
@@ -66,25 +39,6 @@ export default function StudyTab({
     }
   }, [selectedTopic, topics, setSelectedTopic]);
 
-<<<<<<< HEAD
-=======
-  // Save progress & trigger confetti if complete
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("courseProgress") || "{}");
-    stored[courseId] = completedTopics;
-    localStorage.setItem("courseProgress", JSON.stringify(stored));
-
-    if (updateProgress) {
-      updateProgress(courseId, completedTopics.length);
-    }
-
-    const total = countTotalTopics(topics);
-    if (completedTopics.length === total && total > 0) {
-      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
-    }
-  }, [completedTopics, courseId, updateProgress, topics]);
-
->>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
   // Timer countdown
   useEffect(() => {
     if (cooldown > 0) {
@@ -139,12 +93,7 @@ export default function StudyTab({
     }
 
     if (!completedTopics.includes(selectedTopic)) {
-<<<<<<< HEAD
       onNext?.(selectedTopic); // Backend update
-=======
-      const updated = [...completedTopics, selectedTopic];
-      setCompletedTopics(updated);
->>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
       setLastCompleted(selectedTopic);
       setMessage("");
 
@@ -158,7 +107,6 @@ export default function StudyTab({
         }, 1200);
       }
 
-<<<<<<< HEAD
       // Confetti if completed all
       if (completedTopics.length + 1 === total && total > 0) {
         confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
@@ -167,13 +115,6 @@ export default function StudyTab({
   };
 
   // Prevent skipping uncompleted topic
-=======
-      onNext?.(selectedTopic, updated.length, total);
-    }
-  };
-
-  // Sidebar topic click (prevent skipping)
->>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
   const handleTopicClick = (path: string) => {
     if (!selectedTopic) {
       setSelectedTopic(path);
@@ -193,10 +134,6 @@ export default function StudyTab({
     items.map((item, idx) => {
       const index = parentIndex ? `${parentIndex}.${idx}` : `${idx}`;
       const hasChildren = item.children && item.children.length > 0;
-<<<<<<< HEAD
-=======
-      const isOpen = false;
->>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
 
       const bgColors = ["bg-gray-200", "bg-gray-100", "bg-gray-50"];
       const bg = bgColors[level % bgColors.length];
@@ -209,21 +146,11 @@ export default function StudyTab({
               onClick={() => handleTopicClick(index)}
             >
               <span>{item.name}</span>
-<<<<<<< HEAD
               <span className="transform transition-transform">▼</span>
             </div>
             <ul className="ml-4 mt-1 pl-2 border-l-2 border-purple-300 space-y-1">
               {renderSidebarTopics(item.children!, index, level + 1)}
             </ul>
-=======
-              <span className={`transform transition-transform ${isOpen ? "rotate-180" : "rotate-0"}`}>▼</span>
-            </div>
-            {isOpen && (
-              <ul className="ml-4 mt-1 pl-2 border-l-2 border-purple-300 space-y-1">
-                {renderSidebarTopics(item.children!, index, level + 1)}
-              </ul>
-            )}
->>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
           </li>
         );
       }
@@ -245,13 +172,7 @@ export default function StudyTab({
       );
     });
 
-<<<<<<< HEAD
   if (!selectedTopic) return <p className="text-gray-600">Select a topic to start studying.</p>;
-=======
-  if (!selectedTopic) {
-    return <p className="text-gray-600">Select a topic to start studying.</p>;
-  }
->>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
 
   const topic = getTopicByPath(topics, selectedTopic);
   if (!topic) return <p className="text-red-500">Topic not found.</p>;
@@ -263,7 +184,6 @@ export default function StudyTab({
       <h2 className="text-xl font-semibold mb-4">{topic.name}</h2>
 
       {topic.url && !isFile ? (
-<<<<<<< HEAD
         // Non-downloadable content (iframe view)
         <iframe
           src={topic.url}
@@ -272,10 +192,6 @@ export default function StudyTab({
         ></iframe>
       ) : isFile ? (
         // Downloadable file UI
-=======
-        <iframe src={topic.url} className="w-full h-[500px] border rounded-md" allowFullScreen></iframe>
-      ) : isFile ? (
->>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
         <div className="flex flex-col items-center justify-center h-40 border rounded-md bg-gray-50">
           <p className="mb-2 text-gray-700">{topic.name}</p>
           <a
@@ -297,13 +213,9 @@ export default function StudyTab({
       <button
         onClick={markComplete}
         className={`mt-4 px-4 py-2 rounded-md text-white ${
-<<<<<<< HEAD
           lastCompleted === selectedTopic
             ? "bg-green-600 hover:bg-green-700"
             : "bg-purple-600 hover:bg-purple-700"
-=======
-          lastCompleted === selectedTopic ? "bg-green-600 hover:bg-green-700" : "bg-purple-600 hover:bg-purple-700"
->>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
         }`}
       >
         {lastCompleted === selectedTopic ? "Completed!" : "Mark as Complete"}

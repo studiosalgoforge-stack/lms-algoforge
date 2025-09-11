@@ -17,7 +17,6 @@ const userSchema = new mongoose.Schema(
     emailVerified: { type: Boolean, default: false },
     emailVerificationToken: { type: String, default: null },
     passwordChangedAt: { type: Date },
-<<<<<<< HEAD
 
     // ✅ Moved courseProgress here
     courseProgress: [
@@ -31,13 +30,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true } // options object
 );
 
-=======
-    
-  },
-
-  { timestamps: true }
-);
->>>>>>> 554c5343c23f350e1a8699831b9f7e0b95b864ba
 
 // Encrypt password before saving
 userSchema.pre("save", async function (next) {
