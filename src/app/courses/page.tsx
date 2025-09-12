@@ -197,19 +197,28 @@ console.log("Topics for", key, topics);
                       </div>
 
                       {/* Buttons */}
-                      <div className="flex flex-wrap gap-3">
-                        <button
-                          className="px-4 py-2 bg-pink-500 text-white rounded-md shadow hover:opacity-90"
-                          onClick={() =>
-                            router.push(`/courses/${course.id}?completed=${course.completed}&total=${course.total}`)
-                          }
-                        >
-                          Go to Course
-                        </button>
-                        <button className="px-4 py-2 border border-pink-400 text-pink-500 rounded-md hover:bg-orange-50">
-                          Progress Report
-                        </button>
-                      </div>
+                 <div className="flex flex-wrap gap-3">
+  <button
+    className="w-full sm:w-auto px-4 sm:px-6 lg:px-6 py-2 sm:py-2.5 lg:py-2 
+               bg-pink-500 text-white font-medium rounded-lg shadow 
+               hover:opacity-90 transition-all duration-200 cursor-pointer"
+    onClick={() =>
+      router.push(`/courses/${course.id}?completed=${course.completed}&total=${course.total}`)
+    }
+  >
+    Go to Course
+  </button>
+
+  <button
+    className="w-full sm:w-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 lg:py-3 
+               border border-pink-400 text-pink-500 font-medium rounded-lg 
+               hover:bg-pink-50 transition-all duration-200"
+  >
+    Progress Report
+  </button>
+
+</div>
+
                     </div>
                   </div>
                 </div>
