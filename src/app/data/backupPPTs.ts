@@ -4,7 +4,7 @@ export interface Topic {
   url?:string;
   assignments?: string[];
  file?: string;
-  children?: Topic[]; 
+  children?: Topic[];
 }
 
 export const backupPPTs: Record<string, Topic[]> = {

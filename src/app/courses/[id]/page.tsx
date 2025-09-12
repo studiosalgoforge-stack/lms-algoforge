@@ -175,11 +175,8 @@ if (total > 0)
           ...topic,
           assignments: assData[idx]?.assignments || [],
         }));
-
         setTopics(finalTopics);
-
         const parentIndexes = getAllParentIndexes(finalTopics);
-
         const firstLeafIndex = getFirstLeafIndex(finalTopics);
         const firstLeafParents = firstLeafIndex
           .split(".")
