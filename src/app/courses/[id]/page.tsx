@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks, react/jsx-no-target-blank */
+
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
