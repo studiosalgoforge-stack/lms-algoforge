@@ -34,7 +34,7 @@ app.use(
       "http://localhost:3000",
       "hhttps://lms-algoforge.vercel.app",
       "https://lms-algoforge-git-main-algoforgestudios-projects.vercel.app",
-      "https://lms-algoforge-otoi6nw00-algoforgestudios-projects.vercel.app"
+      "https://lms-algoforge-otoi6nw00-algoforgestudios-projects.vercel.app",
        "https://dev-lms-prototype.onrender.com"
       ],
      methods: ["GET", "POST", "PUT", "DELETE"],
