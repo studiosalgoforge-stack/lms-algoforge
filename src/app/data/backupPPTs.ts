@@ -323,37 +323,200 @@ export const backupPPTs: Record<string, Topic[]> = {
           // Data Engineering
 
 
-"Data-Engineering": [
-     {
-  name: "Data-Engineering",
-  children: [
+ "Data-Engineering": [
     {
-      name: "Data Primer & ML Pipeline",
+      name: "Data Engineering fundamentals",
       children: [
-          {
-        name: "1 Data Science primer & ML Pipeline",
-        link: "https://docs.google.com/presentation/d/1Vg4rRBJC0TFpeRMUZmYGPjxbOEPEorGw/preview",
-         assignments: [],
-      },
-      { name: "2 Python Codes", 
-     file: "https://drive.google.com/uc?export=download&id=1c1EeKXOyj02-e_LJhxF1AOPLy8qED2Up" ,
-      assignments: [],
-      },
-      { name: "3 Datasets",
-      file: "https://drive.google.com/uc?export=download&id=1v3Pu737qeeev9-16trZDhsfoAZPB2Z4f" ,
-       assignments: [],
-      },
-      { name: "4 Basic Py Code", 
-          file: "https://drive.google.com/uc?export=download&id=1cbCQnmXxfxNxjLu3j-aK0ypqOKfLlS5g" ,
-           assignments: [],
-      },
-     
-    ],
-},
+        {
+          name: "1.1 - Data Science primer & ML Pipeline",
+          link: "https://docs.google.com/presentation/d/1Vg4rRBJC0TFpeRMUZmYGPjxbOEPEorGw/preview",
+          assignments: [],
+        },
+        {
+          name: "1.2 - Python Codes",
+          file: "https://drive.google.com/uc?export=download&id=1c1EeKXOyj02-e_LJhxF1AOPLy8qED2Up",
+          assignments: [],
+        },
+        {
+          name: "1.3 - Datasets",
+          file: "https://drive.google.com/uc?export=download&id=1v3Pu737qeeev9-16trZDhsfoAZPB2Z4f",
+          assignments: [],
+        },
+        {
+          name: "1.4 - Basic Py Code",
+          file: "https://drive.google.com/uc?export=download&id=1cbCQnmXxfxNxjLu3j-aK0ypqOKfLlS5g",
+          assignments: [],
+        },
+        {
+          name: "2.1 - Data Architecture",
+          link: "https://docs.google.com/presentation/d/1oWCXxt9VpMfLYxCguva2Rnmd7AIs5Ot6/preview",
+          assignments: [],
+        },
+        {
+          name: "2.2 - MySQL",
+          link: "https://docs.google.com/presentation/d/146RWcvauYbxeV8ASCj1MKe4oJ2ycxOoF/preview",
+          assignments: [],
+        },
+        {
+          name: "2.3 - Postgre_SQL",
+          link: "https://docs.google.com/presentation/d/1he-jCNSLPmnk9r-fpaX3HGm0v0Tl3uTb/preview",
+          assignments: [],
+        },
+        {
+          name: "2.4 - Postgre SQL Command",
+          file: "https://drive.google.com/uc?export=download&id=1R124A7aSlkTjSxRmMmq0gAgLQD4KQdCO",
+          assignments: [],
+        },
+        {
+          name: "2.5 - Python Codes",
+          file: "https://drive.google.com/uc?export=download&id=11b-jN68jbPhKXFf8hCdsazVcxVIpMUA8",
+          assignments: [],
+        },
+        {
+          name: "2.6 - Pet_Details_Datasets",
+          file: "https://drive.google.com/uc?export=download&id=1-s5x02bInizkQaKvAjJqsmnwn4hX2Nq",
+          assignments: [],
+        },
+        {
+          name: "2.7 - Postgre_SQL",
+          file: "https://drive.google.com/uc?export=download&id=1R9ELcCTptslvrvKByQm8SCRCoXiWb_mt",
+          assignments: [],
+        },
+        {
+          name: "2.8 - Postgre SQL Installation in windows",
+          link: "https://drive.google.com/file/d/17ANh5o76Zb-KdqSmBUlUTOaw_yHvF1X8/preview",
+          assignments: [],
+        },
+        {
+          name: "2.9 - Postgre SQL Installation in MAC",
+          link: "https://drive.google.com/file/d/1os4Gu1WwqZHUmj0XAlGt5OgKs_t5iirl/preview",
+          assignments: [],
+        },
+        {
+          name: "3.0 - MySQL Workbench Installation in MAC",
+          link: "https://drive.google.com/file/d/1B_EAbay3ytZGeLTatMGTO8N5D150orv4/preview",
+          assignments: [],
+        },
 
-    //here
-],
-  },
-],
+        {
+          name: "3.1 - Datasets",
+          file: "https://drive.google.com/uc?export=download&id=1dtUSc3bICuOyTHELT7IbYKE1JaSX-zqW",
+          assignments: [],
+        },
+        {
+          name: "3.2 - Python Codes",
+          file: "https://drive.google.com/uc?export=download&id=1GngupfNXASdBM_NBqbUHK91vX3NfkiHJ",
+          assignments: [],
+        },
+
+        {
+          name: "4.1 - MongoDB",
+          link: "https://docs.google.com/presentation/d/1O8Qq39UNDJ38_ZikWXRQTVKCW1srlrdq/preview",
+          assignments: [],
+        },
+        {
+          name: "4.2 - Apache HBASE",
+          link: "https://docs.google.com/presentation/d/1mZWJmREwfHlg-dtsz913rfOdbYnRYjOB/preview",
+          assignments: [],
+        },
+        {
+          name: "4.3 - Distributed Framework & Hadoop",
+          link: "https://docs.google.com/presentation/d/18-ARxRra8rdr5AaheibE8Qlxo3jA-xSG/preview",
+          assignments: [],
+        },
+        {
+          name: "4.4 - MongoDB Commands",
+          file: "https://drive.google.com/uc?export=download&id=1eKZbnNL1k5O5T13D8sPdbqEKsL9SKh0O",
+          assignments: [],
+        },
+        {
+          name: "4.5 - MongoDB Python_Code",
+          file: "https://drive.google.com/uc?export=download&id=1J1AM1EIaJReO5lTV3BEusZYiDnF7NPk4",
+          assignments: [],
+        },
+        {
+          name: "6.1 - Sparks in Windows",
+          file: "https://drive.google.com/uc?export=download&id=15ItIRKWQAV-Yqa2LuOPOGtiNhQw9az9x",
+          assignments: [],
+        },
+        {
+          name: "6.2 - Sparks Hands-On",
+          file: "https://drive.google.com/uc?export=download&id=1Qqw3Td7sjZLHoRm6Ciq7QcqGJc4ZhG2Z",
+          assignments: [],
+        },
+
+            {
+          name: "7.1 - Apache Kafka",
+          link: "https://docs.google.com/presentation/d/1uFXijnJsOD6MqvStOnrd_fLkR_tKZAE2/preview",
+          assignments: [],
+        },
+        {
+          name: "7.2 - Apache Kafka Installation and Configuration",
+          file: "https://drive.google.com/uc?export=download&id=1_OuZ7JSO0DoDzCEOMtOSpTXjGbPScf5-",
+          assignments: [],
+        },
+        {
+          name: "7.3 - Apache Kafka on GCP",
+          file: "https://drive.google.com/uc?export=download&id=1PHeKLR2HM9gfbplt8Wg3SqVp4pUiLa5q",
+          assignments: [],
+        },
+
+           {
+          name: "8.1 - Live Streaming Data Processing in GCP",
+          link: "https://docs.google.com/presentation/d/1jM2dZ4CdMM0JpkCkwYevw-tSLv7RWKMs/preview",
+          assignments: [],
+        },
+
+        {
+          name: "8.2 - IoT Code UseCase",
+          file: "https://drive.google.com/uc?export=download&id=12E4sxWn5jdTsPEmC-uPfQ1SYmhprt1DN",
+          assignments: [],
+        },
+
+            {
+          name: "9.1 - Live Streaming Data Processing in GCP",
+          link: "https://docs.google.com/presentation/d/1HmJVFNa7h-jrl8Xwd9trOIAUKWxWr70s/preview",
+          assignments: [],
+        },
+
+        {
+          name: "9.2 - Spark Setup on Ubuntu(1).zip",
+          file: "https://drive.google.com/uc?export=download&id=1o1RvtqMXnhuOFuCDxS8ubms2NZzt7OWA",
+          assignments: [],
+        },
+        {
+          name: "9.3 - Spark Streaming_code_Example.zip",
+          file: "https://drive.google.com/uc?export=download&id=1gerX1BMfJpYZLH_YcHZoG53Btr8bvs9E",
+          assignments: [],
+        },
+        {
+          name: "9.4 - spark_streaming_TCP",
+          file: "https://drive.google.com/uc?export=download&id=1ib1Nhr2Pj3wR2rpM3PuhaiuvmtjXrLHn",
+          assignments: [],
+        },
+
+        {
+          name: "10.1 - Apache Nifi.zip",
+          file: "https://drive.google.com/uc?export=download&id=1rwaaCJULd4IMZ_G3uWszPmQQqeXJYoL5",
+          assignments: [],
+        },
+        {
+          name: "10.2 - PySpark_Dataset.crdownload",
+          file: "https://drive.google.com/uc?export=download&id=1ZIOL0imy6Xwi-JwCFiaSDO7TG4LoeXiO",
+          assignments: [],
+        },
+        {
+          name: "10.3 - Apache Airflow_Dataset",
+          file: "https://drive.google.com/uc?export=download&id=1luB_NM4gZesj7WofbZb0wdEsqy7U3_hG",
+          assignments: [],
+        },
+        {
+          name: "10.4 - Airflow_PythonCodes",
+          file: "https://drive.google.com/uc?export=download&id=1JYX_aIMHACa_rQ0IV4skXjXPRWn1BRTq",
+          assignments: [],
+        },
+      ],
+    },
+  ],
 
 };

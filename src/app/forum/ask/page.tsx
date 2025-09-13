@@ -13,7 +13,6 @@ export default function AskPage() {
   const [body, setBody] = useState("");
   const [category, setCategory] = useState("General Question");
   const [loading, setLoading] = useState(false);
- const [image, setImage] = useState<File | null>(null);
 
 
  async function handleSubmit(e: React.FormEvent) {
@@ -24,7 +23,6 @@ export default function AskPage() {
     formData.append("title", title);
     formData.append("body", body);
     formData.append("category", category);
-    if (image) formData.append("image", image);
 
     const res = await fetch(`${BASE}/questions`, {
       method: "POST",
@@ -84,11 +82,6 @@ export default function AskPage() {
               <option>Web Development</option>
               <option>AI</option>
             </select>
-              <Input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files?.[0] || null)}
-            />
             <Button type="submit" className="text-white bg-purple-500 hover:bg-purple-600" disabled={loading}>
               {loading ? "Posting..." : "Post Question"}
             </Button>

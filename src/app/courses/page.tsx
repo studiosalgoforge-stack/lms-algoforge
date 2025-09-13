@@ -88,21 +88,21 @@ const res = await fetch(`${BASE_URL}/api/progress`,
   const toggleCourse = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
-const countPPTLeafTopics = (items: any[]): number => {
+const countLeafTopics = (items: any[]): number => {
   return items.reduce((acc, item) => {
-    let count = 0;
-
-    if (item.file || item.link || item.url) {
-      count += 1;
-    }
-
+    // If node has children, recursively count them
     if (item.children && item.children.length > 0) {
-      count += countPPTLeafTopics(item.children);
+      return acc + countLeafTopics(item.children);
     }
-
-    return acc + count;
+    // If node has a link/file/url, count it as a leaf
+    if (item.link || item.file || item.url) {
+      return acc + 1;
+    }
+    // Node has neither children nor link, count as 0
+    return acc;
   }, 0);
 };
+
 
 
   // Prepare courses with progress
@@ -113,7 +113,7 @@ const countPPTLeafTopics = (items: any[]): number => {
  const normalizedTopics = topics;
 console.log("Topics for", key, topics);
 
-  const total = countPPTLeafTopics(normalizedTopics);
+  const total = countLeafTopics(normalizedTopics);
 
   console.log("Course:", key, "Total leaf PPTs:", total);
 
@@ -212,7 +212,8 @@ console.log("Topics for", key, topics);
   <button
     className="w-full sm:w-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 lg:py-3 
                border border-pink-400 text-pink-500 font-medium rounded-lg 
-               hover:bg-pink-50 transition-all duration-200"
+               hover:bg-pink-50 transition-all duration-200 cursor-pointer"
+               onClick={()=>router.push('/dashboard/reports')}
   >
     Progress Report
   </button>

@@ -316,7 +316,7 @@ export const backupPPTs = {
 
  "Data-Engineering": [
     {
-      name: "Data Primer & ML Pipeline",
+      name: "Data-Engineering Fundamentals",
       children: [
         {
           name: "1.1 - Data Science primer & ML Pipeline",
@@ -338,11 +338,6 @@ export const backupPPTs = {
           file: "https://drive.google.com/uc?export=download&id=1cbCQnmXxfxNxjLu3j-aK0ypqOKfLlS5g",
           assignments: [],
         },
-      ],
-    },
-    {
-      name: "Data Architecture",
-      children: [
         {
           name: "2.1 - Data Architecture",
           link: "https://docs.google.com/presentation/d/1oWCXxt9VpMfLYxCguva2Rnmd7AIs5Ot6/preview",
@@ -393,11 +388,7 @@ export const backupPPTs = {
           link: "https://drive.google.com/file/d/1B_EAbay3ytZGeLTatMGTO8N5D150orv4/preview",
           assignments: [],
         },
-      ],
-    },
-    {
-      name: "3 - Python Data Processing",
-      children: [
+
         {
           name: "3.1 - Datasets",
           file: "https://drive.google.com/uc?export=download&id=1dtUSc3bICuOyTHELT7IbYKE1JaSX-zqW",
@@ -408,11 +399,7 @@ export const backupPPTs = {
           file: "https://drive.google.com/uc?export=download&id=1GngupfNXASdBM_NBqbUHK91vX3NfkiHJ",
           assignments: [],
         },
-      ],
-    },
-    {
-      name: "Big Data  & MySQL",
-      children: [
+
         {
           name: "4.1 - MongoDB",
           link: "https://docs.google.com/presentation/d/1O8Qq39UNDJ38_ZikWXRQTVKCW1srlrdq/preview",
@@ -438,11 +425,6 @@ export const backupPPTs = {
           file: "https://drive.google.com/uc?export=download&id=1J1AM1EIaJReO5lTV3BEusZYiDnF7NPk4",
           assignments: [],
         },
-      ],
-    },
-    {
-      name: "6 - Apache Spark",
-      children: [
         {
           name: "6.1 - Sparks in Windows",
           file: "https://drive.google.com/uc?export=download&id=15ItIRKWQAV-Yqa2LuOPOGtiNhQw9az9x",
@@ -453,56 +435,57 @@ export const backupPPTs = {
           file: "https://drive.google.com/uc?export=download&id=1Qqw3Td7sjZLHoRm6Ciq7QcqGJc4ZhG2Z",
           assignments: [],
         },
-      ],
-    },
-    {
-      name: "7 - Apache Kafka",
-      children: [
+
+            {
+          name: "7.1 - Apache Kafka",
+          link: "https://docs.google.com/presentation/d/1uFXijnJsOD6MqvStOnrd_fLkR_tKZAE2/preview",
+          assignments: [],
+        },
         {
-          name: "7.1 - Apache Kafka Installation and Configuration",
+          name: "7.2 - Apache Kafka Installation and Configuration",
           file: "https://drive.google.com/uc?export=download&id=1_OuZ7JSO0DoDzCEOMtOSpTXjGbPScf5-",
           assignments: [],
         },
         {
-          name: "7.2 - Apache Kafka on GCP",
+          name: "7.3 - Apache Kafka on GCP",
           file: "https://drive.google.com/uc?export=download&id=1PHeKLR2HM9gfbplt8Wg3SqVp4pUiLa5q",
           assignments: [],
         },
-      ],
-    },
-    {
-      name: "8 - Real Time Streaming on Cloud(Azure & GCP)",
-      children: [
+
+           {
+          name: "8.1 - Live Streaming Data Processing in GCP",
+          link: "https://docs.google.com/presentation/d/1jM2dZ4CdMM0JpkCkwYevw-tSLv7RWKMs/preview",
+          assignments: [],
+        },
+
         {
-          name: "8.1 - IoT Code UseCase",
+          name: "8.2 - IoT Code UseCase",
           file: "https://drive.google.com/uc?export=download&id=12E4sxWn5jdTsPEmC-uPfQ1SYmhprt1DN",
           assignments: [],
         },
-      ],
-    },
-    {
-      name: "9 - Spark Streaming",
-      children: [
+
+            {
+          name: "9.1 - Live Streaming Data Processing in GCP",
+          link: "https://docs.google.com/presentation/d/1HmJVFNa7h-jrl8Xwd9trOIAUKWxWr70s/preview",
+          assignments: [],
+        },
+
         {
-          name: "9.1 - Spark Setup on Ubuntu(1).zip",
+          name: "9.2 - Spark Setup on Ubuntu(1).zip",
           file: "https://drive.google.com/uc?export=download&id=1o1RvtqMXnhuOFuCDxS8ubms2NZzt7OWA",
           assignments: [],
         },
         {
-          name: "9.2 - Spark Streaming_code_Example.zip",
+          name: "9.3 - Spark Streaming_code_Example.zip",
           file: "https://drive.google.com/uc?export=download&id=1gerX1BMfJpYZLH_YcHZoG53Btr8bvs9E",
           assignments: [],
         },
         {
-          name: "9.3 - spark_streaming_TCP",
+          name: "9.4 - spark_streaming_TCP",
           file: "https://drive.google.com/uc?export=download&id=1ib1Nhr2Pj3wR2rpM3PuhaiuvmtjXrLHn",
           assignments: [],
         },
-      ],
-    },
-    {
-      name: "10 - Apache Nifi & Apache Airflow",
-      children: [
+
         {
           name: "10.1 - Apache Nifi.zip",
           file: "https://drive.google.com/uc?export=download&id=1rwaaCJULd4IMZ_G3uWszPmQQqeXJYoL5",

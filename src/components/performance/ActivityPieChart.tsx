@@ -120,7 +120,7 @@ export function ActivityPieChart({ data, title = "Learning Activities" }: Activi
                     {item.name}
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {item.value}h ({percentage}%)
+                    {item.value}m ({percentage}%)
                   </div>
                 </div>
               </div>
@@ -131,7 +131,7 @@ export function ActivityPieChart({ data, title = "Learning Activities" }: Activi
         {/* Summary */}
         <div className="mt-4 pt-4 border-t border-border/50 text-center">
           <div className="text-2xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-            {totalHours}h
+            {totalHours}m
           </div>
           <div className="text-xs text-muted-foreground">Total Learning Time</div>
         </div>

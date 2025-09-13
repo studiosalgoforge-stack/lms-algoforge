@@ -86,12 +86,14 @@ const faqs: FAQ[] = [
   },
 ];
 
+const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
+
 // Additional Resources
-const resources = [
-  { title: "Video Tutorial: How to Buy a Course", link: "#", type: "video" },
-  { title: "PDF Guide: Using the Dashboard", link: "#", type: "pdf" },
-  { title: "Video Walkthrough: Discussion Forum", link: "#", type: "video" },
-];
+// const resources = [
+//   { title: "Video Tutorial: How to Buy a Course", link: "#", type: "video" },
+//   { title: "PDF Guide: Using the Dashboard", link: "#", type: "pdf" },
+//   { title: "Video Walkthrough: Discussion Forum", link: "#", type: "video" },
+// ];
 
 export default function SupportPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", query: "" });
@@ -112,7 +114,7 @@ const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch("http://localhost:10000/api/support", {
+    const res = await fetch(`${BASE}/support`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
@@ -188,7 +190,7 @@ const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
           </div>
         </div>
 
-        {/* Additional Resources */}
+        {/* Additional Resources
         <div className="mb-16 max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-center text-purple-700">
             Additional Resources
@@ -213,12 +215,12 @@ const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
               </a>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Submit Query Form */}
-        <div className="max-w-xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg mb-12">
+        <div className="max-w-xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg  mb-12">
           <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-purple-700">
-            Submit a Query
+            Submit Query
           </h2>
           {success && <p className="text-green-600 mb-4">Submitted successfully!</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -240,15 +242,44 @@ const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
               className="w-full p-3 border rounded-lg hover:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
               required
             />
-            <input
-              type="tel"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              placeholder="Phone Number"
-              className="w-full p-3 border rounded-lg hover:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
-              required
-            />
+
+
+             <div>
+  <label className="block text-sm font-medium text-gray-400 mb-2">Phone</label>
+
+</div>
+                           <input
+  type="tel"
+  name="phone"
+  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
+  value={form.phone}
+  onChange={(e) => {
+    // keep only digits
+    let value = e.target.value.replace(/\D/g, "");
+
+    // remove +91 if user types it
+    if (value.startsWith("91")) {
+      value = value.slice(2);
+    }
+
+    // keep max 10 digits
+    if (value.length > 10) {
+      value = value.slice(0, 10);
+    }
+
+    // set as +91XXXXXXXXXX
+    setForm({ ...form, phone: value });
+  }}
+  onBlur={() => {
+    if (!/^\d{10}$/.test(form.phone)) {
+      alert("Phone number must be 10 digits!");
+    }
+  }}
+  placeholder="Enter 10-digit phone number"
+/>
+
+
+            
             <textarea
               name="query"
               value={form.query}
@@ -264,6 +295,7 @@ const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
             >
               Submit
             </button>
+            
           </form>
         </div>
       </div>

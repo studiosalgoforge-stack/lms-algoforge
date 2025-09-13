@@ -62,7 +62,7 @@ export function PerformanceOverview({ stats }: PerformanceOverviewProps) {
     },
     {
       title: "Study Time",
-      value: `${stats.studyTime} mins`,
+      value: `${stats.studyTime} minute`,
       icon: Clock,
       color: "blue-400",
       subtitle: "This month",

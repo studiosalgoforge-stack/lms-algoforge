@@ -341,19 +341,23 @@ export default function CourseDetail() {
       }
 
       return (
-        <li
-          key={index}
-          className={`p-2 rounded-md cursor-pointer ${
-            completedTopics.includes(index)
-              ? "bg-green-200 text-black"
-              : selectedTopic === index
-              ? "bg-purple-300 text-black"
-              : "bg-gray-100 hover:bg-purple-200 text-black"
-          }`}
-          onClick={() => handleSidebarClick(index)}
-        >
-          {item.name}
-        </li>
+       <li
+  key={index}
+  className={`px-3 py-2 rounded-md cursor-pointer flex items-center justify-between ${
+    completedTopics.includes(index)
+      ? "bg-green-100 text-green-800 font-medium"
+      : selectedTopic === index
+      ? "bg-purple-200 text-purple-900 font-medium"
+      : "bg-gray-50 hover:bg-purple-100 text-gray-800"
+  }`}
+  onClick={() => handleSidebarClick(index)}
+>
+  <span>
+    {completedTopics.includes(index) ? "✔ " : "• "}
+    {item.name}
+  </span>
+</li>
+
       );
     });
 
@@ -388,18 +392,20 @@ export default function CourseDetail() {
         {/* ---------------- DESKTOP VIEW ---------------- */}
         <div className="hidden lg:flex">
           {/* Sidebar */}
-          <div
-            className={`fixed lg:static top-0 left-0 h-full lg:h-auto bg-white shadow-md z-40 transition-all duration-300 ${
-              isTopicsSidebarOpen ? "w-64" : "w-0 lg:w-64 lg:block hidden"
-            } overflow-hidden`}
-          >
-            <div className="p-4">
-              <h2 className="font-semibold text-purple-950 text-lg mb-3">
-                Topics
-              </h2>
-              <ul className="space-y-2">{renderSidebarTopics(topics)}</ul>
-            </div>
-          </div>
+     <div
+  className={`fixed lg:static top-0 left-0 h-full lg:h-auto bg-white shadow-md z-40 transition-all duration-300 ${
+    isTopicsSidebarOpen ? "w-64" : "w-0 lg:w-64 lg:block hidden"
+  }`}
+>
+  <div className="p-2 h-full overflow-y-auto">
+    <h2 className="font-semibold text-purple-950 text-lg mb-3 border-b pb-2">
+      📘 Topics
+    </h2>
+    <ul className="space-y-2">{renderSidebarTopics(topics)}</ul>
+  </div>
+</div>
+
+
 
           {/* Main Content */}
           <div className="flex-1 bg-white text-purple-950 rounded-lg shadow-md p-6">
