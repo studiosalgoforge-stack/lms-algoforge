@@ -23,20 +23,33 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const [userName, setUserName] = useState<string>("");
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch(`${BASE}/users/profile`);
-        if (res.ok) {
-          const user = await res.json();
-          setUserName(user.firstName || user.username || "Student");
-        }
-      } catch (error) {
-        console.error("Failed to fetch user profile", error);
+useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      console.log("Calling:", `${BASE}/users/profile`);
+
+      const token = localStorage.getItem("token"); // wherever you store it
+      const res = await fetch(`${BASE}/users/profile`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        credentials: "include", // if your backend uses cookies
+      });
+
+      if (res.ok) {
+        const user = await res.json();
+        setUserName(user.firstName || user.username || "Student");
+      } else {
+        console.error("Unauthorized or not found:", res.status);
       }
-    };
-    fetchUser();
-  }, []);
+    } catch (error) {
+      console.error("Failed to fetch user profile", error);
+    }
+  };
+  fetchUser();
+}, []);
+
 
   return (
        <ProtectedRoute>

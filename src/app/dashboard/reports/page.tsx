@@ -15,7 +15,7 @@ type Course = {
   progress: number;
   totalLessons: number;
   completedLessons: number;
-  timeSpent: number;
+  timeSpent: number; // in minutes
   lastActivity: string;
   difficulty: "Beginner" | "Intermediate" | "Advanced";
   category: string;
@@ -32,37 +32,46 @@ const countPPTLeafTopics = (items: any[]): number => {
 
 const Dashboard = () => {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [quizData, setQuizData] = useState<any[]>([]);
+  const [videoData, setVideoData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProgress = async () => {
+    const fetchData = async () => {
       try {
-        const token =
-          typeof window !== "undefined" ? localStorage.getItem("token") : "";
+        const token = localStorage.getItem("token");
         if (!token) return;
 
-        const BASE_URL =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000";
-        const res = await fetch(`${BASE_URL}/api/progress`, {
+        const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000";
+
+        // Unified call to fetch all progress + studyTime
+        const dashboardRes = await fetch(`${BASE_URL}/api/progress/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        if (!dashboardRes.ok) throw new Error("Failed to fetch dashboard");
+        const dashboardJson = await dashboardRes.json();
 
-        if (!res.ok) throw new Error("Failed to fetch progress");
-        const data = await res.json();
-        const userProgress = data.courseProgress || {};
+        const { courseProgress, quizProgress, videoProgress, studyTime } =
+          dashboardJson.progress || {};
 
         const courseNames = ["Data-Science", "Power-BI", "SQL", "Data-Engineering"];
         const courseData: Course[] = courseNames.map((courseName) => {
           const topics = backupPPTs[courseName] || [];
           const totalLessons = countPPTLeafTopics(topics);
 
-          const completedArray: string[] = userProgress[courseName] || [];
-          const completedLessons = completedArray.length;
+          const completedArray: string[] =
+            (courseProgress || []).find((c: any) => c.courseKey === courseName)
+              ?.completedTopics || [];
 
+          const completedLessons = completedArray.length;
           const progress =
             totalLessons > 0
               ? Math.round((completedLessons / totalLessons) * 100)
               : 0;
+
+          const timeSpent =
+            studyTime?.find((s: any) => s.courseKey === courseName)?.totalMinutes ||
+            0;
 
           return {
             id: courseName,
@@ -70,57 +79,91 @@ const Dashboard = () => {
             progress,
             totalLessons,
             completedLessons,
-            timeSpent: Math.floor(Math.random() * 20) + 5,
+            timeSpent, // keep as number for TS
             lastActivity: "Today",
             difficulty: "Intermediate",
             category: "Data",
           };
         });
-
         setCourses(courseData);
+
+        // Quiz chart
+        const quizChartData = (quizProgress || []).map((q: any, idx: number) => ({
+          week: `Quiz ${idx + 1}`,
+          score: q.score,
+          attempted: q.totalQuestions,
+          completed: q.correctAnswers,
+        }));
+        setQuizData(quizChartData);
+
+        // Video chart
+        const videoChartData = [
+          {
+            name: "Video Lectures",
+            value: videoProgress?.length || 0,
+            color: "hsl(var(--chart-1))",
+            icon: PlayCircle,
+          },
+          {
+            name: "Quiz Practice",
+            value:
+              quizProgress?.reduce((acc: number, q: any) => acc + q.totalQuestions, 0) ||
+              0,
+            color: "hsl(var(--chart-2))",
+            icon: HelpCircle,
+          },
+          {
+            name: "Reading Materials",
+            value: courseData.reduce((acc, c) => acc + c.completedLessons, 0),
+            color: "hsl(var(--chart-3))",
+            icon: FileText,
+          },
+          {
+            name: "Course Projects",
+            value: 2,
+            color: "hsl(var(--chart-4))",
+            icon: BookOpen,
+          },
+          {
+            name: "Group Discussions",
+            value: 3,
+            color: "hsl(var(--chart-5))",
+            icon: Users,
+          },
+        ];
+        setVideoData(videoChartData);
       } catch (err) {
-        console.error("Error fetching progress:", err);
+        console.error("Error fetching dashboard data:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProgress();
+    fetchData();
   }, []);
 
-  const mockStats = {
-    overallScore: 87,
+  // Performance overview stats
+  const stats = {
+    overallScore:
+      quizData.length > 0
+        ? Math.round(quizData.reduce((acc, q) => acc + q.score, 0) / quizData.length)
+        : 0,
     coursesCompleted: courses.filter((c) => c.progress === 100).length,
     totalCourses: courses.length,
-    videosWatched: 1,
-    totalVideos: 2,
-    quizAverage: 89,
-    studyTime: 47,
+    videosWatched: videoData.find((d) => d.name === "Video Lectures")?.value || 0,
+    totalVideos: videoData.find((d) => d.name === "Video Lectures")?.value || 0,
+    quizAverage:
+      quizData.length > 0
+        ? Math.round(quizData.reduce((acc, q) => acc + q.score, 0) / quizData.length)
+        : 0,
+    studyTime: courses.reduce((acc, c) => acc + c.timeSpent, 0), // total minutes
     achievements: 15,
   };
-
-  const mockQuizData = [
-    { week: "Week 1", score: 78, attempted: 5, completed: 4 },
-    { week: "Week 2", score: 82, attempted: 6, completed: 6 },
-    { week: "Week 3", score: 85, attempted: 4, completed: 4 },
-    { week: "Week 4", score: 91, attempted: 7, completed: 7 },
-    { week: "Week 5", score: 88, attempted: 5, completed: 5 },
-    { week: "Week 6", score: 94, attempted: 6, completed: 6 },
-  ];
-
-  const mockActivityData = [
-    { name: "Video Lectures", value: 2, color: "hsl(var(--chart-1))", icon: PlayCircle },
-    { name: "Quiz Practice", value: 20, color: "hsl(var(--chart-2))", icon: HelpCircle },
-    { name: "Reading Materials", value: 9, color: "hsl(var(--chart-3))", icon: FileText },
-    { name: "Course Projects", value: 2, color: "hsl(var(--chart-4))", icon: BookOpen },
-    { name: "Group Discussions", value: 3, color: "hsl(var(--chart-5))", icon: Users },
-  ];
 
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-background">
         <div className="container mx-auto p-6 space-y-8">
-          {/* Header */}
           <div className="space-y-2">
             <h1 className="text-3xl font-bold text-foreground text-purple-800">
               Performance Dashboard
@@ -130,21 +173,21 @@ const Dashboard = () => {
             </p>
           </div>
 
-          {/* Performance Overview */}
+          {/* Overview */}
           <section>
             <h2 className="text-xl font-semibold text-foreground text-purple-900 mb-4">
               Overview
             </h2>
-            <PerformanceOverview stats={mockStats} />
+            <PerformanceOverview stats={stats} />
           </section>
 
-          {/* Charts and Progress */}
+          {/* Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <section>
-              <QuizPerformanceChart data={mockQuizData} />
+              <QuizPerformanceChart data={quizData} />
             </section>
             <section>
-              <ActivityPieChart data={mockActivityData} />
+              <ActivityPieChart data={videoData} />
             </section>
           </div>
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
+
 const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
 
 export default function ProfilePage() {
@@ -10,77 +11,76 @@ export default function ProfilePage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [officialEmail, setOfficialEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [stateField, setStateField] = useState("");
   const [zip, setZip] = useState("");
   const [country, setCountry] = useState("");
   const [language, setLanguage] = useState("");
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const [avatar, setAvatar] = useState<string | null>(null);
 
-  // Load user data
+  // ✅ Load user data
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await fetch(`${BASE}/edituser/${userId}`);
-        const profile = await res.json();
+ const fetchUser = async () => {
+  try {
+    const token = localStorage.getItem("token"); // wherever you store it
+    const res = await fetch(`${BASE}/users/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.ok) {
+      const user = await res.json();
+      setUserId(user._id);
+      setFirstName(user.firstName || "");
+      setLastName(user.lastName || "");
+      setEmail(user.email || "");
+      setPhone(user.phone || "");
+      setAddress(user.address || "");
+      setStateField(user.state || "");
+      setZip(user.zip || "");
+      setCountry(user.country || "Select country");
+      setLanguage(user.language || "Select language");
+      setAvatar(user.avatar || null);
+    }
+  } catch (error) {
+    console.error("Failed to fetch user profile", error);
+  }
+};
 
-        setFirstName(profile.firstName || "");
-        setLastName(profile.lastName || "");
-        setEmail(profile.email || "");
-        setOfficialEmail(profile.officialEmail || "");
-        setPhone(profile.phone || "");
-        setAddress(profile.address || "");
-        setStateField(profile.state || "");
-        setZip(profile.zip || "");
-        setCountry(profile.country || "Select country");
-        setLanguage(profile.language || "Select language");
-        setAvatar(profile.avatar || null);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    const fetchUser = async () => {
-        try {
-          const res = await fetch(`${BASE}/users/profile`);
-          if (res.ok) {
-            const user = await res.json();
-            setUserId(user._id);
-            fetchProfile(); // Fetch the editable profile after getting the user ID
-          }
-        } catch (error) {
-          console.error("Failed to fetch user profile", error);
-        }
-      };
 
     fetchUser();
-  }, [userId]);
+  }, []);
 
+  // ✅ Avatar upload (to backend route that uploads to Cloudinary)
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return;
     const file = e.target.files[0];
 
     const formData = new FormData();
     formData.append("avatar", file);
+    formData.append("userId", userId);
 
     const res = await fetch(`${BASE}/upload-avatar`, {
       method: "POST",
       body: formData,
     });
+
     const data = await res.json();
-    setAvatar(data.url); // set uploaded avatar URL
+    if (res.ok) {
+      setAvatar(data.url); // ✅ Cloudinary URL saved in DB
+    } else {
+      console.error("Avatar upload failed:", data);
+    }
   };
 
+  // ✅ Save updated profile
   const handleSave = async () => {
     const payload = {
       userId,
       firstName,
       lastName,
       email,
-      officialEmail,
       phone,
       address,
       state: stateField,
@@ -110,239 +110,155 @@ export default function ProfilePage() {
     }
   };
 
-
   return (
-       <ProtectedRoute>
-    <div className="bg-white">
-      <div className="p-6">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-black">Settings / Profile</h1>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex space-x-4 mb-8">
-          <button className="bg-purple-600 text-black px-4 py-2 rounded-lg flex items-center">
-            Profile
-          </button>
-          <button className="bg-white text-black px-4 py-2 rounded-lg flex items-center">
-            Notification
-          </button>
-        </div>
-
-        {/* Profile Details Section */}
-        <div className="bg-white rounded-lg p-6 border border-gray-700 mb-6">
-          <h2 className="text-xl font-semibold text-black mb-6">Profile Details</h2>
-
-         {/* Profile Picture */}
-<div className="flex items-center mb-6">
-  <div className="w-20 h-20 bg-gray-600 rounded-full flex items-center justify-center mr-4">
-    {avatar ? (
-      <img
-        src={avatar}
-        alt="Profile"
-        className="w-20 h-20 rounded-full object-cover"
-      />
-    ) : (
-      <svg
-        className="w-10 h-10 text-gray-400"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-        />
-      </svg>
-    )}
-  </div>
-
-  <div className="flex space-x-4 items-center">
-    {/* Hidden file input */}
-    <input
-      type="file"
-      accept="image/*"
-      id="avatarUpload"
-      className="hidden"
-      onChange={handleAvatarChange}
-    />
-    {/* Styled button triggers hidden input */}
-    <label
-      htmlFor="avatarUpload"
-      className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors cursor-pointer"
-    >
-      Upload new photo
-    </label>
-
-    <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
-      Reset
-    </button>
-  </div>
-</div>
-
-          <p className="text-sm text-gray-400 mb-6">Allowed JPG, GIF or PNG. Max size of 8 MB.</p>
-
-          {/* Form Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">First Name</label>
-              <input
-                type="text"
-                className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Enter first name"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Last Name</label>
-              <input
-                type="text"
-                className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Enter last name"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Email</label>
-              <input
-                type="email"
-                className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter email"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Official Mail</label>
-              <input
-                type="email"
-                className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                value={officialEmail}
-                onChange={(e) => setOfficialEmail(e.target.value)}
-                placeholder="Enter official email"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Phone Number</label>
-              <input
-                type="tel"
-                className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Enter phone number"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Address</label>
-              <input
-                type="text"
-                className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Enter address"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Account Settings Section */}
-        <div className="bg-white rounded-lg p-6 border border-gray-700 mb-6">
-          <h2 className="text-xl font-semibold text-black mb-6">Account Settings</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">State</label>
-              <input
-                type="text"
-                className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                value={stateField}
-                onChange={(e) => setStateField(e.target.value)}
-                placeholder="Enter state"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Zip Code</label>
-              <input
-                type="text"
-                className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                value={zip}
-                onChange={(e) => setZip(e.target.value)}
-                placeholder="Enter zip code"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Country</label>
-              <select
-                className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-orange-500"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-              >
-                <option>Select country</option>
-                <option>USA</option>
-                <option>UK</option>
-                <option>Canada</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Language</label>
-              <select
-                className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-orange-500"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-              >
-                <option>Select language</option>
-                <option>English</option>
-                <option>Spanish</option>
-                <option>French</option>
-              </select>
-            </div>
+    <ProtectedRoute>
+      <div className="bg-white">
+        <div className="p-6">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-black">Settings / Profile</h1>
           </div>
 
-          <div className="flex space-x-4 mt-6">
-            <button
-            type="button"
-             onClick={handleSave}
-            className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
-              Save Changes
-            </button>
-            <button className="bg-white text-red-600 border border-red-600 px-6 py-2 rounded-lg hover:bg-red-50 transition-colors">
-              Reset
+          {/* Tabs */}
+          <div className="flex space-x-4 mb-8">
+            <button className="bg-purple-400 text-black px-4 py-2 rounded-lg flex items-center">
+              Profile
             </button>
           </div>
-        </div>
 
-        {/* Delete Account Section */}
-        <div className="bg-white rounded-lg p-6 border border-gray-700">
-          <h2 className="text-xl font-semibold text-black mb-6">Delete Account</h2>
+          {/* Profile Details Section */}
+          <div className="bg-white rounded-lg p-6 border border-gray-700 mb-6">
+            <h2 className="text-xl font-semibold text-black mb-6">Profile Details</h2>
 
-          <div className="bg-red-200 border border-red-700 rounded-lg p-4 mb-4">
-            <p className="text-black mb-2">Are you sure you want to delete your account?</p>
-            <p className="text-black text-sm">
-              Once you delete your account, there is no going back. Please be certain.
-            </p>
+
+            {/* Form Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">First Name</label>
+                <input
+                  type="text"
+                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Enter first name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Last Name</label>
+                <input
+                  type="text"
+                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Enter last name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Email</label>
+                <input
+                  type="email"
+                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Phone</label>
+                <input
+                  type="tel"
+                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Enter phone number"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Address</label>
+                <input
+                  type="text"
+                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Enter your Address"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center mb-4">
-            <input
-              type="checkbox"
-              className="w-4 h-4 text-orange-600 bg-gray-700 border-gray-600 rounded focus:ring-orange-500"
-              checked={confirmDelete}
-              onChange={() => setConfirmDelete(!confirmDelete)}
-            />
-            <label className="ml-2 text-black">I confirm my account deactivation</label>
-          </div>
+          {/* Account Settings */}
+          <div className="bg-white rounded-lg p-6 border border-gray-700 mb-6">
+            <h2 className="text-xl font-semibold text-black mb-6">Account Settings</h2>
 
-          <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors">
-            Delete Account
-          </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">State</label>
+                <input
+                  type="text"
+                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
+                  value={stateField}
+                  onChange={(e) => setStateField(e.target.value)}
+                  placeholder="Enter State"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Zip Code</label>
+                <input
+                  type="text"
+                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
+                  value={zip}
+                  onChange={(e) => setZip(e.target.value)}
+                  placeholder="Enter zip code"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Country</label>
+                <select
+                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                >
+                  <option>Select country</option>
+                  <option>India</option>
+                  <option>USA</option>
+                  <option>UK</option>
+                  <option>Canada</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Language</label>
+                <select
+                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                >
+                  <option>Select language</option>
+                  <option>English</option>
+                  <option>Spanish</option>
+                  <option>French</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex space-x-4 mt-6">
+              <button
+                type="button"
+                onClick={handleSave}
+                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Save Changes
+              </button>
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="bg-white text-red-600 border border-red-600 px-6 py-2 rounded-lg hover:bg-red-50 transition-colors"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
     </ProtectedRoute>
   );
 }

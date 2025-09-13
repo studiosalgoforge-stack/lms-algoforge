@@ -26,6 +26,35 @@ const userSchema = new mongoose.Schema(
         updatedAt: { type: Date, default: Date.now },
       },
     ],
+     // ✅ Quiz Progress (overwrite on restart)
+    quizProgress: [
+      {
+        quizId: { type: String, required: true },  // unique quiz identifier
+        score: { type: Number, default: 0 },
+        correctAnswers: { type: Number, default: 0 },
+        totalQuestions: { type: Number, default: 0 },
+        completedAt: { type: Date, default: Date.now },
+      },
+    ],
+
+    // ✅ Video Progress (per course/video)
+    videoProgress: [
+      {
+        videoId: { type: String, required: true },
+        watchedDuration: { type: Number, default: 0 }, // in seconds
+        totalDuration: { type: Number, default: 0 },
+        lastWatchedAt: { type: Date, default: Date.now },
+      },
+    ],
+
+    // ✅ Study Time Tracking
+    studyTime: [
+      {
+        courseKey: { type: String, required: true },
+        totalMinutes: { type: Number, default: 0 },
+        lastUpdated: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true } // options object
 );

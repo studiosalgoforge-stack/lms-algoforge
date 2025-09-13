@@ -10,7 +10,10 @@ interface InterviewTabProps {
   setCurrentQuestionIndex: Dispatch<SetStateAction<number>>;
   selectedOption: number | null;
   setSelectedOption: Dispatch<SetStateAction<number | null>>;
+  userId: string;
 }
+
+const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
 
 export default function InterviewTab({
   interviewQuestions,
@@ -19,44 +22,77 @@ export default function InterviewTab({
   setCurrentQuestionIndex,
   selectedOption,
   setSelectedOption,
+  userId,
 }: InterviewTabProps) {
   const questions = interviewQuestions[courseId] || [];
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
   const [score, setScore] = useState(0);
 
-  if (!questions.length) return <p>No interview questions available.</p>;
+  if (!questions.length) {
+    return <p>No interview questions available.</p>;
+  }
 
   const currentQ = questions[currentQuestionIndex];
+  if (!currentQ) {
+    return <p>Loading question...</p>;
+  }
 
   const handleSubmit = () => {
     if (selectedOption === null) return;
 
-    if (selectedOption === currentQ.correct) {
+    const isCorrect = selectedOption === currentQ.correct;
+
+    if (isCorrect) {
       setFeedbackMsg("✅ Correct Answer!");
       setScore((prev) => prev + 1);
     } else {
       setFeedbackMsg("❌ Incorrect! The correct answer is highlighted.");
     }
 
-    // Always move forward after short delay
     setTimeout(() => {
       if (currentQuestionIndex + 1 < questions.length) {
         setSelectedOption(null);
         setFeedbackMsg(null);
         setCurrentQuestionIndex((prev) => prev + 1);
       } else {
+        // quiz finished
         setQuizCompleted(true);
+        const finalScore = isCorrect ? score + 1 : score;
+        saveQuizResult(finalScore);
       }
     }, 1500);
   };
 
-  // Progress bar percentage
-  const progressPercent = ((currentQuestionIndex + 1) / questions.length) * 100;
+  // ✅ Save quiz result to backend
+  const saveQuizResult = async (finalScore: number) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      await fetch(`${BASE}/progress/quiz/${courseId}-quiz`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          score: finalScore,
+          correctAnswers: finalScore,
+          totalQuestions: questions.length,
+        }),
+      });
+    } catch (err) {
+      console.error("❌ Failed to save quiz result:", err);
+    }
+  };
+
+  const progressPercent =
+    ((currentQuestionIndex + 1) / questions.length) * 100;
 
   return (
     <div>
-      {!quizCompleted && currentQuestionIndex < questions.length ? (
+      {!quizCompleted ? (
         <div className="p-4 border rounded-lg shadow-md relative overflow-hidden">
           {/* Progress Bar */}
           <div className="absolute top-0 left-0 w-full h-2 bg-gray-200">
@@ -84,9 +120,7 @@ export default function InterviewTab({
                       ? "border-purple-500 bg-purple-50"
                       : "border-gray-300"
                   } ${
-                    feedbackMsg &&
-                    isCorrect &&
-                    "bg-green-200 border-green-500"
+                    feedbackMsg && isCorrect && "bg-green-200 border-green-500"
                   } ${
                     feedbackMsg &&
                     isSelected &&
@@ -108,7 +142,6 @@ export default function InterviewTab({
             })}
           </div>
 
-          {/* Submit Button */}
           <button
             onClick={handleSubmit}
             disabled={selectedOption === null}
@@ -117,7 +150,6 @@ export default function InterviewTab({
             Submit Answer
           </button>
 
-          {/* Feedback Message */}
           {feedbackMsg && (
             <p
               className={`mt-4 text-center font-medium ${

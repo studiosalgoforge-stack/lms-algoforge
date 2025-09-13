@@ -111,3 +111,148 @@ export const migrateProgress = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+//video progress
+
+export const updateVideoProgress = async (req, res) => {
+  const { videoId } = req.params;
+  const { watchedDuration, totalDuration } = req.body;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const existingVideo = user.videoProgress.find(v => v.videoId === videoId);
+
+    if (existingVideo) {
+      existingVideo.watchedDuration = watchedDuration;
+      existingVideo.totalDuration = totalDuration;
+      existingVideo.lastWatchedAt = Date.now();
+    } else {
+      user.videoProgress.push({ videoId, watchedDuration, totalDuration, lastWatchedAt: Date.now() });
+    }
+
+    await user.save();
+    res.json({ success: true, videoProgress: user.videoProgress });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+//quizprogress
+
+export const updateQuizProgress = async (req, res) => {
+  const { quizId } = req.params;
+  const { score, correctAnswers, totalQuestions } = req.body;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const existingQuiz = user.quizProgress.find(q => q.quizId === quizId);
+
+    if (existingQuiz) {
+      // Overwrite
+      existingQuiz.score = score;
+      existingQuiz.correctAnswers = correctAnswers;
+      existingQuiz.totalQuestions = totalQuestions;
+      existingQuiz.completedAt = Date.now();
+    } else {
+      user.quizProgress.push({ quizId, score, correctAnswers, totalQuestions, completedAt: Date.now() });
+    }
+
+    await user.save();
+    res.json({ success: true, quizProgress: user.quizProgress });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const updateStudyTime = async (req, res) => {
+  const { courseKey } = req.params;
+  const { minutes } = req.body;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const existing = user.studyTime.find(s => s.courseKey === courseKey);
+
+    if (existing) {
+      existing.totalMinutes += minutes; // accumulate time
+      existing.lastUpdated = Date.now();
+    } else {
+      user.studyTime.push({ courseKey, totalMinutes: minutes, lastUpdated: Date.now() });
+    }
+    console.log("Received study time update:", courseKey, minutes);
+    console.log("User ID:", userId);
+    await user.save();
+    res.json({ success: true, studyTime: user.studyTime });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Unified progress + profile info
+export const getProgress = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId).select(
+      "username email firstName lastName courseProgress quizProgress videoProgress studyTime"
+    );
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({
+      success: true,
+      progress: {
+        courseProgress: user.courseProgress || [],
+        quizProgress: user.quizProgress || [],
+        videoProgress: user.videoProgress || [],
+        studyTime: user.studyTime || [],
+      },
+      profile: {
+        username: user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+    });
+  } catch (err) {
+    console.error("Error fetching progress:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+export const getQuizProgress = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId).select("quizProgress");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({ quizProgress: user.quizProgress || [] });
+  } catch (err) {
+    console.error("getQuizProgress error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getVideoProgress = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId).select("videoProgress");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({ videoProgress: user.videoProgress || [] });
+  } catch (err) {
+    console.error("getVideoProgress error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+

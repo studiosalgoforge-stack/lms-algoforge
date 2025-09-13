@@ -36,8 +36,48 @@ export default function CourseDetail() {
   // 🔹 Track completed topics per course
   const [completedTopics, setCompletedTopics] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
+  const [userId, setUserId] = useState<string | null>(null);
 
   if (!id) return <p>Invalid course ID</p>;
+
+  // ✅ Study Time Tracking (autosave every 5 min + on exit)
+  useEffect(() => {
+    const start = Date.now();
+
+    const interval = setInterval(() => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      fetch(`${BASE}/progress/studytime/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ minutes: 5 }),
+      }).catch((err) => console.error("Failed to auto-save study time:", err));
+    }, 5 * 60 * 1000);
+
+    return () => {
+      clearInterval(interval);
+      const end = Date.now();
+      const minutes = Math.floor((end - start) / 60000);
+
+      if (minutes > 0) {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        fetch(`${BASE}/progress/studytime/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ minutes }),
+        }).catch((err) => console.error("Failed to save study time:", err));
+      }
+    };
+  }, [id]);
 
   // 🔹 Count total topics recursively
   const countTotalTopics = useCallback((items: Material[]): number => {
@@ -49,41 +89,38 @@ export default function CourseDetail() {
   }, []);
 
   // 🔹 Merge stored progress
-const mergeCompletedTopics = useCallback(
-  async (newCompleted: string[]) => {
-    try {
-      const token = localStorage.getItem("token"); // from login
-     const res = await fetch(`${BASE}/progress`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  },
-  body: JSON.stringify({
-    courseKey: id,
-    topicPath: newCompleted[0],
-  }),
-});
+  const mergeCompletedTopics = useCallback(
+    async (newCompleted: string[]) => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${BASE}/progress`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            courseKey: id,
+            topicPath: newCompleted[0],
+          }),
+        });
 
+        const data = await res.json();
+        if (res.ok) {
+          const merged = data.completedTopics || [];
+          setCompletedTopics(merged);
 
-      const data = await res.json();
-      if (res.ok) {
-       const merged = data.completedTopics || [];
-        setCompletedTopics(merged);
-
-   const total = countTotalTopics(topics);
-if (total > 0) setProgress(Math.floor((merged.length / total) * 100));
-
-      } else {
-        console.error("Failed to update progress:", data.message);
+          const total = countTotalTopics(topics);
+          if (total > 0) setProgress(Math.floor((merged.length / total) * 100));
+        } else {
+          console.error("Failed to update progress:", data.message);
+        }
+      } catch (err) {
+        console.error("Error updating progress:", err);
       }
-    } catch (err) {
-      console.error("Error updating progress:", err);
-    }
-  },
-  [id, topics, countTotalTopics]
-);
-
+    },
+    [id, topics, countTotalTopics]
+  );
 
   // 🔹 Recursively find first leaf index
   const getFirstLeafIndex = useCallback(
@@ -116,32 +153,67 @@ if (total > 0) setProgress(Math.floor((merged.length / total) * 100));
     []
   );
 
-  // 🔹 Load stored progress
-useEffect(() => {
-  const fetchProgress = async () => {
-    try {
+  // 🔹 Fetch user info
+  useEffect(() => {
+    const fetchUser = async () => {
       const token = localStorage.getItem("token");
-  
-     const res = await fetch(`${BASE}/progress?courseKey=${id}`, {
-  headers: { Authorization: `Bearer ${token}` },
-});
-
-      const data = await res.json();
-      if (res.ok) {
-       setCompletedTopics(data.completedTopics || []);
-const total = countTotalTopics(topics);
-if (total > 0)
-  setProgress(Math.floor((data.completedTopics.length / total) * 100));
-
+      if (!token) {
+        setUserId(null);
+        return;
       }
-    } catch (err) {
-      console.error("Error fetching progress:", err);
-    }
-  };
 
-  fetchProgress();
-}, [id, topics, countTotalTopics]);
+      try {
+        const res = await fetch(`${BASE}/users/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
+        if (!res.ok) {
+          setUserId(null);
+          return;
+        }
+
+        const data = await res.json();
+        if (data && data._id) {
+          setUserId(data._id);
+        } else {
+          setUserId(null);
+        }
+      } catch {
+        setUserId(null);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  // 🔹 Load stored progress
+  useEffect(() => {
+    const fetchProgress = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${BASE}/progress?courseKey=${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          setCompletedTopics(data.completedTopics || []);
+          const total = countTotalTopics(topics);
+          if (total > 0)
+            setProgress(
+              Math.floor((data.completedTopics.length / total) * 100)
+            );
+        }
+      } catch (err) {
+        console.error("Error fetching progress:", err);
+      }
+    };
+
+    fetchProgress();
+  }, [id, topics, countTotalTopics]);
 
   // 🔹 Fetch topics & assignments
   useEffect(() => {
@@ -175,7 +247,9 @@ if (total > 0)
           ...topic,
           assignments: assData[idx]?.assignments || [],
         }));
+
         setTopics(finalTopics);
+
         const parentIndexes = getAllParentIndexes(finalTopics);
         const firstLeafIndex = getFirstLeafIndex(finalTopics);
         const firstLeafParents = firstLeafIndex
@@ -293,10 +367,12 @@ if (total > 0)
 
   const videoData: Video[] = [
     {
+      id: "video1",
       title: "Gym Posture Correction",
       url: "https://drive.google.com/file/d/1Gn04BhzHxaImmsngPgi-GEoFZrAOQlVX/preview",
     },
     {
+      id: "video2",
       title: "Skin Cancer Correction",
       url: "https://drive.google.com/file/d/1mTCfA7gd9mPseiFoT7LITKY6fobuoLyi/preview",
     },
@@ -354,7 +430,9 @@ if (total > 0)
                 onNext={(topicId) => handleTopicCompletion(topicId)}
               />
             )}
-            {activeTab === "videos" && <VideoTab videos={videoData} />}
+            {activeTab === "videos" && (
+              <VideoTab videos={videoData} courseId={id as string} />
+            )}
             {activeTab === "interview" && (
               <InterviewTab
                 interviewQuestions={interviewData}
@@ -363,6 +441,7 @@ if (total > 0)
                 setCurrentQuestionIndex={setCurrentQuestionIndex}
                 selectedOption={selectedOption}
                 setSelectedOption={setSelectedOption}
+                userId={userId!}
               />
             )}
             {activeTab === "assignments" && (
@@ -431,7 +510,9 @@ if (total > 0)
                       onNext={(topicId) => handleTopicCompletion(topicId)}
                     />
                   )}
-                  {tab === "videos" && <VideoTab videos={videoData} />}
+                  {tab === "videos" && (
+                    <VideoTab videos={videoData} courseId={id as string} />
+                  )}
                   {tab === "interview" && (
                     <InterviewTab
                       interviewQuestions={interviewData}
@@ -440,6 +521,7 @@ if (total > 0)
                       setCurrentQuestionIndex={setCurrentQuestionIndex}
                       selectedOption={selectedOption}
                       setSelectedOption={setSelectedOption}
+                      userId={userId!}
                     />
                   )}
                   {tab === "assignments" && (

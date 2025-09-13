@@ -102,7 +102,7 @@ export function LearningProgress({ courses }: LearningProgressProps) {
                 </span>
                 <span className="flex items-center gap-1">
                   <Clock className="h-3 w-3 text-blue-500" />
-                  {course.timeSpent}h spent
+                  {course.timeSpent} minutes spent
                 </span>
               </div>
               <span className="text-blue-600">Last: {course.lastActivity}</span>
@@ -134,7 +134,7 @@ export function LearningProgress({ courses }: LearningProgressProps) {
                 {Math.round(
                   courses.reduce((sum, course) => sum + course.timeSpent, 0)
                 )}
-                h
+                 m
               </div>
               <div className="text-xs text-muted-foreground">Total Time</div>
             </div>

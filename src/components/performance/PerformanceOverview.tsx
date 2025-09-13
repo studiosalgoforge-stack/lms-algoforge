@@ -62,20 +62,12 @@ export function PerformanceOverview({ stats }: PerformanceOverviewProps) {
     },
     {
       title: "Study Time",
-      value: `${stats.studyTime}h`,
+      value: `${stats.studyTime} mins`,
       icon: Clock,
       color: "blue-400",
       subtitle: "This month",
       gradient: "bg-gradient-to-r from-purple-500 to-blue-400"
     },
-    {
-      title: "Achievements",
-      value: stats.achievements.toString(),
-      icon: Trophy,
-      color: "purple-400",
-      subtitle: "Unlocked",
-      gradient: "bg-gradient-to-r from-blue-500 to-purple-500"
-    }
   ];
 
   return (

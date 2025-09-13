@@ -148,3 +148,20 @@ export const changePassword = async (req, res) => {
   }
 };
 
+
+// GET USER PROFILE
+export const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password"); // don't send password
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error("Get profile error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
