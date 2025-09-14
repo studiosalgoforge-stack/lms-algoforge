@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { backupPPTs } from "@/app/data/backupPPTs";
+
+import { User } from "lucide-react"; // Import for the user icon
+
 import Link from "next/link";
 
 const categories = ["My Courses", "Orientation", "Projects"];
@@ -32,15 +35,20 @@ export default function CoursesPage() {
   const [activeTab, setActiveTab] = useState("My Courses");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [courseProgress, setCourseProgress] = useState<Record<string, string[]>>({});
+    // New state to manage the visibility of the welcome message
 
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : "";
+
+
+
+
 
   // Fetch progress from backend on mount
   useEffect(() => {
     const fetchProgress = async () => {
       try {
         if (!token) return;
-     const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000";
+     const BASE_URL = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000";
 const res = await fetch(`${BASE_URL}/api/progress`, { 
   headers: { Authorization: `Bearer ${token}` } 
 });
@@ -55,34 +63,34 @@ const res = await fetch(`${BASE_URL}/api/progress`, {
   }, [token]);
 
   // Merge progress and update backend
-  const mergeProgress = async (courseId: string, newCompleted: string[]) => {
-    try {
-      if (!token) return;
-     const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000";
-const res = await fetch(`${BASE_URL}/api/progress`,
-   { 
- // Send first new topic to backend
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ courseKey: courseId, topicPath: newCompleted[0] }),
-      });
+//   const mergeProgress = async (courseId: string, newCompleted: string[]) => {
+//     try {
+//       if (!token) return;
+//      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000";
+// const res = await fetch(`${BASE_URL}/api/progress`,
+//    { 
+//  // Send first new topic to backend
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${token}`,
+//         },
+//         body: JSON.stringify({ courseKey: courseId, topicPath: newCompleted[0] }),
+//       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to update progress");
+//       const data = await res.json();
+//       if (!res.ok) throw new Error(data.message || "Failed to update progress");
 
-      // Update local state
-      setCourseProgress((prev) => {
-        const prevCompleted = prev[courseId] || [];
-        const merged = Array.from(new Set([...prevCompleted, ...data.completedTopics]));
-        return { ...prev, [courseId]: merged };
-      });
-    } catch (err) {
-      console.error("Error updating progress:", err);
-    }
-  };
+//       // Update local state
+//       setCourseProgress((prev) => {
+//         const prevCompleted = prev[courseId] || [];
+//         const merged = Array.from(new Set([...prevCompleted, ...data.completedTopics]));
+//         return { ...prev, [courseId]: merged };
+//       });
+//     } catch (err) {
+//       console.error("Error updating progress:", err);
+//     }
+//   };
 
   const toggleCourse = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -136,6 +144,7 @@ console.log("Topics for", key, topics);
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50 p-4 md:p-8 flex flex-col lg:flex-row gap-8">
+
         {/* Left/Main Content */}
         <div className="flex-1">
           <div className="flex-1 text-black mb-6 text-bold bg-gray-100 h-12 flex items-center px-4 gap-2">
@@ -259,8 +268,6 @@ console.log("Topics for", key, topics);
     ))}
   </div>
 )}
-
-
 
           
 

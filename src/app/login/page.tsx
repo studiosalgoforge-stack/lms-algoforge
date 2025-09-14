@@ -113,7 +113,7 @@ export default function LoginPage() {
             onChange={() => setRememberMe(!rememberMe)}
             className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
           />
-          <label className="ml-2 text-sm text-gray-700 font-medium">
+          <label className="ml-2 mb-2 text-sm text-gray-700 font-medium">
             Remember me
           </label>
 
@@ -134,17 +134,6 @@ export default function LoginPage() {
         >
         {loading ? "Signing in..." : "Sign in"}
         </button>
-
-
-        <p className="text-sm mt-4 text-center">
-  Don’t have an account?{" "}
-  <span
-    onClick={() => router.push("/signup")}
-    className="text-purple-800 cursor-pointer font-medium hover:underline"
-  >
-    Sign up
-  </span>
-</p>
 
       </form>
     </div>
