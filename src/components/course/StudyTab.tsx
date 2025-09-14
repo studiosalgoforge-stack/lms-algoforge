@@ -69,7 +69,7 @@ const getTopicByPath = (path: string): Material | null => {
 
   if (!topic) return <p className="text-gray-600">Select a topic to start studying.</p>;
 
-=======
+
   const getNextTopicPath = (items: Material[], currentPath: string): string | null => {
   const leafPaths: string[] = [];
 
