@@ -6,6 +6,7 @@ interface AssignmentsTabProps {
   selectedTopic: string | null; 
 }
 
+// helper to resolve topic by path
 function getTopicByPath(topics: Material[], path: string): Material | null {
   return path.split(".").reduce<Material | null>((current, part) => {
     if (!current) return null;
@@ -40,4 +41,4 @@ export default function AssignmentsTab({ topics, selectedTopic }: AssignmentsTab
       ))}
     </div>
   );
-}
+} //iqbal
