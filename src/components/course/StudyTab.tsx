@@ -40,7 +40,7 @@ const getTopicByPath = (path: string): Material | null => {
   let current: Material | null = null;
   let children = topics; // 🔑 always start from root
 
-  for (let idx of parts) {
+  for (const idx of parts) {
     current = children[idx];
     if (!current) return null;
     children = current.children || [];
