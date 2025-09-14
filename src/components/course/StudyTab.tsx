@@ -7,6 +7,7 @@ export interface Material {
   url?: string;
   file?: string;
   link?: string;
+  assignments?: string[];  // ✅ added so AssignmentsTab works
   children?: Material[];
 }
 
@@ -35,19 +36,18 @@ export default function StudyTab({
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   // 👉 helper to resolve nested topic by path like "0.1.2"
-const getTopicByPath = (path: string): Material | null => {
-  const parts = path.split(".").map(Number);
-  let current: Material | null = null;
-  let children = topics; // 🔑 always start from root
+  const getTopicByPath = (path: string): Material | null => {
+    const parts = path.split(".").map(Number);
+    let current: Material | null = null;
+    let children = topics; // 🔑 always start from root
 
-  for (const idx of parts) {
-    current = children[idx];
-    if (!current) return null;
-    children = current.children || [];
-  }
-  return current;
-};
-
+    for (const idx of parts) {   // ✅ changed let → const
+      current = children[idx];
+      if (!current) return null;
+      children = current.children || [];
+    }
+    return current;
+  };
 
   // ✅ auto-select first topic
   useEffect(() => {
@@ -64,35 +64,31 @@ const getTopicByPath = (path: string): Material | null => {
     }
   }, [cooldown]);
 
- const topic = selectedTopic ? getTopicByPath(selectedTopic) : null;
-
-
+  const topic = selectedTopic ? getTopicByPath(selectedTopic) : null;
   if (!topic) return <p className="text-gray-600">Select a topic to start studying.</p>;
 
-
+  // find next topic path
   const getNextTopicPath = (items: Material[], currentPath: string): string | null => {
-  const leafPaths: string[] = [];
+    const leafPaths: string[] = [];
 
-  const traverse = (arr: Material[], prefix = "") => {
-    arr.forEach((item, i) => {
-      const path = prefix ? `${prefix}.${i}` : `${i}`;
-      if (item.children && item.children.length > 0) {
-        traverse(item.children, path);
-      } else if (item.url) {
-        leafPaths.push(path);
-      }
-    });
+    const traverse = (arr: Material[], prefix = "") => {
+      arr.forEach((item, i) => {
+        const path = prefix ? `${prefix}.${i}` : `${i}`;
+        if (item.children && item.children.length > 0) {
+          traverse(item.children, path);
+        } else if (item.url || item.file || item.link) {
+          leafPaths.push(path);
+        }
+      });
+    };
+
+    traverse(items);
+    const idx = leafPaths.indexOf(currentPath);
+    if (idx >= 0 && idx < leafPaths.length - 1) return leafPaths[idx + 1];
+    return null;
   };
 
-  traverse(items);
-  const idx = leafPaths.indexOf(currentPath); // ✅ fixed
-  if (idx >= 0 && idx < leafPaths.length - 1) return leafPaths[idx + 1];
-  return null;
-};
-
-
   // Mark topic complete
-
   const markComplete = () => {
     if (!selectedTopic) return;
     if (cooldown > 0) {
