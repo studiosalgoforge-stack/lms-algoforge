@@ -243,15 +243,10 @@ const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
               required
             />
 
-
-             <div>
-  <label className="block text-sm font-medium text-gray-400 mb-2">Phone</label>
-
-</div>
                            <input
   type="tel"
-  name="phone"
-  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
+ name="phone"
+  className="w-full bg-white border hover:border-purple-600 rounded-lg px-3 py-2 text-black"
   value={form.phone}
   onChange={(e) => {
     // keep only digits
@@ -275,7 +270,7 @@ const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
       alert("Phone number must be 10 digits!");
     }
   }}
-  placeholder="Enter 10-digit phone number"
+  placeholder="Enter phone number"
 />
 
 

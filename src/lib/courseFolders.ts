@@ -33,5 +33,12 @@ export const courseFolders: CourseFolders = {
     interview: "9I0J1K2L3M4N5O6P7Q8R",
     assignments: "8H9I0J1K2L3M4N5O6P7Q",
 
+  },
+
+  "Tableau":{
+    ppts:"1aaRsKjsgbSFqpne6DCrvI-XwY6Xq3nsm",
+    interview: "9I0J1K2L3M4N5O6P7Q8R",
+    assignments: "8H9I0J1K2L3M4N5O6P7Q",
+
   }
 };

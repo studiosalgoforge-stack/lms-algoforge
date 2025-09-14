@@ -42,10 +42,11 @@ const Dashboard = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000";
+        // CORRECTED: Added /api to the base URL
+        const BASE_URL = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
 
         // Unified call to fetch all progress + studyTime
-        const dashboardRes = await fetch(`${BASE_URL}/api/progress/dashboard`, {
+        const dashboardRes = await fetch(`${BASE_URL}/progress/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!dashboardRes.ok) throw new Error("Failed to fetch dashboard");
@@ -54,7 +55,7 @@ const Dashboard = () => {
         const { courseProgress, quizProgress, videoProgress, studyTime } =
           dashboardJson.progress || {};
 
-        const courseNames = ["Data-Science", "Power-BI", "SQL", "Data-Engineering"];
+        const courseNames = ["Data-Science", "Power-BI", "SQL", "Data-Engineering" , "Tableau"];
         const courseData: Course[] = courseNames.map((courseName) => {
           const topics = backupPPTs[courseName] || [];
           const totalLessons = countPPTLeafTopics(topics);

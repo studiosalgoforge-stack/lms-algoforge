@@ -4,17 +4,15 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { backupPPTs } from "@/app/data/backupPPTs";
-
-const categories = ["My Courses", "Orientation", "Learning Tools", "Projects"];
+import { User } from "lucide-react"; // Import for the user icon
+const categories = ["My Courses", "Orientation", "Projects"];
 
 const sampleData = {
   Orientation: [
-    { id: "welcome", title: "Welcome Video", link: "#" },
-    { id: "getting-started", title: "Getting Started Guide", link: "#" },
-  ],
-  "Learning Tools": [
-    { id: "jupyter", title: "Jupyter Notebook Tutorial", link: "#" },
-    { id: "power-bi", title: "Power BI Tutorial", link: "#" },
+    { id: "welcome",
+       title: "Welcome Video",
+        link: "https://drive.google.com/file/d/1lszoOETnhKZKgSVO8SWnmso3rQKjgmN8/preview" },
+  
   ],
   Projects: [
     {
@@ -33,15 +31,20 @@ export default function CoursesPage() {
   const [activeTab, setActiveTab] = useState("My Courses");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [courseProgress, setCourseProgress] = useState<Record<string, string[]>>({});
+    // New state to manage the visibility of the welcome message
 
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : "";
+
+
+
+
 
   // Fetch progress from backend on mount
   useEffect(() => {
     const fetchProgress = async () => {
       try {
         if (!token) return;
-     const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000";
+     const BASE_URL = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000";
 const res = await fetch(`${BASE_URL}/api/progress`, { 
   headers: { Authorization: `Bearer ${token}` } 
 });
@@ -56,34 +59,34 @@ const res = await fetch(`${BASE_URL}/api/progress`, {
   }, [token]);
 
   // Merge progress and update backend
-  const mergeProgress = async (courseId: string, newCompleted: string[]) => {
-    try {
-      if (!token) return;
-     const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000";
-const res = await fetch(`${BASE_URL}/api/progress`,
-   { 
- // Send first new topic to backend
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ courseKey: courseId, topicPath: newCompleted[0] }),
-      });
+//   const mergeProgress = async (courseId: string, newCompleted: string[]) => {
+//     try {
+//       if (!token) return;
+//      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000";
+// const res = await fetch(`${BASE_URL}/api/progress`,
+//    { 
+//  // Send first new topic to backend
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${token}`,
+//         },
+//         body: JSON.stringify({ courseKey: courseId, topicPath: newCompleted[0] }),
+//       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to update progress");
+//       const data = await res.json();
+//       if (!res.ok) throw new Error(data.message || "Failed to update progress");
 
-      // Update local state
-      setCourseProgress((prev) => {
-        const prevCompleted = prev[courseId] || [];
-        const merged = Array.from(new Set([...prevCompleted, ...data.completedTopics]));
-        return { ...prev, [courseId]: merged };
-      });
-    } catch (err) {
-      console.error("Error updating progress:", err);
-    }
-  };
+//       // Update local state
+//       setCourseProgress((prev) => {
+//         const prevCompleted = prev[courseId] || [];
+//         const merged = Array.from(new Set([...prevCompleted, ...data.completedTopics]));
+//         return { ...prev, [courseId]: merged };
+//       });
+//     } catch (err) {
+//       console.error("Error updating progress:", err);
+//     }
+//   };
 
   const toggleCourse = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -137,6 +140,7 @@ console.log("Topics for", key, topics);
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50 p-4 md:p-8 flex flex-col lg:flex-row gap-8">
+
         {/* Left/Main Content */}
         <div className="flex-1">
           <div className="flex-1 text-black mb-6 text-bold bg-gray-100 h-12 flex items-center px-4 gap-2">
@@ -228,38 +232,42 @@ console.log("Topics for", key, topics);
           )}
 
           {/* Other Tabs */}
-          {activeTab !== "My Courses" && activeTab !== "Projects" && (
-            <div className="space-y-4">
-              {items?.map((item, index) => (
-                <div key={index} className="rounded-lg shadow-lg overflow-hidden">
-                  <div
-                    className="flex justify-between items-center px-4 py-3 bg-gradient-to-r from-[#B07DFF] to-[#FF9DDB] text-white font-medium cursor-pointer"
-                    onClick={() => toggleCourse(index)}
-                  >
-                    <span>{item.title}</span>
-                    <span className="text-xl">{openIndex === index ? "−" : "+"}</span>
-                  </div>
+     {/* Orientation Tab */}
+{activeTab === "Orientation" && (
+  <div className="space-y-4">
+    {sampleData.Orientation.map((item, index) => (
+      <div key={index} className="rounded-lg shadow-lg overflow-hidden">
+        <div
+          className="flex justify-between items-center px-4 py-3 bg-gradient-to-r from-[#B07DFF] to-[#FF9DDB] text-white font-semibold cursor-pointer"
+          onClick={() => toggleCourse(index)}
+        >
+          <span>{item.title}</span>
+          <span className="text-xl">{openIndex === index ? "−" : "+"}</span>
+        </div>
 
-                  <div
-                    className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                      openIndex === index ? "max-h-72" : "max-h-0"
-                    } bg-white`}
-                  >
-                    <div className="p-4 space-y-4">
-                      <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 inline-block"
-                      >
-                        Open
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+        <div
+          className={`transition-all duration-300 ease-in-out overflow-hidden ${
+            openIndex === index ? "max-h-[600px]" : "max-h-0"
+          } bg-white`}
+        >
+          <div className="p-4">
+            <iframe
+              src={item.link}
+              width="100%"
+              height="400"
+              allow="autoplay"
+              className="rounded-md"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+
+
+          
 
           {/* Projects Tab */}
           {activeTab === "Projects" && (
@@ -293,6 +301,8 @@ console.log("Topics for", key, topics);
               ))}
             </div>
           )}
+
+
         </div>
 
         {/* Right Sidebar */}
