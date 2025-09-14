@@ -64,24 +64,25 @@ export default function StudyTab({
   };
 
   const getNextTopicPath = (items: Material[], currentPath: string): string | null => {
-    const leafPaths: string[] = [];
+  const leafPaths: string[] = [];
 
-    const traverse = (arr: Material[], prefix = "") => {
-      arr.forEach((item, i) => {
-        const path = prefix ? `${prefix}.${i}` : `${i}`;
-        if (item.children && item.children.length > 0) {
-          traverse(item.children, path);
-        } else if (item.url) {
-          leafPaths.push(path);
-        }
-      });
-    };
-
-    traverse(items);
-    const idx = leafPaths.indexOf(currentPath);
-    if (idx >= 0 && idx < leafPaths.length - 1) return leafPaths[idx + 1];
-    return null;
+  const traverse = (arr: Material[], prefix = "") => {
+    arr.forEach((item, i) => {
+      const path = prefix ? `${prefix}.${i}` : `${i}`;
+      if (item.children && item.children.length > 0) {
+        traverse(item.children, path);
+      } else if (item.url) {
+        leafPaths.push(path);
+      }
+    });
   };
+
+  traverse(items);
+  const idx = leafPaths.indexOf(currentPath); // ✅ fixed
+  if (idx >= 0 && idx < leafPaths.length - 1) return leafPaths[idx + 1];
+  return null;
+};
+
 
   // Mark topic complete
   const markComplete = () => {
