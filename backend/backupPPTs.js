@@ -1239,6 +1239,49 @@ export const backupPPTs = {
       ],
     },
   ],
+
+
+
+//Tableau
+   "Tableau": [
+    {
+      name: "Tableau Fundamentals",
+      children: [
+        {
+          name: "1.1 - Tableau Data Visualization",
+          link: "https://docs.google.com/presentation/d/1vvjTubEE5EjR4zf5mGl3tKS6L_mEH76p/preview",
+          assignments: [],
+        },
+        {
+          name: "1.2 - Data Sources",
+          file: "https://drive.google.com/uc?export=download&id=1f3c_2b_pmhnKMmcywJb7446CMA3USvuy",
+          assignments: [], 
+        },
+        {
+          name: "1.3 - New Datasets",
+          file: "https://drive.google.com/uc?export=download&id=1Sc5pEOmcMIk9slbAf3TfWAIzjzTz3zBs",
+          assignments: [], 
+        },
+        {
+          name: "2.1 - Tableau Architecture",
+          link: "https://docs.google.com/presentation/d/18cGFZ0poFqqPKHpbPbsX6WzDMle36q95/preview",
+          assignments: [],
+        },   
+
+        {
+          name: "3.1 - Basic Charts in Tableau",
+          link: "https://docs.google.com/presentation/d/18cGFZ0poFqqPKHpbPbsX6WzDMle36q95/preview",
+          assignments: [],
+        },
+        {
+          name: "3.2 - Workbook",
+          file: "https://drive.google.com/uc?export=download&id=1lBW2GXdzr1FhpxWmQ490wMe6RvdPnM8C",
+          assignments: [],
+        },
+     
+      ],
+    },
+  ],
 // ...existing code...
 };
 
