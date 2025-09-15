@@ -50,7 +50,7 @@ export default function CoursesPage() {
       try {
         if (!token) return;
      const BASE_URL = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000";
-const res = await fetch(`${BASE_URL}/api/progress`, { 
+const res = await fetch(`${BASE_URL}/progress`, { 
   headers: { Authorization: `Bearer ${token}` } 
 });
         if (!res.ok) throw new Error("Failed to fetch progress");
