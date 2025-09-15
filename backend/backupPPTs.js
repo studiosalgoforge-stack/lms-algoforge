@@ -1278,6 +1278,16 @@ export const backupPPTs = {
           file: "https://drive.google.com/uc?export=download&id=1lBW2GXdzr1FhpxWmQ490wMe6RvdPnM8C",
           assignments: [],
         },
+                    {
+               name: "Orginization Tableau",
+          link: "https://docs.google.com/presentation/d/1ydh6yxhV7w8uAatLuJTEFKISRqGvDXVi/preview",
+          assignments: [],
+        },
+        {
+          name: "Workbook.zip",
+          file: "https://drive.google.com/uc?export=download&id=1O3G4o8TnrzezwKkObm1J1nYuSRTGdBFS",
+          assignments: [],
+        },
      
       ],
     },

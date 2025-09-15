@@ -15,6 +15,7 @@ import editUserRoutes from "./routes/editUserRoutes.js";
 import questionsRoute from "./routes/questions.js";
 import SupportQuery from "./models/SupportQuery.js";
 import progressRoutes from "./routes/progressRoutes.js";
+import notificationRoutes from './routes/notificationRoutes.js';
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -26,7 +27,6 @@ const PORT = process.env.PORT || 5000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// Middleware
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(
   cors({
@@ -44,7 +44,6 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser()); // Use cookie-parser
 
-// ... (rest of the file remains the same)
 
 app.use((req, res, next) => {
   res.on("finish", () => {
@@ -65,7 +64,8 @@ app.use("/api/edituser", editUserRoutes);
 console.log("➡️ Mounting /api/questions...");
 app.use('/api/questions', questionsRoute);
 app.use("/api/progress", progressRoutes);
-
+// Mount the notification router under the /api/notifications path
+app.use('/api/notifications', notificationRoutes);
 // serve uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 

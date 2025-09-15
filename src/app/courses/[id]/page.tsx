@@ -156,6 +156,11 @@ export default function CourseDetail() {
     []
   );
 
+  // Add this helper function inside CourseDetail component or outside
+const isTopicCompleted = (topicPath: string) => {
+  return completedTopics.includes(topicPath);
+};
+
   // 🔹 Fetch user info
   useEffect(() => {
     const fetchUser = async () => {
@@ -329,28 +334,35 @@ const fetchData = async () => {
     isTopicsSidebarOpen ? "w-64" : "w-0 lg:w-64 lg:block hidden"
   }`}
 >
-  <div className="p-2 h-full overflow-y-auto">
-    <h2 className="font-semibold text-purple-950 text-lg mb-3 border-b pb-2">
-      📘 Topics
-    </h2>
-                 <ul className="space-y-2">
-  {topics.length > 0 &&
-    topics[0].children?.map((item, idx) => (
-      <li
-        key={idx}
-        className={`px-3 py-2 rounded-md cursor-pointer ${
-          selectedTopic === `${idx}`
-            ? "bg-purple-200 text-purple-900 font-semibold"
-            : "bg-gray-100 hover:bg-purple-100"
-        }`}
-       onClick={() => setSelectedTopic(`0.${idx}`)} 
-      >
-        {item.name}
-      </li>
-    ))}
-</ul>
+<div className="p-2 h-full overflow-y-auto">
+  <h2 className="font-semibold text-purple-950 text-lg mb-3 border-b pb-2">
+    📘 Topics
+  </h2>
+  <ul className="space-y-2">
+    {topics.length > 0 &&
+      topics[0].children?.map((item, idx) => {
+        const topicPath = `0.${idx}`;
+        const isCompleted = completedTopics.includes(topicPath); // ✅ Check if the topic is in the completedTopics array
 
-  </div>
+        return (
+          <li
+            key={idx}
+            className={`px-3 py-2 rounded-md cursor-pointer flex items-center justify-between ${
+              selectedTopic === topicPath
+                ? "bg-purple-200 text-purple-900 font-semibold"
+                : isCompleted // ✅ Apply green background if completed
+                ? "bg-green-100 hover:bg-green-200"
+                : "bg-gray-100 hover:bg-purple-100"
+            }`}
+            onClick={() => setSelectedTopic(topicPath)}
+          >
+            <span className="truncate">{item.name}</span>
+            {isCompleted && <Check className="w-4 h-4 text-green-600 ml-2" />} {/* ✅ Add the check icon if completed */}
+          </li>
+        );
+      })}
+  </ul>
+</div>
 </div>
 
 
@@ -400,9 +412,9 @@ const fetchData = async () => {
                 userId={userId!}
               />
             )}
-            {activeTab === "assignments" && (
-              <AssignmentsTab topics={topics} selectedTopic={selectedTopic} />
-            )}
+        {activeTab === "assignments" && (
+  <AssignmentsTab courseId={id as string} />
+)}
           </div>
         </div>
 
@@ -418,36 +430,47 @@ const fetchData = async () => {
             <span className="text-lg font-semibold">{id} Topics</span>
           </div>
 
-          <div
-            className={`fixed top-0 left-0 h-full w-[80%] bg-purple-50 shadow-lg transform transition-transform duration-300 z-40 p-4 overflow-y-auto
-            ${isMobileSliderOpen ? "translate-x-0" : "-translate-x-full"}`}
+      <div
+  className={`fixed top-0 left-0 h-full w-[80%] bg-purple-50 shadow-lg transform transition-transform duration-300 z-40 p-4 overflow-y-auto
+    ${isMobileSliderOpen ? "translate-x-0" : "-translate-x-full"}`}
+>
+  <div className="p-4 flex justify-between items-center border-b overflow-y-auto">
+    <h2 className="font-semibold text-lg">📘 Topics</h2>
+    <button
+      onClick={() => setIsMobileSliderOpen(false)}
+      className="text-gray-500 hover:text-gray-800 text-xl font-bold "
+    >
+      ×
+    </button>
+  </div>
+  <ul className="space-y-2">
+    {topics.length > 0 &&
+      topics[0].children?.map((item, idx) => {
+        const topicPath = `0.${idx}`;
+        const isCompleted = completedTopics.includes(topicPath); // ✅ Check the completedTopics array
+
+        return (
+          <li
+            key={idx}
+            className={`px-3 py-2 rounded-md cursor-pointer flex items-center justify-between ${
+              selectedTopic === topicPath
+                ? "bg-purple-200 text-purple-900 font-semibold"
+                : isCompleted // ✅ Apply green background if completed
+                ? "bg-green-100 hover:bg-green-200"
+                : "bg-gray-100 hover:bg-purple-100"
+            }`}
+            onClick={() => {
+              setSelectedTopic(topicPath);
+              setIsMobileSliderOpen(false); // Close the sidebar on selection
+            }}
           >
-            <div className="p-4 flex justify-between items-center border-b overflow-y-auto">
-              <h2 className="font-semibold text-lg">📘 Topics</h2>
-              <button
-                onClick={() => setIsMobileSliderOpen(false)}
-                className="text-gray-500 hover:text-gray-800 text-xl font-bold "
-              >
-                ×
-              </button>
-            </div>
-             <ul className="space-y-2">
-  {topics.length > 0 &&
-    topics[0].children?.map((item, idx) => (
-      <li
-        key={idx}
-        className={`px-3 py-2 rounded-md cursor-pointer ${
-          selectedTopic === `${idx}`
-            ? "bg-purple-200 text-purple-900 font-semibold"
-            : "bg-gray-100 hover:bg-purple-100"
-        }`}
-        onClick={() => setSelectedTopic(`${idx}`)}
-      >
-        {item.name}
-      </li>
-    ))}
-</ul>
-          </div>
+            <span className="truncate">{item.name}</span>
+            {isCompleted && <Check className="w-4 h-4 text-green-600 ml-2" />} {/* ✅ Add the check icon */}
+          </li>
+        );
+      })}
+  </ul>
+</div>
 
           {["study", "videos", "interview", "assignments"].map((tab) => (
             <div key={tab} className="border rounded-md shadow">
@@ -473,7 +496,7 @@ const fetchData = async () => {
                 <div className="p-4">
                   {tab === "study" && (
                  <StudyTab
-    topics={topics[0].children || []}
+    topics={topics}
     selectedTopic={selectedTopic}
     setSelectedTopic={setSelectedTopic}
     scrollRef={scrollRef}
@@ -497,10 +520,7 @@ const fetchData = async () => {
                     />
                   )}
                   {tab === "assignments" && (
-                    <AssignmentsTab
-                      topics={topics}
-                      selectedTopic={selectedTopic}
-                    />
+                     <AssignmentsTab courseId={id as string} />
                   )}
                 </div>
               )}

@@ -132,7 +132,7 @@ const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
       <div className="min-h-screen bg-purple-50 p-6 md:p-12">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-purple-700">
+          <h1 className="text-4xl font-bold mb-4 text-purple-900">
             How can we help you?
           </h1>
           <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
@@ -142,7 +142,7 @@ const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
 
         {/* FAQs Section */}
         <div className="mb-16 max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-purple-700 text-center">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-purple-900 text-center">
             Frequently Asked Questions
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -158,7 +158,7 @@ const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
                     onClick={() => toggleFAQ(faq.id)}
                   >
                     <div>
-                      <h3 className="text-purple-700 font-bold text-lg md:text-xl mb-1 flex items-center">
+                      <h3 className="text-purple-900 font-bold text-lg md:text-xl mb-1 flex items-center">
                         <span className="mr-2">❓</span>
                         {faq.title}
                       </h3>
@@ -219,8 +219,8 @@ const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
 
         {/* Submit Query Form */}
         <div className="max-w-xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg  mb-12">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-purple-700">
-            Submit Query
+          <h2 className="text-2xl text-center md:text-3xl font-semibold mb-6 text-purple-900">
+            Still Need Help?
           </h2>
           {success && <p className="text-green-600 mb-4">Submitted successfully!</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -286,7 +286,7 @@ const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
             ></textarea>
             <button
               type="submit"
-              className="w-full py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+              className="w-full py-3 bg-purple-400 text-white rounded-lg hover:bg-purple-500 transition"
             >
               Submit
             </button>
