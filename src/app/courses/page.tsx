@@ -45,22 +45,27 @@ export default function CoursesPage() {
 
   // Fetch progress from backend on mount
   useEffect(() => {
-    const fetchProgress = async () => {
-      try {
-        if (!token) return;
-     const BASE_URL = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000";
-const res = await fetch(`${BASE_URL}/api/progress`, { 
-  headers: { Authorization: `Bearer ${token}` } 
-});
-        if (!res.ok) throw new Error("Failed to fetch progress");
-        const data = await res.json();
-        setCourseProgress(data.courseProgress || {});
-      } catch (err) {
-        console.error("Error fetching progress:", err);
-      }
-    };
-    fetchProgress();
-  }, [token]);
+  const fetchProgress = async () => {
+    try {
+      if (!token) return;
+      const BASE_URL = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000";
+      const res = await fetch(`${BASE_URL}/api/progress`, { 
+        headers: { Authorization: `Bearer ${token}` } 
+      });
+      if (!res.ok) throw new Error("Failed to fetch progress");
+      const data = await res.json();
+      console.log("Progress API response:", data);
+
+      // Handle both response formats
+      setCourseProgress(
+        data.courseProgress || data.progress || {}
+      );
+    } catch (err) {
+      console.error("Error fetching progress:", err);
+    }
+  };
+  fetchProgress();
+}, [token]);
 
   // Merge progress and update backend
 //   const mergeProgress = async (courseId: string, newCompleted: string[]) => {
