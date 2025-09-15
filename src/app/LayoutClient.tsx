@@ -6,6 +6,9 @@ import Link from "next/link";
 import { FiMenu, FiX, FiBook, FiMessageSquare, FiMail, FiUser, FiLogOut , FiArrowLeft } from "react-icons/fi";
 import LogoutButton from "@/components/ui/LogoutButton";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import UserMenu from "@/components/ui/UserMenu";
+import { FiBell } from "react-icons/fi";
+import Footer from "@/components/Footer";
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +31,7 @@ const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
     { href: "/courses", label: "My Courses", icon: <FiBook /> },
     { href: "/forum", label: "Discussion Forum", icon: <FiMessageSquare /> },
     { href: "/support", label: "Support", icon: <FiMail /> },
-    { href: "/dashboard", label: "Dashboard", icon: <FiUser /> },
+    // { href: "/dashboard", label: "Dashboard", icon: <FiUser /> },
   ];
    // No layout for login/forgot-password
  if (hiddenLayoutRoutes.includes(pathname)) {
@@ -99,7 +102,7 @@ const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
      <ProtectedRoute>
     <div className="flex flex-col min-h-screen ">
       {/* Top Navbar */}
-      <header className="bg-gradient-to-r from-[#9B4DFF] via-[#B55CFF] to-[#E09EFF] text-white shadow-md">
+      <header className="top-0 bg-gradient-to-r from-[#9B4DFF] via-[#B55CFF] to-[#E09EFF] text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -117,24 +120,25 @@ const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
                       <Link
                         href={route.href}
                         className={`flex items-center gap-2 hover:opacity-80 transition
-                          ${pathname === route.href ? "underline font-semibold" : ""}`}
+                          ${pathname === route.href ? "border-b-2 border-white font-semibold" : ""}`}
                       >
                         <span className="text-white text-lg">{route.icon}</span>
                         <span>{route.label}</span>
                       </Link>
                     </li>
                   ))}
+ <Link href="/notifications">
+    <button className="relative text-2xl mt-1 text-white hover:opacity-80 cursor-pointer">
+      <FiBell />
+      <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+    </button>
+  </Link>
+
                   {/* Logout Button */}
                   <li>
                   
-                     <Link
-                  href="/logout"
-                  className="flex items-center gap-2 p-2 rounded-md hover:underline underline-offset-2 transition"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <FiLogOut className="text-lg text-white" />
-                  Logout
-                </Link>
+                  <UserMenu />
+              
                   </li>
                 </ul>
               </nav>
@@ -142,12 +146,21 @@ const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
 
             {/* Mobile Hamburger */}
             {!isDesktop && (
+               <div className="flex items-center gap-4">
+                  {/* 🔔 Mobile Notification Bell */}
+                  <Link href="/notifications">
+                    <button className="relative mt-2 text-2xl text-white hover:opacity-80 cursor-pointer">
+                      <FiBell />
+                      <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                  </Link>
               <button
                 className="text-2xl focus:outline-none"
                 onClick={() => setIsOpen(!isOpen)}
               >
                 {isOpen ? <FiX /> : <FiMenu />}
               </button>
+              </div>
             )}
           </div>
         </div>
@@ -161,7 +174,8 @@ const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
                   <Link
                     href={route.href}
                     className={`flex items-center gap-2 p-2 rounded-md hover:bg-purple-700 transition
-                      ${pathname === route.href ? "bg-purple-700 font-semibold" : ""}`}
+                      ${pathname === route.href ? 
+                        "bg-purple-600 font-semibold" : ""}`}
                     onClick={() => setIsOpen(false)}
                   >
                     <span className="text-lg text-white">{route.icon}</span>
@@ -186,6 +200,7 @@ const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
 
       {/* Page Content */}
       <main className="flex-1">{children}</main>
+       <Footer />
     </div>
     </ProtectedRoute>
   );

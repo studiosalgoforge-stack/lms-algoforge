@@ -1,13 +1,16 @@
+/* eslint-disable react-hooks/rules-of-hooks, react/jsx-no-target-blank */
+
 "use client";
 import { useEffect, useState } from "react";
 import confetti from "canvas-confetti";
+import { Check } from "lucide-react";
 
 export interface Material {
   name: string;
   url?: string;
   file?: string;
   link?: string;
-  assignments?: string[];  // ✅ added so AssignmentsTab works
+  assignments?: string[];
   children?: Material[];
 }
 
@@ -31,17 +34,16 @@ export default function StudyTab({
   completedTopics = [],
 }: StudyTabProps) {
   const [cooldown, setCooldown] = useState<number>(10);
-  const [lastCompleted, setLastCompleted] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
-  // 👉 helper to resolve nested topic by path like "0.1.2"
+  // Helper to resolve nested topic by path like "0.1.2"
   const getTopicByPath = (path: string): Material | null => {
     const parts = path.split(".").map(Number);
     let current: Material | null = null;
-    let children = topics; // 🔑 always start from root
+    let children = topics;
 
-    for (const idx of parts) {   // ✅ changed let → const
+    for (const idx of parts) {
       current = children[idx];
       if (!current) return null;
       children = current.children || [];
@@ -49,14 +51,37 @@ export default function StudyTab({
     return current;
   };
 
-  // ✅ auto-select first topic
+  // Auto-select first topic
   useEffect(() => {
     if (!selectedTopic && topics.length > 0) {
-      setSelectedTopic("0");
+      // Find and set the path for the first leaf node
+    const getFirstLeafPath = (items: Material[], prefix = ""): string | null => {
+  if (!items || items.length === 0) return null;
+
+  for (let i = 0; i < items.length; i++) {
+    // Add a check to ensure items[i] is not undefined before proceeding.
+    const currentItem = items[i];
+    if (!currentItem) continue;
+
+    const path = prefix ? `${prefix}.${i}` : `${i}`;
+    if (currentItem.children && currentItem.children.length > 0) {
+      const leafPath = getFirstLeafPath(currentItem.children, path);
+      if (leafPath) return leafPath;
+    } else {
+      return path;
+    }
+  }
+  return null;
+};
+      
+      const firstTopicPath = getFirstLeafPath(topics);
+      if (firstTopicPath) {
+        setSelectedTopic(firstTopicPath);
+      }
     }
   }, [selectedTopic, topics, setSelectedTopic]);
 
-  // cooldown timer
+  // Cooldown timer
   useEffect(() => {
     if (cooldown > 0) {
       const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
@@ -67,45 +92,20 @@ export default function StudyTab({
   const topic = selectedTopic ? getTopicByPath(selectedTopic) : null;
   if (!topic) return <p className="text-gray-600">Select a topic to start studying.</p>;
 
-  // find next topic path
-  const getNextTopicPath = (items: Material[], currentPath: string): string | null => {
-    const leafPaths: string[] = [];
-
-    const traverse = (arr: Material[], prefix = "") => {
-      arr.forEach((item, i) => {
-        const path = prefix ? `${prefix}.${i}` : `${i}`;
-        if (item.children && item.children.length > 0) {
-          traverse(item.children, path);
-        } else if (item.url || item.file || item.link) {
-          leafPaths.push(path);
-        }
-      });
-    };
-
-    traverse(items);
-    const idx = leafPaths.indexOf(currentPath);
-    if (idx >= 0 && idx < leafPaths.length - 1) return leafPaths[idx + 1];
-    return null;
-  };
+const isCompleted = selectedTopic !== null && completedTopics.includes(selectedTopic);
 
   // Mark topic complete
-  const markComplete = () => {
-    if (!selectedTopic) return;
-    if (cooldown > 0) {
-      setMessage(`⏳ Please study ${cooldown} seconds before marking complete.`);
-      return;
-    }
-
-    if (!completedTopics.includes(selectedTopic)) {
-      onNext?.(selectedTopic);
-      setLastCompleted(selectedTopic);
-      setMessage("");
-
-      if (completedTopics.length + 1 === topics.length && topics.length > 0) {
-        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
-      }
-    }
-  };
+const markComplete = () => {
+  if (!selectedTopic) return; // This is a great null-check.
+  if (cooldown > 0) {
+    setMessage(`⏳ Please study ${cooldown} seconds before marking complete.`);
+    return;
+  }
+  if (!isCompleted) {
+    onNext?.(selectedTopic!); // Use '!' to tell TypeScript it's not null here.
+    setMessage("");
+  }
+};
 
   return (
     <div ref={scrollRef} className="space-y-6">
@@ -163,12 +163,19 @@ export default function StudyTab({
       <button
         onClick={markComplete}
         className={`mt-6 px-5 py-2 rounded-md text-white ${
-          lastCompleted === selectedTopic
-            ? "bg-green-600 hover:bg-green-700"
-            : "bg-purple-600 hover:bg-purple-700"
+          isCompleted
+            ? "bg-green-500 hover:bg-green-600 cursor-not-allowed"
+            : "bg-purple-500 hover:bg-purple-600"
         }`}
+        disabled={isCompleted}
       >
-        {lastCompleted === selectedTopic ? "Completed!" : "Mark as Complete"}
+        {isCompleted ? (
+          <>
+            <Check className="inline w-4 h-4 mr-2" /> Completed!
+          </>
+        ) : (
+          "Mark as Complete"
+        )}
       </button>
     </div>
   );

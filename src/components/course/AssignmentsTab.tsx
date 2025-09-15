@@ -1,44 +1,68 @@
+// src/components/course/AssignmentsTab.tsx
 "use client";
-import { Material } from "./StudyTab";
+import { assignments, Assignment } from "@/app/data/assignmentDocs";
+import { Download, FileText, FileSpreadsheet, FileQuestion, File } from "lucide-react";
 
 interface AssignmentsTabProps {
-  topics: Material[];
-  selectedTopic: string | null; 
+  courseId: string;
 }
 
-// helper to resolve topic by path
-function getTopicByPath(topics: Material[], path: string): Material | null {
-  return path.split(".").reduce<Material | null>((current, part) => {
-    if (!current) return null;
-    const index = Number(part);
-    if (isNaN(index)) return null;
-    return current.children?.[index] || null;
-  }, { children: topics } as any);
-}
+// 📌 Helper function to determine the icon based on file extension
+const getFileIcon = (url: string) => {
+  const extension = url.split('.').pop()?.split('?')[0]; // Extract file extension
+  switch (extension) {
+    case 'docx':
+    case 'doc':
+      return <FileText className="text-blue-500" size={24} />;
+    case 'xlsx':
+    case 'xls':
+      return <FileSpreadsheet className="text-green-500" size={24} />;
+    case 'csv':
+      return <FileQuestion className="text-yellow-500" size={24} />;
+    default:
+      return <File className="text-gray-500" size={24} />;
+  }
+};
 
-export default function AssignmentsTab({ topics, selectedTopic }: AssignmentsTabProps) {
-  if (selectedTopic === null) return <p>Select a topic to view assignments.</p>;
+export default function AssignmentsTab({ courseId }: AssignmentsTabProps) {
+  const courseAssignments = assignments[courseId];
 
-  const topic = getTopicByPath(topics, selectedTopic);
-
-  if (!topic?.assignments || topic.assignments.length === 0) {
-    return <p>No assignments available for this topic.</p>;
+  if (!courseAssignments || courseAssignments.length === 0) {
+    return (
+      <p className="text-gray-600 text-center mt-8">
+        No assignments available for this course.
+      </p>
+    );
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {topic.assignments.map((link, idx) => (
-        <a
+    <div className="space-y-4">
+      {courseAssignments.map((assignment: Assignment, idx: number) => (
+        <div
           key={idx}
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-          draggable={false}
-          className="block p-4 border rounded-md shadow hover:bg-purple-50 transition"
+          className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm transition-all duration-200 hover:shadow-md"
         >
-          View Assignment {idx + 1}
-        </a>
+          {/* File Icon and Title */}
+          <div className="flex items-center gap-4">
+            {getFileIcon(assignment.url)} 
+            <p className="font-medium text-lg text-gray-800">
+              {assignment.title}
+            </p>
+          </div>
+
+          {/* Download Button */}
+          <a
+            href={assignment.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            download
+            className="flex items-center gap-2 px-4 py-2 bg-purple-400 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 hover:bg-purple-500"
+          >
+            <Download size={16} />
+            <span>Download</span>
+          </a>
+        </div>
       ))}
     </div>
   );
-} //iqbal
+}
