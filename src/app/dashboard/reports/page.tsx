@@ -5,7 +5,13 @@ import { PerformanceOverview } from "@/components/performance/PerformanceOvervie
 import { QuizPerformanceChart } from "@/components/performance/QuizPerformanceChart";
 import { LearningProgress } from "@/components/performance/LearningProgress";
 import { ActivityPieChart } from "@/components/performance/ActivityPieChart";
-import { BookOpen, PlayCircle, FileText, HelpCircle, Users } from "lucide-react";
+import {
+  BookOpen,
+  PlayCircle,
+  FileText,
+  HelpCircle,
+  Users,
+} from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { backupPPTs } from "@/app/data/backupPPTs";
 
@@ -43,7 +49,8 @@ const Dashboard = () => {
         if (!token) return;
 
         // CORRECTED: Added /api to the base URL
-        const BASE_URL = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
+        const BASE_URL =
+          process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
 
         // Unified call to fetch all progress + studyTime
         const dashboardRes = await fetch(`${BASE_URL}/progress/dashboard`, {
@@ -55,7 +62,13 @@ const Dashboard = () => {
         const { courseProgress, quizProgress, videoProgress, studyTime } =
           dashboardJson.progress || {};
 
-        const courseNames = ["Data-Science", "Power-BI", "SQL", "Data-Engineering" , "Tableau"];
+        const courseNames = [
+          "Data-Science",
+          "Power-BI",
+          "SQL",
+          "Data-Engineering",
+          "Tableau",
+        ];
         const courseData: Course[] = courseNames.map((courseName) => {
           const topics = backupPPTs[courseName] || [];
           const totalLessons = countPPTLeafTopics(topics);
@@ -71,8 +84,8 @@ const Dashboard = () => {
               : 0;
 
           const timeSpent =
-            studyTime?.find((s: any) => s.courseKey === courseName)?.totalMinutes ||
-            0;
+            studyTime?.find((s: any) => s.courseKey === courseName)
+              ?.totalMinutes || 0;
 
           return {
             id: courseName,
@@ -89,12 +102,14 @@ const Dashboard = () => {
         setCourses(courseData);
 
         // Quiz chart
-        const quizChartData = (quizProgress || []).map((q: any, idx: number) => ({
-          week: `Quiz ${idx + 1}`,
-          score: q.score,
-          attempted: q.totalQuestions,
-          completed: q.correctAnswers,
-        }));
+        const quizChartData = (quizProgress || []).map(
+          (q: any, idx: number) => ({
+            week: `Quiz ${idx + 1}`,
+            score: q.score,
+            attempted: q.totalQuestions,
+            completed: q.correctAnswers,
+          })
+        );
         setQuizData(quizChartData);
 
         // Video chart
@@ -102,36 +117,39 @@ const Dashboard = () => {
           {
             name: "Video Lectures",
             value: videoProgress?.length || 0,
-            color: "hsl(var(--chart-1))",
+            color: "#0088FE", // blue
             icon: PlayCircle,
           },
           {
             name: "Quiz Practice",
             value:
-              quizProgress?.reduce((acc: number, q: any) => acc + q.totalQuestions, 0) ||
-              0,
-            color: "hsl(var(--chart-2))",
+              quizProgress?.reduce(
+                (acc: number, q: any) => acc + q.totalQuestions,
+                0
+              ) || 0,
+            color: "#00C49F", // green
             icon: HelpCircle,
           },
           {
             name: "Reading Materials",
             value: courseData.reduce((acc, c) => acc + c.completedLessons, 0),
-            color: "hsl(var(--chart-3))",
+            color: "#FFBB28", // yellow
             icon: FileText,
           },
           {
             name: "Course Projects",
             value: 2,
-            color: "hsl(var(--chart-4))",
+            color: "#FF8042", // orange
             icon: BookOpen,
           },
           {
             name: "Group Discussions",
             value: 3,
-            color: "hsl(var(--chart-5))",
+            color: "#A28BFF", // purple
             icon: Users,
           },
         ];
+
         setVideoData(videoChartData);
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
@@ -147,15 +165,20 @@ const Dashboard = () => {
   const stats = {
     overallScore:
       quizData.length > 0
-        ? Math.round(quizData.reduce((acc, q) => acc + q.score, 0) / quizData.length)
+        ? Math.round(
+            quizData.reduce((acc, q) => acc + q.score, 0) / quizData.length
+          )
         : 0,
     coursesCompleted: courses.filter((c) => c.progress === 100).length,
     totalCourses: courses.length,
-    videosWatched: videoData.find((d) => d.name === "Video Lectures")?.value || 0,
+    videosWatched:
+      videoData.find((d) => d.name === "Video Lectures")?.value || 0,
     totalVideos: videoData.find((d) => d.name === "Video Lectures")?.value || 0,
     quizAverage:
       quizData.length > 0
-        ? Math.round(quizData.reduce((acc, q) => acc + q.score, 0) / quizData.length)
+        ? Math.round(
+            quizData.reduce((acc, q) => acc + q.score, 0) / quizData.length
+          )
         : 0,
     studyTime: courses.reduce((acc, c) => acc + c.timeSpent, 0), // total minutes
     achievements: 15,
