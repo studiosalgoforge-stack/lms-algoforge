@@ -16,7 +16,16 @@ const userSchema = new mongoose.Schema(
     resetPasswordExpires: { type: Date, default: null },
     emailVerified: { type: Boolean, default: false },
     emailVerificationToken: { type: String, default: null },
+
     passwordChangedAt: { type: Date },
+
+     // ✅ Add the new profile fields here
+    phone: { type: String, trim: true },
+    address: { type: String, trim: true },
+    state: { type: String, trim: true },
+    zip: { type: String, trim: true },
+    country: { type: String, trim: true },
+    language: { type: String, trim: true },
 
     // ✅ Moved courseProgress here
     courseProgress: [

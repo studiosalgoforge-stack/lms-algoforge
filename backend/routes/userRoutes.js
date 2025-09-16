@@ -1,5 +1,5 @@
 import express from "express";
-import { loginUser , changePassword , registerUser , getUserProfile } from "../controllers/userController.js";
+import { loginUser , changePassword , registerUser , getUserProfile , editUserProfile } from "../controllers/userController.js";
 import { protect } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
@@ -15,5 +15,8 @@ router.get("/profile", protect, getUserProfile);
 
 // PUT /api/users/change-password
 router.put("/change-password", protect, changePassword);
+
+//Add the new route for editing the profile
+router.put("/edituser", protect, editUserProfile);
 
 export default router;

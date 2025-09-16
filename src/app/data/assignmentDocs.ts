@@ -12,14 +12,14 @@ export const assignments: { [courseId: string]: Assignment[] } = {
       url: "https://drive.google.com/uc?export=download&id=17rcLQ2roOeywbXdIyPDLLoMiqvuftR9L",
     },
     {
-      title: 'Data Types_Inferential_Statistics',
-      url: "https://drive.google.com/uc?export=download&id=17rcLQ2roOeywbXdIyPDLLoMiqvuftR9L",
+      title: 'Inferential.zip',
+      url: "https://drive.google.com/uc?export=download&id=1KMFGhopJNN_XLgPgy69rdHqacW99Pjk1",
     },
   
   ],
   'SQL': [
     {
-      title: 'SQL Assignment - 1',
+      title: 'SQL Assignment',
       url: 'https://docs.google.com/document/d/1Yg9Bz2sXWsvTt9KOelMWUJ4qYsOAysnz/export?format=docx',
     },
   ],
@@ -41,7 +41,7 @@ export const assignments: { [courseId: string]: Assignment[] } = {
         url: 'https://docs.google.com/document/d/1OuXb2UDnSe-9DLi3R1NR6KbbF6lvVXsw/export?format=docx',
     },
       {
-        title: 'Apache Nifi & Apache Airflow.docx',
+        title: 'Apache-Nifi-Airflow.docx',
         url: 'https://docs.google.com/document/d/11FBWm8ymgKT7M9jUHcyJg6AnFngs1vQU/export?format=docx',
     },
       {
@@ -57,7 +57,7 @@ export const assignments: { [courseId: string]: Assignment[] } = {
         url:'https://docs.google.com/document/d/1FA_-KgRmqIXAYJNSvH3-m9xDcZE9IOB0/export?format=docx' ,
     },
       {
-        title: 'Big Data_NoSQL.docx' ,
+        title: 'Big-Data-NoSQL.docx' ,
         url: 'https://docs.google.com/document/d/1FAtRpSsthQ1W2bfkfmdJ7EkkblhtHdYU/export?format=docx',
     },
       {
@@ -65,7 +65,7 @@ export const assignments: { [courseId: string]: Assignment[] } = {
         url: 'https://docs.google.com/document/d/1I0l16V15TKEaUsI7y_Zme4RhbHj1NNw2/export?format=docx',
     },
       {
-        title: 'Data Science Primer_Pipelines.docx',
+        title: 'Primer_Pipelines.docx',
         url: 'https://docs.google.com/document/d/1mqlhP6CkxbPYDodE3xg7C5r5wm-mlacb/export?format=docx',
     },
       {
@@ -96,11 +96,11 @@ export const assignments: { [courseId: string]: Assignment[] } = {
   ],
     'Tableau': [
     {
-      title: 'Sample_Superstore_Mini.csv',
+      title: 'Superstore.csv',
       url: 'https://drive.google.com/uc?export=download&id=1MCiEoGHPR50BnQlXTwVFFqNlVsB6XHHH',
     },
     {
-      title: 'Tableau_Mini_Assignment.docx',
+      title: 'Tableau.docx',
       url: 'https://docs.google.com/document/d/1eGSY_CVzLKX0Vmm9pOuKvlLmtT-KMHXQ/export?format=docx',
     },
 

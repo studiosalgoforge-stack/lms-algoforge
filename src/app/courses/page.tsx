@@ -89,7 +89,7 @@ export default function CoursesPage() {
         </div>
       )}
 
-      <div className="min-h-screen  p-4 md:p-8 flex flex-col lg:flex-row gap-8">
+      <div className="min-h-screen bg-purple-50 p-4 md:p-8 flex flex-col lg:flex-row gap-8">
         {/* Left/Main Content */}
         <div className="flex-1 ">
           <div className="flex-1 text-black mb-6 text-bold bg-gray-100 h-12 flex items-center px-4 gap-2">
