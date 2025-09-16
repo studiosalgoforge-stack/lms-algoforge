@@ -2,10 +2,90 @@
 
 import { useState, useEffect } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { User, Camera, Loader2, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:10000/api";
 
+// ----------------------------------------------------
+// Reusable Input Component
+// ----------------------------------------------------
+const InputField = ({ label, name, value, onChange, placeholder, type = "text" }: any) => (
+  <div className="space-y-2">
+    <label htmlFor={name} className="block text-sm font-medium text-gray-600">
+      {label}
+    </label>
+    <input
+      id={name}
+      name={name}
+      type={type}
+      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+    />
+  </div>
+);
+
+// ----------------------------------------------------
+// Reusable Select Component
+// ----------------------------------------------------
+const SelectField = ({ label, value, onChange, options }: any) => (
+  <div className="space-y-2">
+    <label className="block text-sm font-medium text-gray-600">{label}</label>
+    <select
+      value={value}
+      onChange={onChange}
+      className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+    >
+      {options.map((option: string, index: number) => (
+        <option key={index} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  </div>
+);
+
+
+
+
+const countryOptions = [
+  "Select country", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
+  "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh",
+  "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina",
+  "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",
+  "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros",
+  "Congo (Congo-Brazzaville)", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic",
+  "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
+  "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini",
+  "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana",
+  "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras",
+  "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy",
+  "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos",
+  "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
+  "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania",
+  "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco",
+  "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua",
+  "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau",
+  "Palestine State", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland",
+  "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia",
+  "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia",
+  "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia",
+  "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain",
+  "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Tajikistan", "Tanzania",
+  "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey",
+  "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
+  "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela",
+  "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+];
+const languageOptions = [
+  "Select language", "English", "Spanish", "French", "Hindi"
+];
+
 export default function ProfilePage() {
+  const router = useRouter();
   // Form state
   const [userId, setUserId] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -15,448 +95,208 @@ export default function ProfilePage() {
   const [address, setAddress] = useState("");
   const [stateField, setStateField] = useState("");
   const [zip, setZip] = useState("");
-  const [country, setCountry] = useState("");
-  const [language, setLanguage] = useState("");
+  const [country, setCountry] = useState("Select country");
+  const [language, setLanguage] = useState("Select language");
   const [avatar, setAvatar] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState({ text: "", isError: false });
+  const [isSaving, setIsSaving] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
-  // ✅ Load user data
+  // Load user data
   useEffect(() => {
- const fetchUser = async () => {
-  try {
-    const token = localStorage.getItem("token"); // wherever you store it
-    const res = await fetch(`${BASE}/users/profile`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (res.ok) {
-      const user = await res.json();
-      setUserId(user._id);
-      setFirstName(user.firstName || "");
-      setLastName(user.lastName || "");
-      setEmail(user.email || "");
-      setPhone(user.phone || "");
-      setAddress(user.address || "");
-      setStateField(user.state || "");
-      setZip(user.zip || "");
-      setCountry(user.country || "Select country");
-      setLanguage(user.language || "Select language");
-      setAvatar(user.avatar || null);
-    }
-  } catch (error) {
-    console.error("Failed to fetch user profile", error);
-  }
-};
-
-
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${BASE}/users/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const user = await res.json();
+          setUserId(user._id);
+          setFirstName(user.firstName || "");
+          setLastName(user.lastName || "");
+          setEmail(user.email || "");
+          setPhone(user.phone || "");
+          setAddress(user.address || "");
+          setStateField(user.state || "");
+          setZip(user.zip || "");
+          setCountry(user.country || "Select country");
+          setLanguage(user.language || "Select language");
+          setAvatar(user.avatar || null);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user profile", error);
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
     fetchUser();
   }, []);
 
-  // ✅ Avatar upload (to backend route that uploads to Cloudinary)
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.[0]) return;
-    const file = e.target.files[0];
 
-    const formData = new FormData();
-    formData.append("avatar", file);
-    formData.append("userId", userId);
 
-    const res = await fetch(`${BASE}/upload-avatar`, {
-      method: "POST",
-      body: formData,
+  // Save updated profile
+
+const handleSave = async () => {
+  setIsSaving(true);
+  setStatusMessage({ text: "", isError: false });
+
+  // CRITICAL FIX: Check if the token exists before making the API call.
+  const token = localStorage.getItem("token");
+  if (!token) {
+    setStatusMessage({ text: "Session expired. Please log in again.", isError: true });
+    setIsSaving(false);
+    // Redirect to login page after a short delay
+    setTimeout(() => window.location.href = "/login", 1500);
+    return;
+  }
+
+  const payload = {
+    firstName, lastName, email, phone, address, state: stateField, zip, country, language, avatar,
+  };
+  try {
+    const res = await fetch(`${BASE}/users/edituser`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Use the validated token
+      },
+      body: JSON.stringify(payload),
     });
-
     const data = await res.json();
     if (res.ok) {
-      setAvatar(data.url); // ✅ Cloudinary URL saved in DB
+      setStatusMessage({ text: "Profile updated successfully!", isError: false });
     } else {
-      console.error("Avatar upload failed:", data);
+      setStatusMessage({ text: data.message || "Failed to update profile", isError: true });
+    }
+  } catch (err) {
+    setStatusMessage({ text: "Something went wrong. Please try again.", isError: true });
+  } finally {
+    setIsSaving(false);
+  }
+};
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "");
+    setPhone(value);
+  };
+  
+  const handlePhoneBlur = () => {
+    if (phone && phone.length !== 10) {
+      setStatusMessage({ text: "Phone number must be exactly 10 digits.", isError: true });
+    } else {
+      setStatusMessage({ text: "", isError: false });
     }
   };
 
-  // ✅ Save updated profile
-  const handleSave = async () => {
-    const payload = {
-      userId,
-      firstName,
-      lastName,
-      email,
-      phone,
-      address,
-      state: stateField,
-      zip,
-      country,
-      language,
-      avatar,
-    };
-
-    try {
-      const res = await fetch(`${BASE}/edituser`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        alert("Profile updated successfully!");
-      } else {
-        console.error(data);
-        alert("Failed to update profile");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong");
-    }
-  };
+  if (isLoadingProfile) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="animate-spin text-purple-600" size={48} />
+      </div>
+    );
+  }
 
   return (
     <ProtectedRoute>
-      <div className="bg-white">
-        <div className="p-6">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-black text-purple-900">Profile</h1>
-          </div>
-
-          {/* Tabs */}
-          <div className="flex space-x-4 mb-8">
-            <button className="bg-purple-400 text-black px-4 py-2 rounded-lg flex items-center">
-              Profile
+      <div className="bg-gray-50 min-h-screen p-6 md:p-12 font-sans">
+        {/* Header with Back button */}
+        <div className="mb-8 flex items-center gap-4">
+          <Link href="/dashboard">
+            <button className="flex items-center gap-2 text-purple-600 hover:text-purple-800 transition-colors">
+              <ArrowLeft size={24} />
             </button>
+          </Link>
+          <h1 className="text-2xl md:text-3xl text-gray-900">
+            Edit Profile
+          </h1>
+        </div>
+
+        {/* Status Message */}
+        {statusMessage.text && (
+          <div
+            className={`p-4 rounded-lg mb-6 ${
+              statusMessage.isError ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+            }`}
+          >
+            {statusMessage.text}
           </div>
+        )}
 
-          {/* Profile Details Section */}
-          <div className="bg-white rounded-lg p-6 border border-gray-700 mb-6">
-            <h2 className="text-xl font-semibold text-black mb-6">Profile Details</h2>
+        {/* Profile Details Section */}
+        <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 border border-gray-200">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
+            Profile Information
+          </h2>
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
+            {/* Avatar */}
+            <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-md">
+              {avatar ? (
+                <img src={avatar} alt="User Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-purple-100 text-purple-700 flex items-center justify-center text-5xl">
+                  {firstName.charAt(0).toUpperCase()}
+                </div>
+              )}
+  
+            </div>
 
-
-            {/* Form Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">First Name</label>
+            {/* Basic Info */}
+            <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+              <InputField label="First Name" name="firstName" value={firstName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)} placeholder="Enter first name" />
+              <InputField label="Last Name" name="lastName" value={lastName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)} placeholder="Enter last name" />
+              <InputField label="Email" name="email" type="email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} placeholder="Enter your email" />
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-600">Phone</label>
                 <input
-                  type="text"
-                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="Enter first name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">Last Name</label>
-                <input
-                  type="text"
-                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Enter last name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">Email</label>
-                <input
-                  type="email"
-                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                />
-              </div>
-           <div>
-  <label className="block text-sm font-medium text-gray-400 mb-2">Phone</label>
-  <input
-    type="tel"
-    className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
-    value={phone}
-    onChange={(e) => {
-      const value = e.target.value.replace(/\D/g, ""); // only digits
-      setPhone(value);
-    }}
-    onBlur={() => {
-      if (!/^\d{10}$/.test(phone)) {
-        alert("Phone number must be 10 digits!");
-      }
-    }}
-    placeholder="Enter 10-digit phone number"
-  />
-</div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">Address</label>
-                <input
-                  type="text"
-                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Enter your Address"
+                  type="tel"
+                  name="phone"
+                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors ${statusMessage.isError && statusMessage.text.includes("Phone") ? "border-red-500" : "border-gray-300"}`}
+                  value={phone}
+                  onChange={handlePhoneChange}
+                  onBlur={handlePhoneBlur}
+                  placeholder="Enter 10-digit phone number"
                 />
               </div>
             </div>
           </div>
 
-          {/* Account Settings */}
-          <div className="bg-white rounded-lg p-6 border border-gray-700 mb-6">
-            <h2 className="text-xl font-semibold text-black mb-6">Account Settings</h2>
+          {/* Location & Language */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <InputField label="Address" name="address" value={address} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)} placeholder="Enter your address" />
+            <InputField label="State" name="stateField" value={stateField} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStateField(e.target.value)} placeholder="Enter state" />
+            <InputField label="Zip Code" name="zip" value={zip} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setZip(e.target.value)} placeholder="Enter zip code" />
+            <SelectField
+              label="Country"
+              value={country}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCountry(e.target.value)}
+               options={countryOptions}
+            />
+            <SelectField
+              label="Language"
+              value={language}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setLanguage(e.target.value)}
+              options={languageOptions}
+            />
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">State</label>
-                <input
-                  type="text"
-                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
-                  value={stateField}
-                  onChange={(e) => setStateField(e.target.value)}
-                  placeholder="Enter State"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">Zip Code</label>
-                <input
-                  type="text"
-                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
-                  value={zip}
-                  onChange={(e) => setZip(e.target.value)}
-                  placeholder="Enter zip code"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">Country</label>
-                <select
-                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                >
-                  <option>Select country</option>
-                  <option>Afghanistan</option>
-  <option>Albania</option>
-  <option>Algeria</option>
-  <option>Andorra</option>
-  <option>Angola</option>
-  <option>Antigua and Barbuda</option>
-  <option>Argentina</option>
-  <option>Armenia</option>
-  <option>Australia</option>
-  <option>Austria</option>
-  <option>Azerbaijan</option>
-  <option>Bahamas</option>
-  <option>Bahrain</option>
-  <option>Bangladesh</option>
-  <option>Barbados</option>
-  <option>Belarus</option>
-  <option>Belgium</option>
-  <option>Belize</option>
-  <option>Benin</option>
-  <option>Bhutan</option>
-  <option>Bolivia</option>
-  <option>Bosnia and Herzegovina</option>
-  <option>Botswana</option>
-  <option>Brazil</option>
-  <option>Brunei</option>
-  <option>Bulgaria</option>
-  <option>Burkina Faso</option>
-  <option>Burundi</option>
-  <option>Cabo Verde</option>
-  <option>Cambodia</option>
-  <option>Cameroon</option>
-  <option>Canada</option>
-  <option>Central African Republic</option>
-  <option>Chad</option>
-  <option>Chile</option>
-  <option>China</option>
-  <option>Colombia</option>
-  <option>Comoros</option>
-  <option>Congo (Congo-Brazzaville)</option>
-  <option>Costa Rica</option>
-  <option>Croatia</option>
-  <option>Cuba</option>
-  <option>Cyprus</option>
-  <option>Czech Republic</option>
-  <option>Democratic Republic of the Congo</option>
-  <option>Denmark</option>
-  <option>Djibouti</option>
-  <option>Dominica</option>
-  <option>Dominican Republic</option>
-  <option>Ecuador</option>
-  <option>Egypt</option>
-  <option>El Salvador</option>
-  <option>Equatorial Guinea</option>
-  <option>Eritrea</option>
-  <option>Estonia</option>
-  <option>Eswatini</option>
-  <option>Ethiopia</option>
-  <option>Fiji</option>
-  <option>Finland</option>
-  <option>France</option>
-  <option>Gabon</option>
-  <option>Gambia</option>
-  <option>Georgia</option>
-  <option>Germany</option>
-  <option>Ghana</option>
-  <option>Greece</option>
-  <option>Grenada</option>
-  <option>Guatemala</option>
-  <option>Guinea</option>
-  <option>Guinea-Bissau</option>
-  <option>Guyana</option>
-  <option>Haiti</option>
-  <option>Honduras</option>
-  <option>Hungary</option>
-  <option>Iceland</option>
-  <option>India</option>
-  <option>Indonesia</option>
-  <option>Iran</option>
-  <option>Iraq</option>
-  <option>Ireland</option>
-  <option>Israel</option>
-  <option>Italy</option>
-  <option>Jamaica</option>
-  <option>Japan</option>
-  <option>Jordan</option>
-  <option>Kazakhstan</option>
-  <option>Kenya</option>
-  <option>Kiribati</option>
-  <option>Kuwait</option>
-  <option>Kyrgyzstan</option>
-  <option>Laos</option>
-  <option>Latvia</option>
-  <option>Lebanon</option>
-  <option>Lesotho</option>
-  <option>Liberia</option>
-  <option>Libya</option>
-  <option>Liechtenstein</option>
-  <option>Lithuania</option>
-  <option>Luxembourg</option>
-  <option>Madagascar</option>
-  <option>Malawi</option>
-  <option>Malaysia</option>
-  <option>Maldives</option>
-  <option>Mali</option>
-  <option>Malta</option>
-  <option>Marshall Islands</option>
-  <option>Mauritania</option>
-  <option>Mauritius</option>
-  <option>Mexico</option>
-  <option>Micronesia</option>
-  <option>Moldova</option>
-  <option>Monaco</option>
-  <option>Mongolia</option>
-  <option>Montenegro</option>
-  <option>Morocco</option>
-  <option>Mozambique</option>
-  <option>Myanmar</option>
-  <option>Namibia</option>
-  <option>Nauru</option>
-  <option>Nepal</option>
-  <option>Netherlands</option>
-  <option>New Zealand</option>
-  <option>Nicaragua</option>
-  <option>Niger</option>
-  <option>Nigeria</option>
-  <option>North Korea</option>
-  <option>North Macedonia</option>
-  <option>Norway</option>
-  <option>Oman</option>
-  <option>Pakistan</option>
-  <option>Palau</option>
-  <option>Palestine State</option>
-  <option>Panama</option>
-  <option>Papua New Guinea</option>
-  <option>Paraguay</option>
-  <option>Peru</option>
-  <option>Philippines</option>
-  <option>Poland</option>
-  <option>Portugal</option>
-  <option>Qatar</option>
-  <option>Romania</option>
-  <option>Russia</option>
-  <option>Rwanda</option>
-  <option>Saint Kitts and Nevis</option>
-  <option>Saint Lucia</option>
-  <option>Saint Vincent and the Grenadines</option>
-  <option>Samoa</option>
-  <option>San Marino</option>
-  <option>Sao Tome and Principe</option>
-  <option>Saudi Arabia</option>
-  <option>Senegal</option>
-  <option>Serbia</option>
-  <option>Seychelles</option>
-  <option>Sierra Leone</option>
-  <option>Singapore</option>
-  <option>Slovakia</option>
-  <option>Slovenia</option>
-  <option>Solomon Islands</option>
-  <option>Somalia</option>
-  <option>South Africa</option>
-  <option>South Korea</option>
-  <option>South Sudan</option>
-  <option>Spain</option>
-  <option>Sri Lanka</option>
-  <option>Sudan</option>
-  <option>Suriname</option>
-  <option>Sweden</option>
-  <option>Switzerland</option>
-  <option>Syria</option>
-  <option>Tajikistan</option>
-  <option>Tanzania</option>
-  <option>Thailand</option>
-  <option>Timor-Leste</option>
-  <option>Togo</option>
-  <option>Tonga</option>
-  <option>Trinidad and Tobago</option>
-  <option>Tunisia</option>
-  <option>Turkey</option>
-  <option>Turkmenistan</option>
-  <option>Tuvalu</option>
-  <option>Uganda</option>
-  <option>Ukraine</option>
-  <option>United Arab Emirates</option>
-  <option>United Kingdom</option>
-  <option>United States of America</option>
-  <option>Uruguay</option>
-  <option>Uzbekistan</option>
-  <option>Vanuatu</option>
-  <option>Vatican City</option>
-  <option>Venezuela</option>
-  <option>Vietnam</option>
-  <option>Yemen</option>
-  <option>Zambia</option>
-  <option>Zimbabwe</option>
-                
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">Language</label>
-                <select
-                  className="w-full bg-white border border-gray-600 rounded-lg px-3 py-2 text-black"
-                  value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
-                >
-                  <option>Select language</option>
-                  <option>English</option>
-                  <option>Spanish</option>
-                  <option>French</option>
-                  <option>Hindi</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="flex space-x-4 mt-6">
-              <button
-                type="button"
-                onClick={handleSave}
-                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
-              >
-                Save Changes
-              </button>
-              <button
-                type="button"
-                onClick={() => window.location.reload()}
-                className="bg-white text-red-600 border border-red-600 px-6 py-2 rounded-lg hover:bg-red-50 transition-colors"
-              >
-                Reset
-              </button>
-            </div>
+          {/* Action Buttons */}
+          <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mt-6">
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 px-6 font-semibold text-white rounded-lg transition-colors duration-200
+                ${isSaving ? "bg-green-400 cursor-not-allowed" : "bg-green-400 hover:bg-green-500"}`}
+            >
+              {isSaving && <Loader2 size={20} className="animate-spin" />}
+              Save Changes
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              className="flex-1 py-3 px-6 font-semibold text-red-600 bg-white border border-red-600 rounded-lg transition-colors duration-200 hover:bg-red-50"
+            >
+              Reset
+            </button>
           </div>
         </div>
       </div>

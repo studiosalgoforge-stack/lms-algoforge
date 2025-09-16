@@ -165,3 +165,53 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
+//edit-profile
+
+export const editUserProfile = async (req, res) => {
+  try {
+    // The protect middleware should attach the user ID to the request object
+    const userId = req.user._id; 
+    
+    const { firstName, lastName, phone, address, state, zip, country, language } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        firstName,
+        lastName,
+        phone,
+        address,
+        state,
+        zip,
+        country,
+        language,
+      
+      },
+      { new: true, runValidators: true } // Return the updated document and run schema validators
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({
+      message: "Profile updated successfully!",
+      user: {
+        id: updatedUser._id,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        email: updatedUser.email,
+         phone:updatedUser.phone,
+        address: updatedUser.address,
+        state: updatedUser.state,
+        zip: updatedUser.zip,
+        country: updatedUser.country,
+        language: updatedUser.language,
+      
+      },
+    });
+  } catch (err) {
+    console.error("Profile update error:", err);
+    res.status(500).json({ message: "Server error. Failed to update profile." });
+  }
+};
+

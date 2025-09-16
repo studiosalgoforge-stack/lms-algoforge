@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { FiUser, FiBook, FiBarChart2, FiSettings, FiLogOut } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
+
 const dashboardLinks = [
   { href: "/dashboard/profile", label: "Edit Profile", icon: <FiUser /> },
   { href: "/courses", label: "My Courses", icon: <FiBook /> },
@@ -23,70 +24,67 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const [userName, setUserName] = useState<string>("");
 
-useEffect(() => {
-  const fetchUser = async () => {
-    try {
-      console.log("Calling:", `${BASE}/users/profile`);
-
-      const token = localStorage.getItem("token"); // wherever you store it
-      const res = await fetch(`${BASE}/users/profile`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-        credentials: "include", // if your backend uses cookies
-      });
-
-      if (res.ok) {
-        const user = await res.json();
-        setUserName(user.firstName || user.username || "Student");
-      } else {
-        console.error("Unauthorized or not found:", res.status);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${BASE}/users/profile`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        });
+        if (res.ok) {
+          const user = await res.json();
+          setUserName(user.firstName || user.username || "Student");
+        } else {
+          console.error("Unauthorized or not found:", res.status);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user profile", error);
       }
-    } catch (error) {
-      console.error("Failed to fetch user profile", error);
-    }
-  };
-  fetchUser();
-}, []);
-
+    };
+    fetchUser();
+  }, []);
 
   return (
-       <ProtectedRoute>
-    <div className="flex flex-col min-h-screen">
-      <div className="flex flex-1 z-10 relative flex-col md:flex-row">
-        {/* Sidebar */}
-        <aside className="w-full md:w-64 bg-white shadow-md p-4 md:p-6 rounded-lg md:ml-4">
-          <div className="flex flex-col items-center">
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-200 rounded-full flex items-center justify-center">
-              <FiUser className="text-gray-500 text-3xl md:text-4xl" />
+    <ProtectedRoute>
+      <div className="flex flex-col min-h-screen bg-gray-50">
+        <div className="flex flex-1 z-10 relative flex-col md:flex-row">
+          {/* Sidebar */}
+          <aside className="w-full md:w-64 bg-white p-4 md:p-6 shadow-md rounded-lg md:ml-4 transition-all duration-300">
+            <div className="flex flex-col items-center py-4 border-b border-gray-200 mb-6">
+              <div className="w-20 h-20 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center text-4xl font-semibold">
+                {userName.charAt(0).toUpperCase()}
+              </div>
+              <h2 className="mt-3 text-lg font-bold text-gray-900 text-center">{userName}</h2>
             </div>
-            <h2 className="mt-3 font-semibold text-center">{userName}</h2>
-          </div>
-
-          <nav className="mt-6 space-y-2">
-            {dashboardLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`flex items-center gap-3 px-3 md:px-4 py-2 rounded-md transition
-                  ${
-                    pathname === link.href
-                      ? "bg-purple-100 text-purple-700 font-semibold"
-                      : "hover:bg-gray-100 hover:text-purple-600"
-                  }`}
-              >
-                <span className="text-lg">{link.icon}</span>
-                <span className="text-sm md:text-base">{link.label}</span>
-              </Link>
-            ))}
-          </nav>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 p-4 md:p-6">{children}</main>
+            <nav className="space-y-2">
+              {dashboardLinks.map((link) => {
+                const isCurrent = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                      ${isCurrent
+                        ? "bg-purple-400 text-white shadow-lg"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-purple-500"
+                      }`}
+                  >
+                    <span className={`text-xl ${isCurrent ? 'text-white' : 'text-purple-500'}`}>{link.icon}</span>
+                    <span className={`text-base font-medium ${isCurrent ? 'text-white' : 'text-gray-800'}`}>{link.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </aside>
+          {/* Main Content */}
+          <main className="flex-1 p-4 md:p-6">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
     </ProtectedRoute>
   );
 }

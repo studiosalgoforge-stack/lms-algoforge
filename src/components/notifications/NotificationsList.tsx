@@ -47,7 +47,7 @@ export default function NotificationsList() {
     fetchNotifications();
   }, []);
 
-  if (loading) return <p>Loading notifications...</p>;
+  if (loading) return <p className="text-center mt-20">Loading notifications...</p>;
 
   return (
     <div className="p-6">
@@ -77,7 +77,7 @@ export default function NotificationsList() {
             </li>
           ))}
         </ul>
-      ) : (
+      ) : (       
         <p className="text-gray-500">No new notifications.</p>
       )}
     </div>
