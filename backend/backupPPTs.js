@@ -1248,6 +1248,33 @@ export const backupPPTs = {
         },
       ],
     },
+     {
+          name: "5 - Data Collections,Blending & Extraction",
+              children: [
+      
+        {
+          name: "Workbook.zip",
+          file: "https://drive.google.com/uc?export=download&id=1kkT7VLpvWbog7jzda6Z3mOvYHU5n9IG4",
+          assignments: [],
+        },
+      ],
+    },
+     {
+          name: "7 - Advanced Analytics in Tableau",
+              children: [
+            {
+               name: "Advanced Analytics in Tableau",
+          link: "https://docs.google.com/presentation/d/1P4IqTIfjNdURqeqAXREG8Ts2Yb-iMeGx/preview",
+          assignments: [],
+        },
+        {
+          name: "Workbook.zip",
+          file: "https://drive.google.com/uc?export=download&id=11vY3oJUeu3MblV8GuaP6URf4GFtb86NO",
+          assignments: [],
+        },
+      ],
+    },
+     
      
 
     

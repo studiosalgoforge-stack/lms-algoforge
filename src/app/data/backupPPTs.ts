@@ -1220,7 +1220,7 @@ export const backupPPTs: Record<string, Topic[]> = {
           name: "2 - Tableau Architecture",
               children: [
             {
-              name: "Tableau Architecture",
+              name: "2 - Tableau Architecture",
           link: "https://docs.google.com/presentation/d/18cGFZ0poFqqPKHpbPbsX6WzDMle36q95/preview",
           assignments: [],
         },   
@@ -1231,7 +1231,7 @@ export const backupPPTs: Record<string, Topic[]> = {
           name: "3 - Basic Charts in Tableau",
               children: [
             {
-               name: "Basic Charts in Tableau",
+               name: "3 - Basic Charts in Tableau",
           link: "https://docs.google.com/presentation/d/18cGFZ0poFqqPKHpbPbsX6WzDMle36q95/preview",
           assignments: [],
         },
@@ -1242,12 +1242,11 @@ export const backupPPTs: Record<string, Topic[]> = {
         },
       ],
     },
-
      {
-          name: "4 - Organizing & Simplifying Data",
+          name: "4 - Orginizing & Simplifying Data",
               children: [
             {
-               name: "Orginization Tableau",
+               name: "Organization Tableau",
           link: "https://docs.google.com/presentation/d/1ydh6yxhV7w8uAatLuJTEFKISRqGvDXVi/preview",
           assignments: [],
         },
@@ -1258,11 +1257,39 @@ export const backupPPTs: Record<string, Topic[]> = {
         },
       ],
     },
+     {
+          name: "5 - Data Collections,Blending & Extraction",
+              children: [
+      
+        {
+          name: "Workbook.zip",
+          file: "https://drive.google.com/uc?export=download&id=1kkT7VLpvWbog7jzda6Z3mOvYHU5n9IG4",
+          assignments: [],
+        },
+      ],
+    },
+     {
+          name: "7 - Advanced Analytics in Tableau",
+              children: [
+            {
+               name: "Advanced Analytics in Tableau",
+          link: "https://docs.google.com/presentation/d/1P4IqTIfjNdURqeqAXREG8Ts2Yb-iMeGx/preview",
+          assignments: [],
+        },
+        {
+          name: "Workbook.zip",
+          file: "https://drive.google.com/uc?export=download&id=11vY3oJUeu3MblV8GuaP6URf4GFtb86NO",
+          assignments: [],
+        },
+      ],
+    },
      
 
     
       ],
     },
   ],
+
+
 
 };

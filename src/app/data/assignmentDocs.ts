@@ -8,18 +8,26 @@ export interface Assignment {
 export const assignments: { [courseId: string]: Assignment[] } = {
   'Data-Science': [
     {
-      title: 'Crisp MLQ)',
-      url: "https://drive.google.com/uc?export=download&id=17rcLQ2roOeywbXdIyPDLLoMiqvuftR9L",
+      title: 'Assignment-1.docx',
+      url: "https://drive.google.com/uc?export=download&id=1XY15u3sGdFZovStocGn5HCEf7H0_WTrP",
     },
     {
-      title: 'Inferential.zip',
-      url: "https://drive.google.com/uc?export=download&id=1KMFGhopJNN_XLgPgy69rdHqacW99Pjk1",
+      title: 'online-retail.csv',
+      url: "https://drive.google.com/uc?export=download&id=1TaluLpUqSMoVFMwWCQTCjTgM_yhVORAT",
+    },
+      {
+      title: 'Assignment-2.docx',
+      url: "https://drive.google.com/uc?export=download&id=1wPWatsm38j-_CIDMy3cMEbxLZ4ZKSreN",
+    },
+    {
+      title: 'titanic-full.csv',
+      url: "https://drive.google.com/uc?export=download&id=1BARxJ_oZgpAI8QXj7cqGsuVT8y8VWHs1",
     },
   
   ],
   'SQL': [
     {
-      title: 'SQL Assignment',
+      title: 'SQL-Assignment',
       url: 'https://docs.google.com/document/d/1Yg9Bz2sXWsvTt9KOelMWUJ4qYsOAysnz/export?format=docx',
     },
   ],
@@ -30,14 +38,14 @@ export const assignments: { [courseId: string]: Assignment[] } = {
       url: 'https://drive.google.com/uc?export=download&id=1YoD8NOFev5isJf6TEPNwgRyG0Db0DQ06',
     },
     {
-      title: 'Sales_data.xlsx',
+      title: 'Sales-data.xlsx',
       url: 'https://docs.google.com/spreadsheets/d/1S5gyaA4Z49BYrhhia0ZdHChgFXbJsMMI/export?format=xlsx',
     },
 
   ],
   'Data-Engineering':[
     {
-        title: 'Apache Kafka.docx',
+        title: 'Apache-Kafka.docx',
         url: 'https://docs.google.com/document/d/1OuXb2UDnSe-9DLi3R1NR6KbbF6lvVXsw/export?format=docx',
     },
       {
@@ -49,7 +57,7 @@ export const assignments: { [courseId: string]: Assignment[] } = {
         url:'https://drive.google.com/uc?export=download&id=1fD7u6fv_MaYV1d5Z4lWKYVasgft2HcDG',
     },
        {
-        title: 'spark_sales.csv',
+        title: 'spark-sales.csv',
         url:'https://drive.google.com/uc?export=download&id=1cyEfnPHxYvcHO9GhJHRcMqaPkx9SUWYF' ,
     },
        {
@@ -65,11 +73,11 @@ export const assignments: { [courseId: string]: Assignment[] } = {
         url: 'https://docs.google.com/document/d/1I0l16V15TKEaUsI7y_Zme4RhbHj1NNw2/export?format=docx',
     },
       {
-        title: 'Primer_Pipelines.docx',
+        title: 'Primer-Pipelines.docx',
         url: 'https://docs.google.com/document/d/1mqlhP6CkxbPYDodE3xg7C5r5wm-mlacb/export?format=docx',
     },
       {
-        title: 'student_data.csv',
+        title: 'student-data.csv',
         url: 'https://drive.google.com/uc?export=download&id=1d2kRt6ATQ1vL3zkjEZSOQ4YsTNOmcEZA',
     },
       {
