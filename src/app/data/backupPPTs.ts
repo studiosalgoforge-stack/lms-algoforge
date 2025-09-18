@@ -1269,6 +1269,21 @@ export const backupPPTs: Record<string, Topic[]> = {
       ],
     },
      {
+          name: "6 - Visual Analytics",
+              children: [
+            {
+               name: "Visual Analytics",
+          link: "https://docs.google.com/presentation/d/1q6QqsTWaI8dRdrdmzxVZsUL0w35ul88m/preview",
+          assignments: [],
+        },
+        {
+          name: "Workbook.zip",
+          file: "https://drive.google.com/uc?export=download&id=1ghfpUcjZEUNfJCm9InnuBeUkkojGkRDO",
+          assignments: [],
+        },
+      ],
+    },
+     {
           name: "7 - Advanced Analytics in Tableau",
               children: [
             {
