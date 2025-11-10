@@ -68,6 +68,7 @@ const Dashboard = () => {
           "SQL",
           "Data-Engineering",
           "Tableau",
+          "Big-Data"
         ];
         const courseData: Course[] = courseNames.map((courseName) => {
           const topics = backupPPTs[courseName] || [];
