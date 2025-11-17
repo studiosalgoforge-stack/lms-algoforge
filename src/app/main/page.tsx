@@ -520,7 +520,7 @@ function KnowledgeCubes() {
 
       <section className="py-24 bg-gradient-to-r from-purple-50 to-blue-50">
   <div className="max-w-5xl mx-auto px-6 text-center">
-    <h2 className="text-4xl font-bold text-purple-700 mb-8">Our Mission & Vision</h2>
+    <h2 className="text-4xl font-bold text-purple-700 mb-8">Our Vision & Mission </h2>
     <p className="text-gray-700 text-lg leading-relaxed mb-12">
       Our goal is simple yet powerful — to redefine how learners interact with knowledge.
       We combine human-centered design, advanced analytics, and AI-first technologies

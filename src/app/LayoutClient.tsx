@@ -39,9 +39,15 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
     { href: "/dashboard", label: "Dashboard", icon: <FiUser /> },
   ];
   
-  if (hiddenLayoutRoutes.includes(pathname)) {
-    return <main className="flex-1">{children}</main>;
-  }
+
+if (hiddenLayoutRoutes.includes(pathname)) {
+  return (
+    <div className="flex flex-col min-h-screen bg-white">
+      <main className="flex-1">{children}</main>
+    </div>
+  );
+}
+
 
   if (shouldUseMinimalHeader) {
     return (
