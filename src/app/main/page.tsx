@@ -17,7 +17,8 @@ import { Star } from 'lucide-react';
 
 // Rotating floating Book model
 function BookModel({ mergePhase }: { mergePhase: number }) {
-  const ref = useRef<any>();
+ const ref = useRef<any>(null);
+
   useFrame((state, delta) => {
     if (!ref.current) return;
     // rotation speed reduces as mergePhase advances
@@ -60,7 +61,8 @@ function BookModel({ mergePhase }: { mergePhase: number }) {
 
 // Rotating AI Sphere model (glowing)
 function SphereModel({ mergePhase }: { mergePhase: number }) {
-  const ref = useRef<any>();
+const ref = useRef<any>(null);
+
   useFrame((state, delta) => {
     if (!ref.current) return;
     ref.current.rotation.y += 0.7 * delta * (1 - Math.min(mergePhase, 1) * 0.9);
@@ -87,7 +89,8 @@ function SphereModel({ mergePhase }: { mergePhase: number }) {
 
 // Core Orb that appears when merged
 function CoreOrb({ visible, intensity }: { visible: boolean; intensity: number }) {
-  const ref = useRef<any>();
+const ref = useRef<any>(null);
+
   useFrame((state) => {
     if (!ref.current) return;
     ref.current.rotation.y = state.clock.elapsedTime * 0.4;
@@ -216,7 +219,8 @@ export default function HomePage() {
   }, []);
 
   function RobotModel() {
-  const ref = useRef<any>();
+  const ref = useRef<any>(null);
+
 
   useFrame((state) => {
     if (!ref.current) return;
