@@ -40,11 +40,11 @@ const Footer = () => {
             {/* Email Link */}
             <span className="text-gray-600">|</span> {/* Separator */}
             <a
-              href="mailto:enquiry@algoforgestudios.com"
+              href="mailto:studiosalgoforge@gmail.com"
               className="flex items-center gap-1 text-white transition-colors"
             >
               <FiMail className="text-lg" />
-              <span className="text-sm">enquiry@algoforgestudios.com</span>
+              <span className="text-sm">studiosalgoforge@gmail.com</span>
             </a>
           </div>
         </div>
