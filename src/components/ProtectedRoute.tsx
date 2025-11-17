@@ -13,7 +13,7 @@ export default function ProtectedRoute({ children }: Props) {
   const [isAllowed, setIsAllowed] = useState<boolean | null>(null);
 
   // Public routes (no auth needed)
-  const publicRoutes = ["/login", "/signup", "/forgot-password" , "/logout"];
+  const publicRoutes = ["/login", "/signup", "/forgot-password" , "/logout","/main","/"];
 
   useEffect(() => {
     if (publicRoutes.includes(pathname)) {
@@ -25,7 +25,7 @@ export default function ProtectedRoute({ children }: Props) {
 
     if (!token) {
       alert("You must log in first!");
-      router.replace("/login");
+      router.replace("/");
       setIsAllowed(false);
       return;
     }
