@@ -12,7 +12,7 @@ export default function LogoutPage() {
 
     // Small delay so user sees effect
     setTimeout(() => {
-      router.replace("/login"); // redirect back to login
+      router.replace("/main"); // redirect back to login
     }, 500);
   }, [router]);
 

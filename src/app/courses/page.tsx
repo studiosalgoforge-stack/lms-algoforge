@@ -92,10 +92,32 @@ export default function CoursesPage() {
       <div className="min-h-screen bg-purple-50 p-4 md:p-8 flex flex-col lg:flex-row gap-8">
         {/* Left/Main Content */}
         <div className="flex-1 ">
-          <div className="flex-1 text-black mb-6 text-bold bg-gray-100 h-12 flex items-center px-4 gap-2">
-            <Link href="/" className="hover:underline">Home</Link>
-            <span>- Classroom</span>
-          </div>
+       {/* Page Header */}
+<div className="mb-10">
+  {/* Breadcrumb */}
+  <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+    <Link href="#" className="hover:text-purple-600 transition">
+      Home
+    </Link>
+    <span>/</span>
+    <span className="text-purple-700 font-medium">Classroom</span>
+  </div>
+
+  {/* Title Block */}
+  <div className="flex items-center justify-between flex-wrap gap-4">
+    <div>
+      <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-700 to-blue-600 bg-clip-text text-transparent">
+        Welcome Back to Your Classroom
+      </h1>
+      <p className="text-gray-500 mt-1">
+        Continue your learning journey with personalized progress tracking.
+      </p>
+    </div>
+
+  
+  </div>
+</div>
+
           {/* Tabs */}
           <div className="flex flex-wrap gap-6 mb-6 border-b  border-gray-200">
             {categories.map((cat) => (
@@ -252,7 +274,7 @@ export default function CoursesPage() {
         </div>
 
         {/* Right Sidebar */}
-        <div className="hidden lg:block w-72 sticky mt-32 top-8 self-start">
+        <div className="hidden lg:block w-72 sticky mt-48 top-8 self-start">
           <div className="rounded-lg p-6 shadow-lg bg-gradient-to-r from-[#F6A6FF] via-[#D6A4E6] to-[#A1C4FD]">
             <div className="space-y-4">
               {["Success Stories", "Research Articles", "Project Discussions"].map(

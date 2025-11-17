@@ -40,5 +40,12 @@ export const courseFolders: CourseFolders = {
     interview: "9I0J1K2L3M4N5O6P7Q8R",
     assignments: "8H9I0J1K2L3M4N5O6P7Q",
 
+  },
+
+  "Big Data Hadoop & Spark":
+  {
+    ppts:"111zlfQVVADu3pA4Sh6X2t3Aku_I2TQ0l",
+     interview: "9I0J1K2L3M4N5O6P7Q8R",
+    assignments: "8H9I0J1K2L3M4N5O6P7Q",
   }
 };

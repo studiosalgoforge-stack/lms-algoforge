@@ -15,7 +15,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
   const [isOpen, setIsOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
-  const hiddenLayoutRoutes = ["/login", "/signup", "/forgot-password"];
+  const hiddenLayoutRoutes = ["/login", "/signup", "/forgot-password" , "/main"];
   const isCourseDetailPage = pathname.startsWith("/courses/") && pathname.split("/").length > 2;
   const shouldUseMinimalHeader = isCourseDetailPage && !isDesktop;
 

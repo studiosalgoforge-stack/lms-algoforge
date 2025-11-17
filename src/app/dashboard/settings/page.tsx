@@ -103,7 +103,7 @@ export default function SettingsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="p-6 flex justify-center">
+      <div className="p-6 mt-24 flex justify-center">
         <form
           onSubmit={handleSubmit}
           className="bg-white shadow-lg rounded-xl p-6 w-full max-w-md space-y-4"

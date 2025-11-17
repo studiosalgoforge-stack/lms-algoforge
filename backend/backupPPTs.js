@@ -1112,74 +1112,118 @@ export const backupPPTs = {
           },
         ],
       },
-  {
-    name: "8 - Real Time Streaming on Cloud(Azure & GCP)",
-    children: [
-      {
-            name: "Live Streaming Data Processing in GCP",
-            link: "https://docs.google.com/presentation/d/1jM2dZ4CdMM0JpkCkwYevw-tSLv7RWKMs/preview",
-            assignments: [],
-          },
-          {
-            name: "IoT Code UseCase.zip",
-            file: "https://drive.google.com/uc?export=download&id=12E4sxWn5jdTsPEmC-uPfQ1SYmhprt1DN",
-            assignments: [],
-          },
-        ],
-      },
-  {
-    name: "9 - Spark Streaming",
-    children: [
-      {
-            name: "Live Streaming Data Processing in GCP",
-            link: "https://docs.google.com/presentation/d/1HmJVFNa7h-jrl8Xwd9trOIAUKWxWr70s/preview",
-            assignments: [],
-          },
-          {
-            name: "Spark Setup on Ubuntu(1).zip",
-            file: "https://drive.google.com/uc?export=download&id=1o1RvtqMXnhuOFuCDxS8ubms2NZzt7OWA",
-            assignments: [],
-          },
-          {
-            name: "Spark Streaming_code_Example.zip",
-            file: "https://drive.google.com/uc?export=download&id=1gerX1BMfJpYZLH_YcHZoG53Btr8bvs9E",
-            assignments: [],
-          },
-          {
-            name: "Spark_streaming_TCP.zip",
-            file: "https://drive.google.com/uc?export=download&id=1ib1Nhr2Pj3wR2rpM3PuhaiuvmtjXrLHn",
-            assignments: [],
-          },
-        ],
-      },
-  {
-    name: "10 - Apache Nifi & Apache Airflow",
-    children: [
-      {
-            name: "Apache Nifi.zip",
-            file: "https://drive.google.com/uc?export=download&id=1rwaaCJULd4IMZ_G3uWszPmQQqeXJYoL5",
-            assignments: [],
-          },
-          {
-            name: "PySpark_Dataset.crdownload",
-            file: "https://drive.google.com/uc?export=download&id=1ZIOL0imy6Xwi-JwCFiaSDO7TG4LoeXiO",
-            assignments: [],
-          },
-          {
-            name: "Apache Airflow_Dataset.zip",
-            file: "https://drive.google.com/uc?export=download&id=1luB_NM4gZesj7WofbZb0wdEsqy7U3_hG",
-            assignments: [],
-          },
-          {
-            name: "Airflow_PythonCodes.zip",
-            file: "https://drive.google.com/uc?export=download&id=1JYX_aIMHACa_rQ0IV4skXjXPRWn1BRTq",
-            assignments: [],
-          },
-        ],
-      },
-    ],
-  },
-],
+ {
+  name: "8 - Maps in Tableau",
+  children: [
+    {
+      name: "Maps in Tableau",
+      link: "https://docs.google.com/presentation/d/1R0wqRRyD5xEU4ig4YTwzpzluPJTaKJ47/preview",
+      assignments: [], 
+    },
+    {
+      name: "Module 8_DataSet.zip",
+      file: "https://drive.google.com/uc?export=download&id=17oX_h_pXgDgddHhK0daYN6Cbqvobu6e8",
+      assignments: [],  
+    },
+  ],
+},
+
+{
+  name: "9 - Dashboard & Stories",
+  children: [
+    {
+      name: "Dashboard & Stories",
+      link: "https://docs.google.com/presentation/d/1TLpnK9jQPaww7m-To3geQcbBw1LKXC0P/preview",
+      assignments: [],
+    },
+    {
+      name: "Workbook.zip",
+      file: "https://drive.google.com/uc?export=download&id=1nz6OGwCAIx-fRN2aLJeioDhrjimJRhPV",
+      assignments: [], 
+    },
+  ],
+},
+
+{
+  name: "10 - Calculations in Tableau",
+  children: [
+    {
+      name: "Calculations in Tableau",
+      link: "https://docs.google.com/presentation/d/1mB844gshBttvXNzziQvtmDpjt0TcbHf5/preview",
+      assignments: [],
+    },
+    {
+      name: "Workbook.zip",
+      file: "https://drive.google.com/uc?export=download&id=1I2LztxiYak8j--KVjVn3zsnNfgf24jU_",
+      assignments: [], 
+    },
+    {
+      name: "Dataset_QTCs Working.zip",
+      file: "https://drive.google.com/uc?export=download&id=1HnH82SaX7fzwwY0QIsAAy2kiesngwtCu",
+      assignments: [], 
+    },
+  ],
+},
+
+{
+  name: "11 - LOD Expressions",
+  children: [
+    {
+      name: "LOD Expressions",
+      link: "https://docs.google.com/presentation/d/1YN0d1sW4GPAir2Upqm3Dc-YUx2UDcU7k/preview",
+      assignments: [], 
+    },
+    {
+      name: "Module 11_DataSet.zip",
+      file: "https://drive.google.com/uc?export=download&id=1YQc--DD32S7K-dFZRCIRvTQ-juEzyRm7",
+      assignments: [], 
+    },
+  ],
+},
+
+{
+  name: "12 - Custom charts",
+  children: [
+    {
+      name: "LOD Expressions",
+      link: "https://docs.google.com/presentation/d/1xaWfS4M5XEziNNOOZVgwwFzmOrAtzfu6/preview",
+      assignments: [], 
+    },
+    {
+      name: "Workbook.zip",
+      file: "https://drive.google.com/uc?export=download&id=14ig3Tm-3Dl-DEKt0oPD9T3APqZvjzqDm",
+      assignments: [], 
+    },
+  ],
+},
+
+{
+  name: "13 - Tableau & R Integration",
+  children: [
+    {
+      name: "Tableau R Integration",
+      link: "https://docs.google.com/presentation/d/1-bPGWbzWxSTHu-7QJnGjfwmSCLc-B2Wl/preview",
+      assignments: [],
+    },
+    {
+      name: "Workbook.zip",
+      file: "https://drive.google.com/uc?export=download&id=1Eedk_Ghg6UiPD-4yTbpbrMoLInL2tkeH",
+      assignments: [], 
+    },
+    {
+      name: "Tableau Prep Builder.zip",
+      file: "https://drive.google.com/uc?export=download&id=1vZas7zVddsPpLmE3NBDAJ1U--O5583yQ",
+      assignments: [], 
+    },
+  ],
+},
+
+
+    
+      ],
+    },
+  ],
+
 
 //Tableau
    "Tableau": [
@@ -1233,7 +1277,7 @@ export const backupPPTs = {
         },
       ],
     },
-      {
+     {
           name: "4 - Orginizing & Simplifying Data",
               children: [
             {
@@ -1259,6 +1303,21 @@ export const backupPPTs = {
         },
       ],
     },
+      {
+          name: "6 - Visual Analytics",
+              children: [
+            {
+               name: "Visual Analytics",
+          link: "https://docs.google.com/presentation/d/1q6QqsTWaI8dRdrdmzxVZsUL0w35ul88m/preview",
+          assignments: [], 
+        },
+        {
+          name: "Workbook.zip",
+          file: "https://drive.google.com/uc?export=download&id=1ghfpUcjZEUNfJCm9InnuBeUkkojGkRDO",
+          assignments: [],  
+        },
+      ],
+    },
      {
           name: "7 - Advanced Analytics in Tableau",
               children: [
@@ -1274,13 +1333,303 @@ export const backupPPTs = {
         },
       ],
     },
-     
-     
+{
+  name: "8 - Maps in Tableau",
+  children: [
+    {
+      name: "Maps in Tableau",
+      link: "https://docs.google.com/presentation/d/1R0wqRRyD5xEU4ig4YTwzpzluPJTaKJ47/preview",
+      assignments: [], 
+    },
+    {
+      name: "Module 8_DataSet.zip",
+      file: "https://drive.google.com/uc?export=download&id=17oX_h_pXgDgddHhK0daYN6Cbqvobu6e8",
+      assignments: [],  
+    },
+  ],
+},
+
+{
+  name: "9 - Dashboard & Stories",
+  children: [
+    {
+      name: "Dashboard & Stories",
+      link: "https://docs.google.com/presentation/d/1TLpnK9jQPaww7m-To3geQcbBw1LKXC0P/preview",
+      assignments: [],
+    },
+    {
+      name: "Workbook.zip",
+      file: "https://drive.google.com/uc?export=download&id=1nz6OGwCAIx-fRN2aLJeioDhrjimJRhPV",
+      assignments: [], 
+    },
+  ],
+},
+
+{
+  name: "10 - Calculations in Tableau",
+  children: [
+    {
+      name: "Calculations in Tableau",
+      link: "https://docs.google.com/presentation/d/1mB844gshBttvXNzziQvtmDpjt0TcbHf5/preview",
+      assignments: [],
+    },
+    {
+      name: "Workbook.zip",
+      file: "https://drive.google.com/uc?export=download&id=1I2LztxiYak8j--KVjVn3zsnNfgf24jU_",
+      assignments: [], 
+    },
+    {
+      name: "Dataset_QTCs Working.zip",
+      file: "https://drive.google.com/uc?export=download&id=1HnH82SaX7fzwwY0QIsAAy2kiesngwtCu",
+      assignments: [], 
+    },
+  ],
+},
+
+{
+  name: "11 - LOD Expressions",
+  children: [
+    {
+      name: "LOD Expressions",
+      link: "https://docs.google.com/presentation/d/1YN0d1sW4GPAir2Upqm3Dc-YUx2UDcU7k/preview",
+      assignments: [], 
+    },
+    {
+      name: "Module 11_DataSet.zip",
+      file: "https://drive.google.com/uc?export=download&id=1YQc--DD32S7K-dFZRCIRvTQ-juEzyRm7",
+      assignments: [], 
+    },
+  ],
+},
+
+{
+  name: "12 - Custom charts",
+  children: [
+    {
+      name: "LOD Expressions",
+      link: "https://docs.google.com/presentation/d/1xaWfS4M5XEziNNOOZVgwwFzmOrAtzfu6/preview",
+      assignments: [], 
+    },
+    {
+      name: "Workbook.zip",
+      file: "https://drive.google.com/uc?export=download&id=14ig3Tm-3Dl-DEKt0oPD9T3APqZvjzqDm",
+      assignments: [], 
+    },
+  ],
+},
+
+{
+  name: "13 - Tableau & R Integration",
+  children: [
+    {
+      name: "Tableau R Integration",
+      link: "https://docs.google.com/presentation/d/1-bPGWbzWxSTHu-7QJnGjfwmSCLc-B2Wl/preview",
+      assignments: [],
+    },
+    {
+      name: "Workbook.zip",
+      file: "https://drive.google.com/uc?export=download&id=1Eedk_Ghg6UiPD-4yTbpbrMoLInL2tkeH",
+      assignments: [], 
+    },
+    {
+      name: "Tableau Prep Builder.zip",
+      file: "https://drive.google.com/uc?export=download&id=1vZas7zVddsPpLmE3NBDAJ1U--O5583yQ",
+      assignments: [], 
+    },
+  ],
+},
+
 
     
       ],
     },
   ],
+
+  //Big Data 
+   "Big-Data":
+  [
+    {
+    name: "Big-Data-Hadoop ",
+    children: [
+      {
+        name: "Introduction to Big Data",
+          children:
+        [
+          {
+             name: "Introduction",
+        link: "https://docs.google.com/presentation/d/1cuifqdqzM5vYOEjpGJ1cgTLIyjz7upGb/preview",
+         assignments: [],
+      },
+    ],
+  },
+    {
+        name: "Distribution Framework & Hadoop Page",
+          children:
+        [
+          {
+             name: "1 - Distribution Framework & Hadoop",
+        link: "https://docs.google.com/presentation/d/14loAYroaOpLdE9hMb8zmm5uU2nsFI1n6/preview",
+         assignments: [],
+      },
+       {
+          name: "2 - Hadoop Installation.zip",
+          
+          file: "https://drive.google.com/uc?export=download&id=1tCS3G9s0FwtjFJ0Js8ewVPMK3GqWRg6y",
+          assignments: [], 
+        },
+        {
+          name: "3 - Hadoop_HDFS_Commands.zip",
+          file: "https://drive.google.com/uc?export=download&id=1F9YEt_bawP2z0w0Hm1MKa-b36SP5DfDQ",
+          assignments: [], 
+        },
+    ],
+  },
+    {
+        name: "Linux OS and Virtual Machine",
+          children:
+        [
+            {
+             name: "1 - Linux OS and Virtual Machine",
+        link: "https://docs.google.com/presentation/d/1B9zkPETW94G_nuSW6_t8YB1CHSuTUBEn/preview",
+         assignments: [], 
+      },
+       {
+          name: "2 - Linux Commands.zip",
+          file: "https://drive.google.com/uc?export=download&id=1B9zkPETW94G_nuSW6_t8YB1CHSuTUBEn",
+          assignments: [], 
+        },
+    ],
+  },
+  {
+        name: "Apache Pig",
+          children:
+        [
+            {
+             name: "1 - Apache Pig",
+        link: "https://docs.google.com/presentation/d/1pHy_4Ll3bZbubk3ZGOPJGiFpCM_pZP7O/preview",
+         assignments: [], 
+      },
+       {
+          name: "2 - Apache Pig Commands.zip",
+          file: "https://drive.google.com/uc?export=download&id=1TzjScbcx24lj1hyzuL7Eq7voHHZQXaZD",
+          assignments: [], 
+        },
+    ],
+  },
+  {
+        name: "Apache Hive",
+          children:
+        [
+            {
+             name: "1 - Apache Hive",
+        link: "https://docs.google.com/presentation/d/19m3-o9-95RHngDxHghoYH5blYW3_8jYH/preview",
+         assignments: [], 
+      },
+       {
+          name: "2 - Apache Hive Commands.zip",
+          file: "https://drive.google.com/uc?export=download&id=12iLMY1FRHC5rWXau9PJ8lvHMVDlyJCEi",
+          assignments: [],
+        },
+          {
+          name: "3 - Apache Hive Installation Steps.zip",
+          file: "https://drive.google.com/uc?export=download&id=1NkVLLiKHkBVP9t6SrPNYXz_RdrwkLyDY",
+          assignments: [], 
+        },
+    ],
+  },
+  {
+        name: "Apache HBase",
+          children:
+        [
+            {
+          name: "1 - Apache HBase Installation Steps.zip",
+          file: "https://drive.google.com/uc?export=download&id=1_vh7KElUdkiGQVdZRhY46B2MgLPDvR8k",
+          assignments: [], 
+        },
+     
+       {
+          name: "2 - Apache HBase Commands.zip",
+          file: "https://drive.google.com/uc?export=download&id=1H695c_uVLm7CPOvO5d1WU5uJbZ-JuQ1z",
+          assignments: [],
+        },
+        
+    ],
+  },
+   {
+        name: "MySQL",
+          children:
+        [
+            {
+          name: "1 - MySQL Installation Steps.zip",
+          file: "https://drive.google.com/uc?export=download&id=1mhVIrv811CJuMaw3yD77r5XTNpn34ifp",
+          assignments: [], 
+        },
+     
+       {
+          name: "2 - MySQL Commands.zip",
+          file: "https://drive.google.com/uc?export=download&id=1-SM-HgbTROfqbCesnC50i8ymIM12hd6s",
+          assignments: [],
+        },
+        
+    ],
+  },
+  {
+        name: "Apache SQOOP",
+          children:
+        [
+            {
+          name: "1 - Apache SQOOP Installation.zip",
+          file: "https://drive.google.com/uc?export=download&id=1RZ9HbRfyVrPtlCRHqRC0rqgbMoRturvm",
+          assignments: [], 
+        },
+     
+       {
+          name: "2 - Apache SQOOP Commands.zip",
+          file: "https://drive.google.com/uc?export=download&id=1eRF7lYu7cz2w-LJmPtc3Zdc5jvj34tld",
+          assignments: [],
+        },
+          {
+             name: "3 - Apache SQOOP",
+        link: "https://docs.google.com/presentation/d/1VMK5tEIVfXhyq_-35cNGDXlEigC8rIBJ/preview",
+         assignments: [], 
+      },
+        
+    ],
+  },
+  {
+        name: "Apache Spark",
+          children:
+        [
+            {
+             name: "3 - Apache Spark",
+        link: "https://docs.google.com/presentation/d/1PKVttrkUj46hUeXQMOWbbrNmU8Qna5L_/preview",
+         assignments: [], 
+      },
+            {
+          name: "2 - Spark Core_Pyspark_Commands.zip",
+          file: "https://drive.google.com/uc?export=download&id=12GCOzJ5-K8xbZy2QYnr6EmdfxDSl_-zn",
+          assignments: [], 
+        },
+     
+       {
+          name: "3 - Spark SQL Commands.zip",
+          file: "https://drive.google.com/uc?export=download&id=15J0v8di6Urowp6VR_NdNAbkgOuhMENLK",
+          assignments: [],
+        },
+        
+    ],
+  },
+],
+
+
+
+
+
+
+    }
+  
+
+  ]
 
 
 

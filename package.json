@@ -14,6 +14,8 @@
     "@heroicons/react": "^2.2.0",
     "@radix-ui/react-progress": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.4.0",
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
     "canvas-confetti": "^1.9.3",
@@ -27,7 +29,7 @@
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",
-    "framer-motion": "^12.23.12",
+    "framer-motion": "^12.23.24",
     "googleapis": "^156.0.0",
     "helmet": "^8.1.0",
     "json2csv": "^6.0.0-alpha.2",
@@ -48,6 +50,7 @@
     "recharts": "^3.1.2",
     "swr": "^2.3.6",
     "tailwind-merge": "^3.3.1",
+    "three": "^0.181.1",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

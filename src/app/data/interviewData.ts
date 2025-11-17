@@ -631,4 +631,83 @@ export const interviewData: Record<string, InterviewQuestion[]> = {
 ],
 
 
+"Big-Data": [
+    {
+      "question": "Which component in the Hadoop ecosystem is primarily used for storing large datasets across a cluster of commodity hardware?",
+      "options": ["MapReduce", "Spark", "HDFS", "YARN"],
+      "correct": 2
+    },
+    {
+      "question": "What is the primary function of YARN (Yet Another Resource Negotiator) in a Hadoop cluster?",
+      "options": ["Data ingestion from relational databases", "Resource management and job scheduling", "Providing a SQL interface for querying data", "Real-time stream processing"],
+      "correct": 1
+    },
+    {
+      "question": "Which of the following describes the fundamental processing model used by Spark, differentiating it from traditional MapReduce?",
+      "options": ["Disk-based processing", "In-memory processing", "Queue-based processing", "Single-threaded processing"],
+      "correct": 1
+    },
+    {
+      "question": "Which Spark abstraction represents an immutable, partitioned collection of records that can be operated on in parallel?",
+      "options": ["DataFrame", "RDD", "Dataset", "Spark Context"],
+      "correct": 1
+    },
+    {
+      "question": "Hive is primarily used for which purpose in the Hadoop ecosystem?",
+      "options": ["Real-time NoSQL storage", "Streaming data ingestion", "Providing a SQL-like interface for querying data in HDFS", "In-memory machine learning"],
+      "correct": 2
+    },
+    {
+      "question": "What is the component that Hive uses to store the metadata (schema, tables, partitions) of its tables?",
+      "options": ["Hive Server", "Hive Client", "Hive Metastore", "HBase Region Server"],
+      "correct": 2
+    },
+    {
+      "question": "HBase is a NoSQL database built on top of HDFS. What is its data model based on?",
+      "options": ["Key-Value pairs", "Document store", "Column-oriented store", "Graph database"],
+      "correct": 2
+    },
+    {
+      "question": "Which characteristic best describes HBase's data retrieval capabilities?",
+      "options": ["Batch processing only", "Low-latency random read/write access", "High-latency sequential access", "SQL-based complex joins"],
+      "correct": 1
+    },
+    {
+      "question": "What is the primary role of Apache Sqoop?",
+      "options": ["To transfer data between Hadoop and relational databases", "To write complex ETL jobs using a scripting language", "To manage and schedule workflows in Hadoop", "To analyze log data in real-time"],
+      "correct": 0
+    },
+    {
+      "question": "To export data from HDFS back to a MySQL table, which tool is most appropriate?",
+      "options": ["Pig", "Hive", "Sqoop", "Flume"],
+      "correct": 2
+    },
+    {
+      "question": "Apache Pig is a platform for analyzing large datasets. What is the language used to write Pig scripts?",
+      "options": ["SQL", "Java", "Pig Latin", "Scala"],
+      "correct": 2
+    },
+    {
+      "question": "What is a major advantage of using Pig over writing complex raw MapReduce jobs in Java?",
+      "options": ["Pig executes much faster than Java MapReduce", "Pig allows for procedural data flow and is simpler to code", "Pig can only process streaming data", "Pig does not require HDFS"],
+      "correct": 1
+    },
+    {
+      "question": "In a traditional data pipeline, which scenario is best suited for using MySQL?",
+      "options": ["Storing petabytes of unstructured clickstream data", "Storing the structured, normalized relational data (e.g., customer profiles, order details)", "Running real-time graph algorithms", "Performing complex ETL on terabytes of raw log files"],
+      "correct": 1
+    },
+    {
+      "question": "Which SQL command is used in MySQL to retrieve records that match a specified condition?",
+      "options": ["UPDATE", "INSERT", "SELECT", "DELETE"],
+      "correct": 2
+    },
+    {
+      "question": "In the context of Spark, what is the meaning of 'lazy evaluation'?",
+      "options": ["Data is loaded into memory immediately after a transformation is called", "Transformations are executed only when an action (like `count()` or `collect()`) is called", "The entire program is compiled before any transformation", "It refers to the automatic caching of intermediate results"],
+      "correct": 1
+    }
+  ]
+
+
 };
