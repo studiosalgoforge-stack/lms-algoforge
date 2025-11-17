@@ -345,7 +345,7 @@ function KnowledgeCubes() {
           <div className="md:hidden px-4 pb-4">
             <div className="flex flex-col gap-2">
               <Link href="/login" className="py-2">Login</Link>
-              <Link href="/contact" className="py-2">Contact</Link>
+             
             </div>
           </div>
         )}
