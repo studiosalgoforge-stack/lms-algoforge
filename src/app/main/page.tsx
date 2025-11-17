@@ -213,10 +213,13 @@ export default function HomePage() {
   const countries = useCountUp(42, 1000);
   const projects = useCountUp(5400, 1400);
 
-  const socialLinks = [
-    { href: 'https://linkedin.com', icon: <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM0 8h5v14H0zM8 8h4.8v1.9h.1c.7-1.2 2.4-2.5 4.9-2.5 5.2 0 6.1 3.4 6.1 7.8V22H19v-6.8c0-1.6 0-3.6-2.2-3.6-2.2 0-2.5 1.7-2.5 3.5V22H8z"/></svg>, label: 'LinkedIn' },
-    { href: 'https://twitter.com', icon: <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M22 5.92c-.7.32-1.46.53-2.26.63a3.98 3.98 0 0 0-6.79 3.63A11.36 11.36 0 0 1 3.16 4.9a3.98 3.98 0 0 0 1.23 5.31c-.58-.02-1.12-.18-1.6-.44v.04c0 1.94 1.38 3.56 3.21 3.93-.34.09-.7.13-1.07.13-.26 0-.52-.03-.77-.07.52 1.63 2.04 2.81 3.84 2.85A7.98 7.98 0 0 1 2 19.54 11.32 11.32 0 0 0 8.29 21c7.55 0 11.7-6.26 11.7-11.69v-.53A8.2 8.2 0 0 0 22 5.92z"/></svg>, label: 'Twitter' },
-    { href: 'https://facebook.com', icon: <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.5 9.9v-7h-2.2V12h2.2V9.8c0-2.2 1.3-3.4 3.3-3.4.95 0 1.96.17 1.96.17v2.15h-1.1c-1.08 0-1.42.67-1.42 1.36V12h2.42l-.39 2.9h-2.03v7A10 10 0 0 0 22 12z"/></svg>, label: 'Facebook' },
+
+
+
+    const socialLinks = [
+    { href: "https://x.com/AlgoforgeS?t=AphWpoAjEl2ty6AIkCZh1w&s=09", icon: <FiTwitter />, label: "Twitter" },
+    { href: "https://www.linkedin.com/company/algoforge-studios/", icon: <FiLinkedin />, label: "LinkedIn" },
+    { href: "https://www.instagram.com/algoforgestudio?igsh=MWJkOWNhd3NoenB5bw==", icon: <FiInstagram />, label: "Instagram" },
   ];
 
   // trigger merge automatically after a short delay for effect
